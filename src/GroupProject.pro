@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ifloat.cpp \
     main.cpp \
     mainwindow.cpp \
     utils.cpp
@@ -25,6 +26,7 @@ HEADERS += \
     baseoperand.h \
     distribution.h \
     exponentialdistribution.h \
+    ifloat.h \
     mainwindow.h \
     uniformdistribution.h \
     utils.h

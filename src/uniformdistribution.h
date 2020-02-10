@@ -13,7 +13,7 @@ public:
         double p = 1/validBin;
 
         for (long long i=0; i<binNumber; i++) {
-            double x = i*interval;
+            double x = lowerBound + i*interval;
             if (x<a || x>b) pdf[i] = 0;
             else pdf[i] = p;
 

@@ -43,6 +43,25 @@ protected:
         for (unsigned i=0;i<binNumber;i++) pdf[i] = b.pdf[i];
     }
 
+    long long inverseSampling(double cumulative) {
+        if (cumulative < 0 || cumulative > 1)
+            throw DistributionException("Inverse sampling error: ");
+        long long l = 0, r = binNumber, res = -1;
+        while (l<=r) {
+            long long mid = (l+r) / 2;
+            if (cdf[mid] >= cumulative) {
+                res = mid;
+                r = mid-1;
+            }
+            else l = mid+1;
+        }
+
+        if (res==-1)
+            throw DistributionException("Something wrong with inverse sampling binary search");
+
+        return res;
+    }
+
 public:
 
     Distribution(const Distribution& b) {
