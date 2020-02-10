@@ -12,36 +12,38 @@ struct DistributionException
 
 class Distribution
 {
-private:
-    long long groups;
+protected:
+    long long binNumber;
     double lowerBound, upperBound;
     double* pdf;
+    double* cdf;
+
+    Distribution(long long newBinNumber, double newLowerBound, double newUpperBound) {
+        binNumber = newBinNumber;
+        lowerBound = newLowerBound;
+        upperBound = newUpperBound;
+
+        try {
+            pdf = new double[binNumber];
+            for (int i=0;i<binNumber;i++) {pdf[i] = 0; cdf[i] = 0;}
+        }
+        catch (std::exception const &ex) {
+            qDebug() << ex.what() << "\n";
+        }
+    }
 
     void cleanup() {
         delete[] pdf;
     }
 
     void copy(const Distribution& b) {
-        groups = b.groups;
+        binNumber = b.binNumber;
         lowerBound = b.lowerBound;
         upperBound = b.upperBound;
-        for (unsigned i=0;i<groups;i++) pdf[i] = b.pdf[i];
+        for (unsigned i=0;i<binNumber;i++) pdf[i] = b.pdf[i];
     }
 
 public:
-    Distribution(long long newGroups, double newLowerBound, double newUpperBound) {
-        groups = newGroups;
-        lowerBound = newLowerBound;
-        upperBound = newUpperBound;
-
-        try {
-            pdf = new double[groups];
-            for (int i=0;i<groups;i++) pdf[i] = 0;
-        }
-        catch (std::exception const &ex) {
-            qDebug() << ex.what() << "\n";
-        }
-    }
 
     Distribution(const Distribution& b) {
         copy(b);
@@ -60,9 +62,9 @@ public:
     }
 
     bool operator==(const Distribution& b) {
-        if (groups!=b.groups || lowerBound!=b.lowerBound || upperBound!=b.upperBound)
+        if (binNumber!=b.binNumber || lowerBound!=b.lowerBound || upperBound!=b.upperBound)
             return false;
-        for (unsigned i=0; i<groups; i++) if (!utils::floatEqual(pdf[i], b.pdf[i], 0.00000001)) return false;
+        for (unsigned i=0; i<binNumber; i++) if (!utils::floatEqual(pdf[i], b.pdf[i], 0.00000001)) return false;
         return true;
     }
 
@@ -76,38 +78,38 @@ public:
     }
 
     Distribution operator + (const Distribution& b) {
-        if (groups != b.groups) {
+        if (binNumber != b.binNumber) {
             qDebug() << "Operator + : Distribution must have same histogram size";
-            //throw
+            throw DistributionException("Operator + error: different group sizes");
         }
-        Distribution res(groups, lowerBound, upperBound);
-        for (int i=0;i<groups;i++) res[i] = pdf[i] + b[i];
+        Distribution res(binNumber, lowerBound, upperBound);
+        for (int i=0;i<binNumber;i++) res[i] = pdf[i] + b[i];
         return res;
     }
 
     Distribution operator - (const Distribution& b) {
-        if (groups != b.groups) {
+        if (binNumber != b.binNumber) {
             qDebug() << "Operator - : Distribution must have same histogram size";
-            //throw
+            throw DistributionException("Operator - error: different group sizes");
         }
-        Distribution res(groups, lowerBound, upperBound);
-        for (int i=0;i<groups;i++) res[i] = pdf[i] - b[i];
+        Distribution res(binNumber, lowerBound, upperBound);
+        for (int i=0;i<binNumber;i++) res[i] = pdf[i] - b[i];
         return res;
     }
 
     Distribution operator * (const Distribution& b) {
-        if (groups != b.groups) {
+        if (binNumber != b.binNumber) {
             qDebug() << "Operator * : Distribution must have same histogram size";
-            //throw
+            throw DistributionException("Operator * error: different group sizes");
         }
-        Distribution res(groups, lowerBound, upperBound);
-        for (int i=0;i<groups;i++) res[i] = pdf[i] * b[i];
+        Distribution res(binNumber, lowerBound, upperBound);
+        for (int i=0;i<binNumber;i++) res[i] = pdf[i] * b[i];
         return res;
     }
 
     Distribution operator * (const int& k) {
-        Distribution res(groups, lowerBound, upperBound);
-        for (int i=0;i<groups;i++) res[i] = k*pdf[i];
+        Distribution res(binNumber, lowerBound, upperBound);
+        for (int i=0;i<binNumber;i++) res[i] = k*pdf[i];
         return res;
     }
 };
