@@ -17,11 +17,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    utils.cpp
 
 HEADERS += \
+    GaussianDistribution.h \
     baseoperand.h \
-    mainwindow.h
+    distribution.h \
+    exponentialdistribution.h \
+    mainwindow.h \
+    uniformdistribution.h \
+    utils.h
 
 FORMS += \
     mainwindow.ui

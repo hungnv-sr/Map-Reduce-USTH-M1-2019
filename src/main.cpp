@@ -1,6 +1,11 @@
 #include "mainwindow.h"
 
 #include <QApplication>
+#include "baseoperand.h"
+#include "distribution.h"
+#include "exponentialdistribution.h"
+#include "GaussianDistribution.h"
+#include "uniformdistribution.h"
 
 int main(int argc, char *argv[])
 {
