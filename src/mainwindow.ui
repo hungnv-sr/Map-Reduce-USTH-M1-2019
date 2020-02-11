@@ -30,7 +30,7 @@
           <number>5</number>
          </property>
          <item row="0" column="0">
-          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1,0">
+          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1,0,0,0">
            <property name="spacing">
             <number>5</number>
            </property>
@@ -38,7 +38,7 @@
             <number>5</number>
            </property>
            <property name="topMargin">
-            <number>0</number>
+            <number>5</number>
            </property>
            <property name="rightMargin">
             <number>5</number>
@@ -68,6 +68,12 @@
              </property>
              <item row="0" column="0" colspan="2">
               <widget class="QLabel" name="label">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
                <property name="text">
                 <string>Data Type</string>
                </property>
@@ -75,6 +81,11 @@
              </item>
              <item row="1" column="0" colspan="2">
               <widget class="QComboBox" name="comboBoxDataType">
+               <item>
+                <property name="text">
+                 <string>(default)</string>
+                </property>
+               </item>
                <item>
                 <property name="text">
                  <string>Array</string>
@@ -89,6 +100,12 @@
              </item>
              <item row="0" column="2" colspan="2">
               <widget class="QLabel" name="label_2">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
                <property name="text">
                 <string>Algorithm</string>
                </property>
@@ -96,6 +113,11 @@
              </item>
              <item row="1" column="2" colspan="2">
               <widget class="QComboBox" name="comboBoxAlgorithm">
+               <item>
+                <property name="text">
+                 <string>(default)</string>
+                </property>
+               </item>
                <item>
                 <property name="text">
                  <string>Sum</string>
@@ -130,47 +152,401 @@
             </widget>
            </item>
            <item>
-            <widget class="QTabWidget" name="tabWidget">
-             <property name="accessibleName">
-              <string/>
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <property name="leftMargin">
+              <number>10</number>
              </property>
-             <property name="tabShape">
-              <enum>QTabWidget::Rounded</enum>
+             <property name="topMargin">
+              <number>5</number>
              </property>
-             <property name="currentIndex">
-              <number>0</number>
+             <property name="rightMargin">
+              <number>10</number>
              </property>
-             <widget class="QWidget" name="tabWidgetPage1" native="true">
-              <attribute name="title">
-               <string>Parameters only</string>
-              </attribute>
-              <layout class="QHBoxLayout" name="horizontalLayout_7">
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_6"/>
-               </item>
-              </layout>
-             </widget>
-             <widget class="QWidget" name="tabWidgetPage2" native="true">
-              <attribute name="title">
-               <string>Mixture Distribution</string>
-              </attribute>
-              <layout class="QHBoxLayout" name="horizontalLayout_8">
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_5"/>
-               </item>
-              </layout>
-             </widget>
-             <widget class="QWidget" name="tabWidgetPage3" native="true">
-              <attribute name="title">
-               <string>Import from a file</string>
-              </attribute>
-              <layout class="QHBoxLayout" name="horizontalLayout_4">
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout"/>
-               </item>
-              </layout>
-             </widget>
+             <property name="bottomMargin">
+              <number>5</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="label_19">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Distribution</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QTabWidget" name="tabWidget">
+               <property name="accessibleName">
+                <string/>
+               </property>
+               <property name="tabShape">
+                <enum>QTabWidget::Rounded</enum>
+               </property>
+               <property name="currentIndex">
+                <number>0</number>
+               </property>
+               <widget class="QWidget" name="tabWidgetPage1">
+                <attribute name="title">
+                 <string>Parameters only</string>
+                </attribute>
+                <layout class="QHBoxLayout" name="horizontalLayout_7">
+                 <item>
+                  <layout class="QGridLayout" name="gridLayout_10" columnstretch="4,4,4,4,1">
+                   <property name="leftMargin">
+                    <number>25</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>25</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="horizontalSpacing">
+                    <number>50</number>
+                   </property>
+                   <property name="verticalSpacing">
+                    <number>0</number>
+                   </property>
+                   <item row="0" column="0">
+                    <layout class="QGridLayout" name="gridLayout_6" rowstretch="3,2,2" columnstretch="1,2" rowminimumheight="0,0,0">
+                     <property name="bottomMargin">
+                      <number>6</number>
+                     </property>
+                     <property name="spacing">
+                      <number>12</number>
+                     </property>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="lineEdit"/>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_3">
+                       <property name="text">
+                        <string>Uniform</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_11">
+                       <property name="text">
+                        <string>a =</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_12">
+                       <property name="text">
+                        <string>b =</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="label_7">
+                       <property name="text">
+                        <string>U(a,b)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLineEdit" name="lineEdit_2"/>
+                     </item>
+                    </layout>
+                   </item>
+                   <item row="0" column="3">
+                    <layout class="QGridLayout" name="gridLayout_9" rowstretch="3,2,2" columnstretch="1,2">
+                     <property name="bottomMargin">
+                      <number>6</number>
+                     </property>
+                     <property name="spacing">
+                      <number>12</number>
+                     </property>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="label_10">
+                       <property name="text">
+                        <string>G(α, λ)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_6">
+                       <property name="text">
+                        <string>Gamma</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="lineEdit_5"/>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLineEdit" name="lineEdit_8"/>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_17">
+                       <property name="text">
+                        <string>α =</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_18">
+                       <property name="text">
+                        <string>λ =</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item row="0" column="1">
+                    <layout class="QGridLayout" name="gridLayout_7" rowstretch="3,2,2" columnstretch="1,2">
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>6</number>
+                     </property>
+                     <property name="spacing">
+                      <number>12</number>
+                     </property>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="label_8">
+                       <property name="text">
+                        <string>N(μ, σ^2)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_4">
+                       <property name="text">
+                        <string>Gaussian</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLineEdit" name="lineEdit_4"/>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_13">
+                       <property name="text">
+                        <string>μ =</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="lineEdit_3"/>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_14">
+                       <property name="text">
+                        <string>σ^2 =</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item row="0" column="2">
+                    <layout class="QGridLayout" name="gridLayout_8" rowstretch="3,2,2" columnstretch="1,2">
+                     <property name="bottomMargin">
+                      <number>6</number>
+                     </property>
+                     <property name="spacing">
+                      <number>12</number>
+                     </property>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_15">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLineEdit" name="lineEdit_6">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_5">
+                       <property name="text">
+                        <string>Exponential</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLabel" name="label_9">
+                       <property name="text">
+                        <string>Exp(λ)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_16">
+                       <property name="enabled">
+                        <bool>true</bool>
+                       </property>
+                       <property name="text">
+                        <string>λ =</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="lineEdit_7">
+                       <property name="enabled">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item row="0" column="4">
+                    <widget class="QPushButton" name="pushButton_2">
+                     <property name="text">
+                      <string>OK</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="tabWidgetPage2">
+                <attribute name="title">
+                 <string>Mixture</string>
+                </attribute>
+                <layout class="QHBoxLayout" name="horizontalLayout_8">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_5"/>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="tabWidgetPage3">
+                <attribute name="title">
+                 <string>Import from a file</string>
+                </attribute>
+                <layout class="QHBoxLayout" name="horizontalLayout_4">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout"/>
+                 </item>
+                </layout>
+               </widget>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="Line" name="line_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
             </widget>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <property name="leftMargin">
+              <number>10</number>
+             </property>
+             <property name="topMargin">
+              <number>5</number>
+             </property>
+             <property name="rightMargin">
+              <number>10</number>
+             </property>
+             <property name="bottomMargin">
+              <number>5</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="label_20">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Calculation dataset</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QTabWidget" name="tabWidget_2">
+               <property name="accessibleName">
+                <string/>
+               </property>
+               <property name="tabShape">
+                <enum>QTabWidget::Rounded</enum>
+               </property>
+               <property name="currentIndex">
+                <number>0</number>
+               </property>
+               <widget class="QWidget" name="tabWidgetPage1_2">
+                <attribute name="title">
+                 <string>Generated randomly</string>
+                </attribute>
+                <layout class="QHBoxLayout" name="horizontalLayout_9">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,8,1">
+                   <property name="spacing">
+                    <number>25</number>
+                   </property>
+                   <property name="leftMargin">
+                    <number>25</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>5</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>25</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>5</number>
+                   </property>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_4">
+                     <property name="text">
+                      <string>Generate!</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QProgressBar" name="progressBar">
+                     <property name="value">
+                      <number>24</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pushButton_3">
+                     <property name="text">
+                      <string>OK</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="tabWidgetPage3_2">
+                <attribute name="title">
+                 <string>Import from a file</string>
+                </attribute>
+                <layout class="QHBoxLayout" name="horizontalLayout_11">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_12"/>
+                 </item>
+                </layout>
+               </widget>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </item>
