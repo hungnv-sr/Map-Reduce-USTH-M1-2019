@@ -40,6 +40,7 @@ protected:
         binNumber = b.binNumber;
         lowerBound = b.lowerBound;
         upperBound = b.upperBound;
+        pdf = new double[binNumber];
         for (unsigned i=0;i<binNumber;i++) pdf[i] = b.pdf[i];
     }
 
