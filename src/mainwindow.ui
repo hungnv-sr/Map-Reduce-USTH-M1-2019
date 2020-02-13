@@ -1183,7 +1183,7 @@
                       </size>
                      </property>
                      <property name="value">
-                      <number>24</number>
+                      <number>0</number>
                      </property>
                     </widget>
                    </item>
@@ -1308,7 +1308,7 @@
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="0" column="0">
-          <layout class="QVBoxLayout" name="vLayoutDisplay" stretch="0">
+          <layout class="QVBoxLayout" name="vLayoutDisplay" stretch="0,0">
            <property name="spacing">
             <number>5</number>
            </property>
@@ -1324,6 +1324,9 @@
            <property name="bottomMargin">
             <number>5</number>
            </property>
+           <item>
+            <widget class="QTextBrowser" name="outputText"/>
+           </item>
            <item>
             <widget class="QGraphicsView" name="gViewDisplay"/>
            </item>
