@@ -3,6 +3,8 @@
 #include <QDebug>
 #include "utils.h"
 
+// TODO: this is not finished so please don't read.
+// I skipped this because I have to do the other part first for the program to run
 struct DistributionException
 {
     std::string m_msg;
