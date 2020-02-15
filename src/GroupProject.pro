@@ -23,7 +23,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    matrix.cpp \
     matrixexperiment.cpp \
     randomgenerator.cpp \
     utils.cpp

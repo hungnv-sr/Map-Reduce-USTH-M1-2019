@@ -9,6 +9,7 @@ using boost::multiprecision::number;
 using boost::multiprecision::cpp_dec_float;
 using boost::multiprecision::cpp_dec_float_50;
 using boost::numeric_cast;
+using std::cout;
 
 typedef cpp_dec_float_50 float50;
 

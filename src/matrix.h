@@ -17,8 +17,12 @@ template <class dtype>
 class Matrix
 {
 private:
-    unsigned width, height;
+    unsigned width, height;    
+
+protected:
     dtype *values;
+
+    Matrix() {}
 
     unsigned offset(unsigned row, unsigned col) const {
         return row*width + col;
@@ -44,9 +48,6 @@ private:
         allocate();
         copyArray(m.values);
     }
-
-protected:
-    Matrix() {}
 
 public:
     //-------------------       CANONICAL FORM
@@ -210,13 +211,18 @@ public:
         return res;
     }
 
-
-    //-----------------------   MORE MATH FUNCTIONS
+    //---------------------------   MORE MAT FUNCTION
     template <class CalculationType>
     iFloat sum() const {
         CalculationType res = 0;
         for (unsigned i=0; i<width*height;i++) res = res + values[i];
         return res;
+    }
+
+    template <class CalculationType>
+    iFloat dot(const Matrix& mat) const {
+        CalculationType res = 0;
+        return ((*this) * mat).template sum<CalculationType>();
     }
 
     //-----------------------   GETTER/SETTER, PRINT SCREEN
@@ -231,8 +237,8 @@ public:
     void print() const {
         for (unsigned i=0; i<width; i++)
         {
-            for (unsigned j=0; j<height; j++) qDebug() << values[offset(i,j)] << " ";
-            qDebug() << "\n";
+            for (unsigned j=0; j<height; j++) cout << values[offset(i,j)] << " ";
+            cout << "\n";
         }
     }
 };
