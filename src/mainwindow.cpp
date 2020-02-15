@@ -17,12 +17,60 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_pButtonOK_1_clicked()
+void MainWindow::on_pButtonOpenFile_1_clicked()
 {
+    QString filename = QFileDialog::getOpenFileName(
+                this,
+                tr("Open File"),
+                "D://",
+                "All files (*.*);;Text File (*.txt)");
+
+    QFile file(filename);
+    if (!file.open(QIODevice::ReadOnly))
+    {
+    }
+
+    QTextStream in(&file);
+
+    ui->txtBrowser_1->setText(in.readAll());
+}
+
+void MainWindow::on_pButtonGen_clicked()
+{
+    for (int i=0; i<1000; ++i)
+    {
+        // TO-DO
+
+        ui->progBar->setValue(int((i+1)/10));
+    }
+}
+
+void MainWindow::on_pButtonOpenFile_2_clicked()
+{
+    QString filename = QFileDialog::getOpenFileName(
+                this,
+                tr("Open File"),
+                "D://",
+                "All files (*.*);;Text File (*.txt)");
+
+    QFile file(filename);
+    if (!file.open(QIODevice::ReadOnly))
+    {
+    }
+
+    QTextStream in(&file);
+
+    ui->txtBrowser_2->setText(in.readAll());
+}
+
+void MainWindow::on_pButtonRun_clicked()
+{
+    ui->outputText->clear();
+
     QString dataType = ui->cBoxDataType->currentText();         // Read Data Type
     QString algorithm = ui->cBoxAlgorithm->currentText();       // Read Algorithm
+    QString matrixSize = ui->lEditMatSize->text();              // Read Matrix Size
 
-    ui->outputText->clear();
     if (dataType == "(default)" || dataType == "Array")
     {
         // TO-DO
@@ -48,12 +96,6 @@ void MainWindow::on_pButtonOK_1_clicked()
         // TO-DO
     }
 
-    ui->outputText->append(dataType);
-    ui->outputText->append(algorithm);
-}
-
-void MainWindow::on_pButtonOK_2_clicked()
-{
     float U_a = ui->lEditPara_1->text().toFloat();
     float U_b = ui->lEditPara_2->text().toFloat();
     float N_mean = ui->lEditPara_3->text().toFloat();
@@ -62,57 +104,15 @@ void MainWindow::on_pButtonOK_2_clicked()
     float G_alpha = ui->lEditPara_7->text().toFloat();
     float G_lambda= ui->lEditPara_8->text().toFloat();
 
-}
-
-void MainWindow::on_pButtonOK_3_clicked()
-{
     QString equation = ui->lEditEquation->text();
 
     // TO-DO
 
+
+    ui->outputText->append(dataType);
+    ui->outputText->append(algorithm);
+    ui->outputText->append(matrixSize);
     ui->outputText->append(equation);
-}
-
-void MainWindow::on_pButtonOpenFile_1_clicked()
-{
-    QString filename = QFileDialog::getOpenFileName(
-                this,
-                tr("Open File"),
-                "D://",
-                "All files (*.*);;Text File (*.txt)");
-
-}
-
-void MainWindow::on_pButtonOK_4_clicked()
-{
-
-}
-
-void MainWindow::on_pButtonGen_clicked()
-{
-    for (int i=0; i<1000; ++i)
-    {
-        // TO-DO
-
-        ui->progBar->setValue(int((i+1)/10));
-    }
-}
-
-void MainWindow::on_pButtonOK_5_clicked()
-{
-
-}
-
-void MainWindow::on_pButtonOpenFile_2_clicked()
-{
-    QString filename = QFileDialog::getOpenFileName(
-                this,
-                tr("Open File"),
-                "D://",
-                "All files (*.*);;Text File (*.txt)");
-}
-
-void MainWindow::on_pButtonOK_6_clicked()
-{
-
+    ui->outputText->append(ui->txtBrowser_1->toPlainText());
+    ui->outputText->append(ui->txtBrowser_2->toPlainText());
 }

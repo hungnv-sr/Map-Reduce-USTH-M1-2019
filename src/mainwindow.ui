@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>973</width>
-    <height>642</height>
+    <width>761</width>
+    <height>801</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,7 +30,7 @@
           <number>5</number>
          </property>
          <item row="0" column="0">
-          <layout class="QVBoxLayout" name="vLayoutInputComponents" stretch="0,1,0,0,0">
+          <layout class="QVBoxLayout" name="vLayoutInputComponents" stretch="0,1,0,0,0,0,0">
            <property name="spacing">
             <number>5</number>
            </property>
@@ -47,7 +47,7 @@
             <number>5</number>
            </property>
            <item>
-            <layout class="QGridLayout" name="gLayoutInput_1" columnstretch="1,1,1,1,0">
+            <layout class="QGridLayout" name="gLayoutInput_1" columnstretch="0,0,0,0">
              <property name="leftMargin">
               <number>10</number>
              </property>
@@ -66,8 +66,8 @@
              <property name="verticalSpacing">
               <number>5</number>
              </property>
-             <item row="0" column="0" colspan="2">
-              <widget class="QLabel" name="lblDataType">
+             <item row="0" column="2" colspan="2">
+              <widget class="QLabel" name="lblAlgorithm">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -87,7 +87,35 @@
                 </font>
                </property>
                <property name="text">
-                <string>Data Type</string>
+                <string>Algorithm</string>
+               </property>
+               <property name="indent">
+                <number>10</number>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" colspan="2">
+              <widget class="QLabel" name="lblMatSize">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>14</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>14</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Set matrix size</string>
                </property>
                <property name="indent">
                 <number>10</number>
@@ -125,8 +153,24 @@
                </item>
               </widget>
              </item>
-             <item row="0" column="2" colspan="2">
-              <widget class="QLabel" name="lblAlgorithm">
+             <item row="3" column="0" colspan="2">
+              <widget class="QLineEdit" name="lEditMatSize">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>23</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>250</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="2">
+              <widget class="QLabel" name="lblDataType">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -146,7 +190,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Algorithm</string>
+                <string>Data Type</string>
                </property>
                <property name="indent">
                 <number>10</number>
@@ -187,25 +231,6 @@
                  <string>Element-wise multiplication</string>
                 </property>
                </item>
-              </widget>
-             </item>
-             <item row="0" column="4" rowspan="2">
-              <widget class="QPushButton" name="pButtonOK_1">
-               <property name="minimumSize">
-                <size>
-                 <width>75</width>
-                 <height>23</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>75</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>OK</string>
-               </property>
               </widget>
              </item>
             </layout>
@@ -276,7 +301,7 @@
                 </attribute>
                 <layout class="QHBoxLayout" name="horizontalLayout_7">
                  <item>
-                  <layout class="QHBoxLayout" name="hLayoutInput_2_Page_1" stretch="8,1,8,1,8,1,8,0">
+                  <layout class="QHBoxLayout" name="hLayoutInput_2_Page_1" stretch="8,1,8,1,8,1,8">
                    <property name="spacing">
                     <number>12</number>
                    </property>
@@ -854,44 +879,6 @@
                      </item>
                     </layout>
                    </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="hLayoutButtonOK" stretch="1">
-                     <property name="spacing">
-                      <number>0</number>
-                     </property>
-                     <property name="sizeConstraint">
-                      <enum>QLayout::SetNoConstraint</enum>
-                     </property>
-                     <property name="leftMargin">
-                      <number>100</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>25</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <widget class="QPushButton" name="pButtonOK_2">
-                       <property name="maximumSize">
-                        <size>
-                         <width>75</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="layoutDirection">
-                        <enum>Qt::RightToLeft</enum>
-                       </property>
-                       <property name="text">
-                        <string>OK</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
                   </layout>
                  </item>
                 </layout>
@@ -902,7 +889,7 @@
                 </attribute>
                 <layout class="QHBoxLayout" name="horizontalLayout_8">
                  <item>
-                  <layout class="QGridLayout" name="gLayoutEquation">
+                  <layout class="QVBoxLayout" name="verticalLayout">
                    <property name="leftMargin">
                     <number>0</number>
                    </property>
@@ -915,51 +902,7 @@
                    <property name="bottomMargin">
                     <number>0</number>
                    </property>
-                   <property name="horizontalSpacing">
-                    <number>25</number>
-                   </property>
-                   <property name="verticalSpacing">
-                    <number>0</number>
-                   </property>
-                   <item row="1" column="0">
-                    <widget class="QLineEdit" name="lEditEquation">
-                     <property name="minimumSize">
-                      <size>
-                       <width>50</width>
-                       <height>23</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>500</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="1">
-                    <widget class="QPushButton" name="pButtonOK_3">
-                     <property name="minimumSize">
-                      <size>
-                       <width>75</width>
-                       <height>23</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>75</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>OK</string>
-                     </property>
-                     <property name="checkable">
-                      <bool>false</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="0" colspan="2">
+                   <item>
                     <widget class="QLabel" name="lblEquation">
                      <property name="minimumSize">
                       <size>
@@ -984,6 +927,22 @@
                      </property>
                      <property name="indent">
                       <number>10</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="lEditEquation">
+                     <property name="minimumSize">
+                      <size>
+                       <width>50</width>
+                       <height>23</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>500</width>
+                       <height>16777215</height>
+                      </size>
                      </property>
                     </widget>
                    </item>
@@ -1047,7 +1006,10 @@
                     </widget>
                    </item>
                    <item row="0" column="2">
-                    <widget class="QPushButton" name="pButtonOK_4">
+                    <widget class="QPushButton" name="pButtonOK_1">
+                     <property name="enabled">
+                      <bool>true</bool>
+                     </property>
                      <property name="minimumSize">
                       <size>
                        <width>75</width>
@@ -1125,7 +1087,7 @@
                 <enum>QTabWidget::Rounded</enum>
                </property>
                <property name="currentIndex">
-                <number>0</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="tabInput_3_Page_1">
                 <attribute name="title">
@@ -1133,7 +1095,7 @@
                 </attribute>
                 <layout class="QHBoxLayout" name="horizontalLayout_9">
                  <item>
-                  <layout class="QHBoxLayout" name="hLayoutInput_3_Page_1" stretch="1,8,1">
+                  <layout class="QHBoxLayout" name="hLayoutInput_3_Page_1" stretch="1,8">
                    <property name="spacing">
                     <number>75</number>
                    </property>
@@ -1184,25 +1146,6 @@
                      </property>
                      <property name="value">
                       <number>0</number>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="pButtonOK_5">
-                     <property name="minimumSize">
-                      <size>
-                       <width>75</width>
-                       <height>23</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>75</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>OK</string>
                      </property>
                     </widget>
                    </item>
@@ -1266,7 +1209,7 @@
                     </widget>
                    </item>
                    <item row="0" column="2">
-                    <widget class="QPushButton" name="pButtonOK_6">
+                    <widget class="QPushButton" name="pButtonOK_2">
                      <property name="minimumSize">
                       <size>
                        <width>75</width>
@@ -1291,6 +1234,32 @@
               </widget>
              </item>
             </layout>
+           </item>
+           <item>
+            <widget class="Line" name="sepHLine_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pButtonRun">
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>23</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Run Experiment</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -1344,7 +1313,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>973</width>
+     <width>761</width>
      <height>22</height>
     </rect>
    </property>
