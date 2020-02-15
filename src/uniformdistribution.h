@@ -2,6 +2,7 @@
 #define UNIFORMDISTRIBUTION_H
 #include "distribution.h"
 
+// TODO: this is not finished. I skipped this because I have to do the other part first for the program to run
 // U(a,b): uniform distribution from a->b
 class UniformDistribution : public Distribution
 {
@@ -13,7 +14,7 @@ public:
         double p = 1/validBin;
 
         for (long long i=0; i<binNumber; i++) {
-            double x = i*interval;
+            double x = lowerBound + i*interval;
             if (x<a || x>b) pdf[i] = 0;
             else pdf[i] = p;
 
