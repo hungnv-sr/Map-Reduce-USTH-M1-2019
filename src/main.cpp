@@ -44,7 +44,7 @@ void matTest()
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    matTest();
+  //  matTest();
 
     MainWindow w;
     w.show();
