@@ -6,7 +6,7 @@ utils::utils()
 }
 
 bool utils::floatEqual(double a, double b, double error) {
-    return abs(a-b) <= error;
+    return fabs(a-b) <= error;
 }
 
 double utils::sqr(double x) {

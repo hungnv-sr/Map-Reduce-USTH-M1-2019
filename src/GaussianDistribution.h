@@ -4,7 +4,7 @@
 #include "distribution.h"
 #include <cmath>
 
-
+// TODO: this is not finished. I skipped this because I have to do the other part first for the program to run
 class GaussianDistribution : public Distribution
 {
 public:
