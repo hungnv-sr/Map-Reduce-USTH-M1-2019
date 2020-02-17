@@ -29,7 +29,6 @@ SOURCES += \
 
 HEADERS += \
     GaussianDistribution.h \
-    baseoperand.h \
     distribution.h \
     experimentcontroller.h \
     exponentialdistribution.h \

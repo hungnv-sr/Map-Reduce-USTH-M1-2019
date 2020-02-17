@@ -8,6 +8,7 @@
 #include <map>
 #include <vector>
 #include <QFile>
+#include <fstream>
 
 using std::map;
 using std::vector;
@@ -36,11 +37,23 @@ protected:
         }
     }
 
+    /*
     void loadData(std::string fileName) {
-        QFile file(fileName.c_str());
+        unsigned width, height;
+        unsigned n;
+        Matrix<double> tmp(0, 0);
 
+        std::ifstream fin(fileName.c_str());
+        if (testDataType==VECTOR) {width = 1; height = matSize;}
+
+
+        fin >> n;
+        for (unsigned t=0; t<n; t++) {
+            for (unsigned i=0; i<width; i++)
+
+        }
     }
-
+    */
 
 public:
 

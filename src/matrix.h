@@ -17,7 +17,7 @@ template <class dtype>
 class Matrix
 {
 private:
-    unsigned width, height;    
+    unsigned height, width;
 
 protected:
     dtype *values;
@@ -33,29 +33,29 @@ protected:
     }
 
     void allocate() {
-        if (width==0 || height==0)
+        if (height==0 || width==0)
             throw MatrixException("Can't allocate matrix with size 0");
-        values = new dtype[width*height];
+        values = new dtype[height*width];
     }
 
     void copyArray(const dtype* const v) {
-        for (unsigned i=0; i<width*height; i++) values[i] = v[i];
+        for (unsigned i=0; i<height*width; i++) values[i] = v[i];
     }
 
     void copy(const Matrix& m) {
-        width = m.width;
         height = m.height;
+        width = m.width;        
         allocate();
         copyArray(m.values);
     }
 
 public:
     //-------------------       CANONICAL FORM
-    Matrix(const unsigned newWidth, const unsigned newHeight, const dtype init=0.0) {
-        width = newWidth;
+    Matrix(const unsigned newHeight, const unsigned newWidth, const dtype init=0.0) {
         height = newHeight;
+        width = newWidth;        
         allocate();
-        for (unsigned i=0; i<width*height; i++) values[i] = init;
+        for (unsigned i=0; i<height*width; i++) values[i] = init;
     }
 
     Matrix(const Matrix& m) {
@@ -81,10 +81,10 @@ public:
             return *this;
 
         cleanup();
-        width = m.getWidth();
         height = m.getHeight();
+        width = m.getWidth();
         allocate();
-        for (unsigned i=0; i<width*height; i++) values[i] = numeric_cast<dtype>(m[i]);
+        for (unsigned i=0; i<height*width; i++) values[i] = numeric_cast<dtype>(m[i]);
 
         return *this;
     }
@@ -96,32 +96,32 @@ public:
         width = mat.getWidth();
         height = mat.getHeight();
         allocate();
-        for (unsigned i=0; i<width*height; i++) values[i] = numeric_cast<dtype>(mat[i]);
+        for (unsigned i=0; i<height*width; i++) values[i] = numeric_cast<dtype>(mat[i]);
     }
     */
 
     template<class dtypeOther>
     operator Matrix<dtypeOther>() const {
-        Matrix<dtypeOther> res(width, height, 0);
-        for (unsigned i=0; i<width*height; i++) res[i] = numeric_cast<dtypeOther>(values[i]);
+        Matrix<dtypeOther> res(height, width, 0);
+        for (unsigned i=0; i<height*width; i++) res[i] = numeric_cast<dtypeOther>(values[i]);
         return res;
     }
 
     //--------------------- UTILITY ACCESS OPERATOR
     dtype& operator [] (unsigned index) {
-        if (index < 0 || index >= width*height)
+        if (index < 0 || index >= height*width)
             throw MatrixException("Operator [] out of range access");
         return values[index];
     }
 
     dtype operator [] (unsigned index) const {
-        if (index < 0 || index >= width*height)
+        if (index < 0 || index >= height*width)
             throw MatrixException("Operator [] const out of range access");
         return values[index];
     }
 
     dtype& operator () (unsigned row, unsigned col) {
-        if (row < 0 || col < 0 || row >= width || col>=height)
+        if (row < 0 || col < 0 || row >= height || col >= width)
             throw MatrixException("Operator (i,j) out of range access");
         return values[offset(row,col)];
     }
@@ -134,80 +134,80 @@ public:
 
     //--------------------- CALCULATION OPERATOR
     Matrix operator + (const Matrix& m) const {
-        if (width!=m.width || height!=m.height)
+        if (height!=m.height || width!=m.width)
             throw MatrixException("Operator +: dimension doesn't match");
-        Matrix res(width, height, 0);
-        for (unsigned i=0;i<width*height;i++) res[i] = values[i] + m[i];
+        Matrix res(height, width, 0);
+        for (unsigned i=0;i<height*width;i++) res[i] = values[i] + m[i];
         return res;
     }
 
     Matrix operator - (const Matrix& m) const {
-        if (width!=m.width || height!=m.height)
+        if (height!=m.height || width!=m.width)
             throw MatrixException("Operator -: dimension doesn't match");
-        Matrix res(width, height, 0);
-        for (unsigned i=0;i<width*height;i++) res[i] = values[i] - m[i];
+        Matrix res(height, width, 0);
+        for (unsigned i=0;i<height*width;i++) res[i] = values[i] - m[i];
         return res;
     }
 
     Matrix operator * (const Matrix& m) const {
-        if (width!=m.width || height!=m.height)
+        if (height!=m.height || width!=m.width)
             throw MatrixException("Operator *: dimension doesn't match");
-        Matrix res(width, height, 0);
-        for (unsigned i=0;i<width*height;i++) res[i] = values[i] * m[i];
+        Matrix res(height, width, 0);
+        for (unsigned i=0;i<height*width;i++) res[i] = values[i] * m[i];
         return res;
     }
 
     Matrix operator / (const Matrix& m) const {
-        if (width!=m.width || height!=m.height)
+        if (height!=m.height || width!=m.width)
             throw MatrixException("Operator /: dimension doesn't match");
-        Matrix res(width, height, 0);
-        for (unsigned i=0;i<width*height;i++) res[i] = values[i] / m[i];
+        Matrix res(height, width, 0);
+        for (unsigned i=0;i<height*width;i++) res[i] = values[i] / m[i];
         return res;
     }
 
     Matrix matmul(const Matrix& mat) const {
-        unsigned m = width, n = height, p = mat.height;
-        if (height != mat.width)
+        unsigned m = height, n = width, p = mat.height;
+        if (width != mat.height)
             throw MatrixException("Matmul: matrix sizes mismatch");
         Matrix res(m, p, 0);
         for (unsigned i=0;i<m;i++)
-            for (unsigned j=0;j<n;j++)
-                for (unsigned k=0;k<p;k++) res(i,j) = res(i,j) + (*this)(i,k) * mat(k,j);
+            for (unsigned j=0;j<p;j++)
+                for (unsigned k=0;k<n;k++) res(i,j) = res(i,j) + (*this)(i,k) * mat(k,j);
         return res;
     }
 
     //--------------------------    SCALAR CALCULATION OPERATOR
     template<class dtype2>
     Matrix operator + (const dtype2& v) const {
-        Matrix res(width, height, 0);
-        for (unsigned i=0;i<width*height;i++) res[i] = values[i] + v;
+        Matrix res(height, width, 0);
+        for (unsigned i=0;i<height*width;i++) res[i] = values[i] + v;
         return res;
     }
 
     template<class dtype2>
     Matrix operator - (const dtype2& v) const {
-        Matrix res(width, height, 0);
-        for (unsigned i=0;i<width*height;i++) res[i] = values[i] - v;
+        Matrix res(height, width, 0);
+        for (unsigned i=0;i<height*width;i++) res[i] = values[i] - v;
         return res;
     }
 
     template<class dtype2>
     Matrix operator * (const dtype2& v) const {
-        Matrix res(width, height, 0);
-        for (unsigned i=0;i<width*height;i++) res[i] = values[i] * v;
+        Matrix res(height, width, 0);
+        for (unsigned i=0;i<height*width;i++) res[i] = values[i] * v;
         return res;
     }
 
     template<class dtype2>
     Matrix operator / (const dtype2& v) const {
-        Matrix res(width, height, 0);
-        for (unsigned i=0;i<width*height;i++) res[i] = values[i] / v;
+        Matrix res(height, width, 0);
+        for (unsigned i=0;i<height*width;i++) res[i] = values[i] / v;
         return res;
     }
 
     Matrix operator - () const {
-        Matrix res(width, height, 0);
-        for (unsigned i=0;i<width*height;i++) res[i] = -values[i];
+        Matrix res(height, width, 0);
+        for (unsigned i=0;i<height*width;i++) res[i] = -values[i];
         return res;
     }
 
@@ -215,7 +215,7 @@ public:
     template <class CalculationType>
     iFloat sum() const {
         CalculationType res = 0;
-        for (unsigned i=0; i<width*height;i++) res = res + values[i];
+        for (unsigned i=0; i<height*width;i++) res = res + values[i];
         return res;
     }
 
@@ -226,18 +226,19 @@ public:
     }
 
     //-----------------------   GETTER/SETTER, PRINT SCREEN
-    unsigned getWidth() const {
-        return width;
-    }
-
     unsigned getHeight() const {
         return height;
     }
 
+    unsigned getWidth() const {
+        return width;
+    }
+
+
     void print() const {
-        for (unsigned i=0; i<width; i++)
+        for (unsigned i=0; i<height; i++)
         {
-            for (unsigned j=0; j<height; j++) cout << values[offset(i,j)] << " ";
+            for (unsigned j=0; j<width; j++) cout << values[offset(i,j)] << " ";
             cout << "\n";
         }
     }

@@ -31,7 +31,7 @@ public:
 
     vector<Matrix<iFloat> > double2iFloat(vector<Matrix<double> > matdv);
 
-    Matrix<double> randomMatrix(unsigned width, unsigned height, RandomGenerator rander);
+    Matrix<double> randomMatrix(unsigned height, unsigned width, RandomGenerator rander);
 
 
     iFloat linearTest(vector<Matrix<double> > inputMats, MatOp op);
