@@ -166,7 +166,7 @@ public:
     }
 
     Matrix matmul(const Matrix& mat) const {
-        unsigned m = height, n = width, p = mat.height;
+        unsigned m = height, n = width, p = mat.width;
         if (width != mat.height)
             throw MatrixException("Matmul: matrix sizes mismatch");
         Matrix res(m, p, 0);
