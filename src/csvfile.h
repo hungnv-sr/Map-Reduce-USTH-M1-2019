@@ -1,8 +1,11 @@
+#ifndef CSVFILE_H
+#define CSVFILE_H
 #pragma once
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 class csvfile;
 
@@ -45,6 +48,24 @@ public:
         is_first_ = true;
     }
 
+    void write_csv(std::string filename, std::vector<double> vector){
+        // Make a CSV file with one column of double values
+        // filename - the name of the file
+        try{
+            csvfile csv(filename);
+            // should have some header
+            int line = 1; // in case we need 1 more line for header, csv<< line++
+            for(int i = 0; i < vector.size(); ++i){
+                csv << line << vector[i];
+            }
+            csv << endrow;
+        }
+        catch (const std::exception &ex)
+        {
+            std::cout << "Exception was thrown: " << ex.what() << std::endl;
+        }
+        return ;
+    }
     csvfile& operator << ( csvfile& (* val)(csvfile&))
     {
         return val(*this);
@@ -110,3 +131,4 @@ inline static csvfile& flush(csvfile& file)
     file.flush();
     return file;
 }
+#endif // CSVFILE_H

@@ -30,6 +30,7 @@ SOURCES += \
 HEADERS += \
     GaussianDistribution.h \
     baseoperand.h \
+    csvfile.h \
     distribution.h \
     experimentcontroller.h \
     exponentialdistribution.h \
@@ -40,7 +41,7 @@ HEADERS += \
     randomgenerator.h \
     uniformdistribution.h \
     utils.h \
-    vector.h
+    vector.h \
 
 FORMS += \
     mainwindow.ui
