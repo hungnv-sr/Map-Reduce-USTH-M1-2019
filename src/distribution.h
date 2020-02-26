@@ -20,20 +20,6 @@ protected:
     double* pdf;
     double* cdf;
 
-    Distribution(long long newBinNumber, double newLowerBound, double newUpperBound) {
-        binNumber = newBinNumber;
-        lowerBound = newLowerBound;
-        upperBound = newUpperBound;
-
-        try {
-            pdf = new double[binNumber];
-            for (int i=0;i<binNumber;i++) {pdf[i] = 0; cdf[i] = 0;}
-        }
-        catch (std::exception const &ex) {
-            qDebug() << ex.what() << "\n";
-        }
-    }
-
     void cleanup() {
         delete[] pdf;
     }
@@ -66,6 +52,20 @@ protected:
     }
 
 public:
+    Distribution(long long newBinNumber, double newLowerBound, double newUpperBound) {
+        binNumber = newBinNumber;
+        lowerBound = newLowerBound;
+        upperBound = newUpperBound;
+
+        if (binNumber==0) binNumber = 1; // place-holder distribution variable
+        try {
+            pdf = new double[binNumber];
+            for (int i=0;i<binNumber;i++) {pdf[i] = 0; cdf[i] = 0;}
+        }
+        catch (std::exception const &ex) {
+            qDebug() << ex.what() << "\n";
+        }
+    }
 
     Distribution(const Distribution& b) {
         copy(b);
