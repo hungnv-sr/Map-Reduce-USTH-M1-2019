@@ -134,6 +134,11 @@ public:
         for (int i=0;i<binNumber;i++) res[i] = k*pdf[i];
         return res;
     }
+
+    /*********************************************************/
+    bool valid() {
+        return lowerBound!=upperBound;
+    }
 };
 
 #endif // DISTRIBUTION_H
