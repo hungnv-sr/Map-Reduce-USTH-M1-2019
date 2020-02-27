@@ -128,8 +128,8 @@ public:
         return (*value) > (*v.value);
     }
 
-    bool operator < (const iFloat &v) const {
-        return (*value) < (*v.value);
+    bool operator > (const double& v) const {
+        return (*value) > float50(v);
     }
 
     bool operator == (const iFloat &v) const {

@@ -17,7 +17,7 @@ class Distribution
 {
 protected:
     long long binNumber;   
-    double lowerBound, upperBound, binSize;
+    double lowerBound, upperBound;
     double* pdf;
     iFloat* cdf;
 
@@ -33,25 +33,6 @@ protected:
         pdf = new double[binNumber];
         cdf = new iFloat[binNumber];
         for (unsigned i=0;i<binNumber;i++) {pdf[i] = b.pdf[i]; cdf[i] = b.cdf[i];}
-    }
-
-    long long inverseSampling(double cumulative) {
-        if (cumulative < 0 || cumulative > 1)
-            throw DistributionException("Inverse sampling error: ");
-        long long l = 0, r = binNumber, res = -1;
-        while (l<=r) {
-            long long mid = (l+r) / 2;
-            if (cdf[mid] >= cumulative) {
-                res = mid;
-                r = mid-1;
-            }
-            else l = mid+1;
-        }
-
-        if (res==-1)
-            throw DistributionException("Something wrong with inverse sampling binary search");
-
-        return res;
     }
 
     // solve cases where pdf[i] < 0. Allow the usage of operator *, -, /
@@ -74,7 +55,6 @@ public:
         binNumber = newBinNumber;
         lowerBound = newLowerBound;
         upperBound = newUpperBound;
-        binSize = (upperBound - lowerBound) / binNumber;
 
         if (binNumber==0) binNumber = 1; // place-holder distribution variable
         try {
@@ -160,6 +140,42 @@ public:
         Distribution res(binNumber, lowerBound, upperBound);
         for (int i=0;i<binNumber;i++) res[i] = pdf[i] / b[i];
         res.normalize();
+        return res;
+    }
+
+    /*****************************      GETTER/SETTER/INVERSE SAMPLING*/
+    long long getBinNumber() const {
+        return binNumber;
+    }
+
+    double getLowerBound() const {
+        return lowerBound;
+    }
+
+    double getUpperBound() const {
+        return upperBound;
+    }
+
+    double getBinSize() const {
+        return (upperBound - lowerBound) / binNumber;
+    }
+
+    long long inverseSampling(iFloat cumulative) {
+        if (cumulative < iFloat(0) || cumulative > iFloat(1))
+            throw DistributionException("Inverse sampling error: invalid cumulative value");
+        long long l = 0, r = binNumber-1, res = -1;
+        while (l<=r) {
+            long long mid = (l+r) / 2;
+            if (cdf[mid] >= cumulative) {
+                res = mid;
+                r = mid-1;
+            }
+            else l = mid+1;
+        }
+
+        if (res==-1)
+            throw DistributionException("Something wrong with inverse sampling binary search");
+
         return res;
     }
 

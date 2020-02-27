@@ -3,7 +3,7 @@
 #include <QApplication>
 #include "distribution.h"
 #include "exponentialdistribution.h"
-#include "GaussianDistribution.h"
+#include "NormalDistribution.h"
 #include "uniformdistribution.h"
 
 #include "ifloat.h"

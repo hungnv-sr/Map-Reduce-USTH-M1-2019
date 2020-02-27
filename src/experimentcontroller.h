@@ -37,23 +37,26 @@ protected:
         }
     }
 
-    /*
+
     void loadData(std::string fileName) {
-        unsigned width, height;
+        unsigned height, width;
         unsigned n;
         Matrix<double> tmp(0, 0);
 
         std::ifstream fin(fileName.c_str());
-        if (testDataType==VECTOR) {width = 1; height = matSize;}
+        if (testDataType==VECTOR) {height = 1; width = matSize;}
+        testList.clear();
 
 
         fin >> n;
         for (unsigned t=0; t<n; t++) {
-            for (unsigned i=0; i<width; i++)
-
+            for (unsigned i=0; i<height; i++)
+                for (unsigned j=0; j<width; j++)
+                    fin >> tmp(i,j);
+            testList.push_back(tmp);
         }
     }
-    */
+
 
 public:
 
