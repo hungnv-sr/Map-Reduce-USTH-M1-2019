@@ -16,13 +16,14 @@ struct DistributionException
 class Distribution
 {
 protected:
-    long long binNumber;
-    double lowerBound, upperBound;
+    long long binNumber;   
+    double lowerBound, upperBound, binSize;
     double* pdf;
-    double* cdf;
+    iFloat* cdf;
 
     void cleanup() {
         delete[] pdf;
+        delete[] cdf;
     }
 
     void copy(const Distribution& b) {
@@ -30,7 +31,8 @@ protected:
         lowerBound = b.lowerBound;
         upperBound = b.upperBound;
         pdf = new double[binNumber];
-        for (unsigned i=0;i<binNumber;i++) pdf[i] = b.pdf[i];
+        cdf = new iFloat[binNumber];
+        for (unsigned i=0;i<binNumber;i++) {pdf[i] = b.pdf[i]; cdf[i] = b.cdf[i];}
     }
 
     long long inverseSampling(double cumulative) {
@@ -59,7 +61,12 @@ protected:
             if (pdf[i] < 0) pdf[i] = 0;
             sum = sum + pdf[i];
         }
-        for (int i=0; i<binNumber; i++) pdf[i] /= sum;
+
+        for (int i=0; i<binNumber; i++) {
+            pdf[i] = double(iFloat(pdf[i]) / sum);
+            if (i==0) cdf[i] = pdf[i];
+            else cdf[i] = cdf[i-1] + pdf[i];
+        }
     }
 
 public:
@@ -67,10 +74,12 @@ public:
         binNumber = newBinNumber;
         lowerBound = newLowerBound;
         upperBound = newUpperBound;
+        binSize = (upperBound - lowerBound) / binNumber;
 
         if (binNumber==0) binNumber = 1; // place-holder distribution variable
         try {
             pdf = new double[binNumber];
+            cdf = new iFloat[binNumber];
             for (int i=0;i<binNumber;i++) {pdf[i] = 0; cdf[i] = 0;}
         }
         catch (std::exception const &ex) {
@@ -156,7 +165,7 @@ public:
 
     /*********************************************************/
     bool valid() {
-        return lowerBound!=upperBound;
+        return utils::floatEqual(lowerBound, upperBound, 0.000001);
     }
 };
 
