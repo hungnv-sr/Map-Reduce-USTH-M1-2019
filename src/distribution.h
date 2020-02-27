@@ -99,7 +99,7 @@ public:
         return pdf[i];
     }
 
-    Distribution operator + (const Distribution& b) {
+    Distribution operator + (const Distribution& b) const  {
         if (binNumber != b.binNumber) {
             qDebug() << "Operator + : Distribution must have same histogram size";
             throw DistributionException("Operator + error: different group sizes");
@@ -109,7 +109,7 @@ public:
         return res;
     }
 
-    Distribution operator - (const Distribution& b) {
+    Distribution operator - (const Distribution& b) const {
         if (binNumber != b.binNumber) {
             qDebug() << "Operator - : Distribution must have same histogram size";
             throw DistributionException("Operator - error: different group sizes");
@@ -119,7 +119,7 @@ public:
         return res;
     }
 
-    Distribution operator * (const Distribution& b) {
+    Distribution operator * (const Distribution& b) const {
         if (binNumber != b.binNumber) {
             qDebug() << "Operator * : Distribution must have same histogram size";
             throw DistributionException("Operator * error: different group sizes");
@@ -129,7 +129,7 @@ public:
         return res;
     }
 
-    Distribution operator * (const int& k) {
+    Distribution operator * (const int& k) const {
         Distribution res(binNumber, lowerBound, upperBound);
         for (int i=0;i<binNumber;i++) res[i] = k*pdf[i];
         return res;
