@@ -10,10 +10,17 @@
 using std::vector;
 
 
-struct MatrixExperimentException {
-  std::string m_msg;
-  MatrixExperimentException(const char*const msg) : m_msg(msg) {}
-  MatrixExperimentException(const MatrixException& me) : m_msg(me.m_msg) {}
+struct MatrixExperimentException : public std::exception {
+private:
+    QString msg;
+
+public:
+    MatrixExperimentException(QString mess) {
+        msg = mess;
+    }
+    const char* what() const throw() {
+        return msg.toStdString().c_str();
+    }
 };
 
 enum MatAlgo {LINEAR, SPLIT_MERGE};
@@ -31,7 +38,7 @@ public:
 
     vector<Matrix<iFloat> > double2iFloat(vector<Matrix<double> > matdv);
 
-    Matrix<double> randomMatrix(unsigned height, unsigned width, RandomGenerator rander);
+    Matrix<double> randomMatrix(unsigned height, unsigned width, RandomGenerator& rander);
 
 
     iFloat linearTest(vector<Matrix<double> > inputMats, MatOp op);
