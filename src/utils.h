@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <cmath>
+#include <random>
 
 const double pi = M_PI;
 
@@ -21,6 +22,10 @@ public:
     static double gaussPdf(double mean, double variance, double x);
 
     static double expoPdf(double lambda, double x);
+
+    //*************
+    static double rand01();
+
 };
 
 #endif // UTILS_H

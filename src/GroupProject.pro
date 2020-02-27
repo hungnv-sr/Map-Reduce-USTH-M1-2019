@@ -28,14 +28,15 @@ SOURCES += \
     utils.cpp
 
 HEADERS += \
-    GaussianDistribution.h \
-    baseoperand.h \
+    NormalDistribution.h \
     distribution.h \
+    experimentcontroller.h \
     exponentialdistribution.h \
     ifloat.h \
     mainwindow.h \
     matrix.h \
     matrixexperiment.h \
+    parser.h \
     randomgenerator.h \
     uniformdistribution.h \
     utils.h \
