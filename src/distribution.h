@@ -2,6 +2,7 @@
 #define DISTRIBUTION_H
 #include <QDebug>
 #include "utils.h"
+#include <ifloat.h>
 
 // TODO: this is not finished so please don't read.
 // I skipped this because I have to do the other part first for the program to run
@@ -49,6 +50,16 @@ protected:
             throw DistributionException("Something wrong with inverse sampling binary search");
 
         return res;
+    }
+
+    // solve cases where pdf[i] < 0. Allow the usage of operator *, -, /
+    void normalize() {
+        iFloat sum = 0;
+        for (int i=0; i<binNumber; i++) {
+            if (pdf[i] < 0) pdf[i] = 0;
+            sum = sum + pdf[i];
+        }
+        for (int i=0; i<binNumber; i++) pdf[i] /= sum;
     }
 
 public:
@@ -106,6 +117,7 @@ public:
         }
         Distribution res(binNumber, lowerBound, upperBound);
         for (int i=0;i<binNumber;i++) res[i] = pdf[i] + b[i];
+        res.normalize();
         return res;
     }
 
@@ -116,6 +128,7 @@ public:
         }
         Distribution res(binNumber, lowerBound, upperBound);
         for (int i=0;i<binNumber;i++) res[i] = pdf[i] - b[i];
+        res.normalize();
         return res;
     }
 
@@ -126,12 +139,18 @@ public:
         }
         Distribution res(binNumber, lowerBound, upperBound);
         for (int i=0;i<binNumber;i++) res[i] = pdf[i] * b[i];
+        res.normalize();
         return res;
     }
 
-    Distribution operator * (const int& k) const {
+    Distribution operator / (const Distribution& b) const {
+        if (binNumber != b.binNumber) {
+            qDebug() << "Operator / : Distribution must have same histogram size";
+            throw DistributionException("Operator * error: different group sizes");
+        }
         Distribution res(binNumber, lowerBound, upperBound);
-        for (int i=0;i<binNumber;i++) res[i] = k*pdf[i];
+        for (int i=0;i<binNumber;i++) res[i] = pdf[i] / b[i];
+        res.normalize();
         return res;
     }
 
