@@ -138,17 +138,43 @@
                </property>
                <item>
                 <property name="text">
-                 <string>(default)</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
                  <string>Array</string>
                 </property>
                </item>
                <item>
                 <property name="text">
                  <string>Matrix</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="1" column="2" colspan="2">
+              <widget class="QComboBox" name="cBoxAlgorithm">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>23</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>250</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Sum</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Multiplication</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Element-wise multiplication</string>
                 </property>
                </item>
               </widget>
@@ -197,11 +223,39 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="2" colspan="2">
-              <widget class="QComboBox" name="cBoxAlgorithm">
+             <item row="2" column="2" colspan="2">
+              <widget class="QLabel" name="lblNumData">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
+                 <height>14</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>14</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Number of data</string>
+               </property>
+               <property name="indent">
+                <number>10</number>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2" colspan="2">
+              <widget class="QLineEdit" name="lEditMatSize_2">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
                  <height>23</height>
                 </size>
                </property>
@@ -211,26 +265,6 @@
                  <height>16777215</height>
                 </size>
                </property>
-               <item>
-                <property name="text">
-                 <string>(default)</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Sum</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Multiplication</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Element-wise multiplication</string>
-                </property>
-               </item>
               </widget>
              </item>
             </layout>
@@ -293,7 +327,7 @@
                 <enum>QTabWidget::Rounded</enum>
                </property>
                <property name="currentIndex">
-                <number>2</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="tabInput_2_Page_1">
                 <attribute name="title">
@@ -612,7 +646,7 @@
                     </widget>
                    </item>
                    <item>
-                    <layout class="QGridLayout" name="gLayoutDistribution_3" rowstretch="3,2,2" columnstretch="1,2">
+                    <layout class="QGridLayout" name="gLayoutDistribution_3" rowstretch="3,0,0" columnstretch="1,0">
                      <property name="bottomMargin">
                       <number>6</number>
                      </property>
@@ -622,6 +656,25 @@
                      <property name="verticalSpacing">
                       <number>6</number>
                      </property>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="lEditPara_5">
+                       <property name="enabled">
+                        <bool>true</bool>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>75</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>250</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </widget>
+                     </item>
                      <item row="2" column="0">
                       <widget class="QLabel" name="lblPara_6">
                        <property name="enabled">
@@ -635,25 +688,6 @@
                        </property>
                        <property name="text">
                         <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <widget class="QLineEdit" name="lEditPara_6">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>75</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>250</width>
-                         <height>20</height>
-                        </size>
                        </property>
                       </widget>
                      </item>
@@ -679,6 +713,25 @@
                        </property>
                        <property name="alignment">
                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLineEdit" name="lEditPara_6">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>75</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>250</width>
+                         <height>20</height>
+                        </size>
                        </property>
                       </widget>
                      </item>
@@ -719,25 +772,6 @@
                        </property>
                        <property name="alignment">
                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QLineEdit" name="lEditPara_5">
-                       <property name="enabled">
-                        <bool>true</bool>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>75</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>250</width>
-                         <height>20</height>
-                        </size>
                        </property>
                       </widget>
                      </item>
