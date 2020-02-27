@@ -6,11 +6,17 @@
 
 // TODO: this is not finished so please don't read.
 // I skipped this because I have to do the other part first for the program to run
-struct DistributionException
-{
-    std::string m_msg;
-    DistributionException( const char*const msg ) : m_msg(msg) {}
-    DistributionException( const DistributionException& ve ) : m_msg(ve.m_msg) {}
+struct DistributionException : public std::exception {
+private:
+    QString msg;
+
+public:
+    DistributionException(QString mess) {
+        msg = mess;
+    }
+    const char* what() const throw() {
+        return msg.toStdString().c_str();
+    }
 };
 
 class Distribution
