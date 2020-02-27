@@ -13,11 +13,17 @@ using std::cout;
 
 typedef cpp_dec_float_50 float50;
 
-struct iFloatException
-{
-    std::string m_msg;
-    iFloatException( const char*const msg ) : m_msg(msg) {}
-    iFloatException( const iFloatException& ve ) : m_msg(ve.m_msg) {}
+struct iFloatException : public std::exception {
+private:
+    QString msg;
+
+public:
+    iFloatException(QString mess) {
+        msg = mess;
+    }
+    const char* what() const throw() {
+        return msg.toStdString().c_str();
+    }
 };
 
 //----------------      TUTORIAL ON BOOST C++ FLOAT
@@ -128,8 +134,8 @@ public:
         return (*value) > (*v.value);
     }
 
-    bool operator > (const double& v) const {
-        return (*value) > float50(v);
+    bool operator < (const iFloat& v) const {
+        return (*value) < (*v.value);
     }
 
     bool operator == (const iFloat &v) const {
