@@ -1,6 +1,7 @@
 #ifndef RANDOMGENERATOR_H
 #define RANDOMGENERATOR_H
 
+#include <distribution.h>
 #include <random>
 using std::default_random_engine;
 using std::uniform_real_distribution;
@@ -9,11 +10,13 @@ using std::uniform_real_distribution;
 class RandomGenerator
 {
 private:
-    default_random_engine generator;
-    uniform_real_distribution<double> *dist;
+    Distribution distribution;
+    std::random_device randomDevice;
+    std::mt19937 generator;
+    std::uniform_real_distribution<double> dist01;
 
 public:
-    RandomGenerator();
+    RandomGenerator(Distribution newDistribution);
 
     double rand();
 };
