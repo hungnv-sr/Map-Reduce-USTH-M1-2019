@@ -144,8 +144,7 @@ public:
 
     //-------------------------------- SCALAR CALCULATION OPERATORS
     template <class dtype2>
-    iFloat operator + (const dtype2& v) const {
-        qDebug() << "operator + template is used\n";
+    iFloat operator + (const dtype2& v) const {        
         return (*this) + iFloat(v);
     }
 

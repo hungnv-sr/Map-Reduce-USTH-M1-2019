@@ -4,6 +4,10 @@
 #include <ifloat.h>
 #include <matrix.h>
 #include <vector.h>
+#include <distribution.h>
+#include <uniformdistribution.h>
+#include <NormalDistribution.h>
+#include <exponentialdistribution.h>
 #include <matrixexperiment.h>
 #include <map>
 #include <vector>
@@ -29,7 +33,7 @@ class ExperimentController
 
 protected:
     void generateData() {
-        RandomGenerator rander;
+        RandomGenerator rander(UniformDistribution(1000000, 0, 1, 0, 1));
 
         for (unsigned i=0; i<dataLength; i++) {
             if (testDataType==VECTOR) testList.push_back(matrixEx.randomMatrix(1, matSize, rander));

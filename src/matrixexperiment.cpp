@@ -22,7 +22,7 @@ vector<Matrix<iFloat> > MatrixExperiment::double2iFloat(vector<Matrix<double> > 
 }
 
 // generate a random matrix using the random generator rander
-Matrix<double> MatrixExperiment::randomMatrix(unsigned height, unsigned width, RandomGenerator rander) {
+Matrix<double> MatrixExperiment::randomMatrix(unsigned height, unsigned width, RandomGenerator& rander) {
     Matrix<double> res(height, width, 0);
     for (unsigned i=0; i<height*width; i++) res[i] = rander.rand();
     return res;

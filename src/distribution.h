@@ -2,6 +2,7 @@
 #define DISTRIBUTION_H
 #include <QDebug>
 #include "utils.h"
+#include <algorithm>
 #include <ifloat.h>
 
 // TODO: this is not finished so please don't read.
@@ -164,6 +165,10 @@ public:
 
     double getBinSize() const {
         return (upperBound - lowerBound) / binNumber;
+    }
+
+    double getCdf(long long i) {
+        return double(cdf[i]);
     }
 
     long long inverseSampling(iFloat cumulative) {
