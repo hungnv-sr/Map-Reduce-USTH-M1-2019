@@ -2,6 +2,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#include <basedatatype.h>
 #include <ifloat.h>
 #include <QDebug>
 
@@ -21,7 +22,7 @@ public:
 
 //--------------------------------------------------------------------
 template <class dtype>
-class Matrix
+class Matrix : public BaseDataType
 {
 private:
     unsigned height, width;
@@ -258,17 +259,16 @@ Matrix<dtype> operator * (const dtype2& v, const Matrix<dtype>& source) {
 
 //-------------------------------   GENERIC MATRIX CALCULATION FUNCTION
 
-enum MatOp{ADD, SUB, MUL, DIV, MATMUL};
 
-//template <class dtype1, class dtype2>
-inline Matrix<iFloat> matOperate(Matrix<iFloat> mat1, Matrix<iFloat> mat2, MatOp op) {
+template <class dtype>
+inline Matrix<dtype> matOperate(const Matrix<dtype> &mat1, const Matrix<dtype> &mat2, Op op) {
     if (op==ADD) return mat1 + mat2;
     if (op==SUB) return mat1 - mat2;
     if (op==MUL) return mat1 * mat2;
     if (op==DIV) return mat1 / mat2;
     if (op==MATMUL) return mat1.matmul(mat2);
 
-    throw MatrixException("MatOperate: Unknown MatOp");
+    throw MatrixException("Operate: Unknown Op");
 }
 
 

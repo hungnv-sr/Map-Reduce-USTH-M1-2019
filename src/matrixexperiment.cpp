@@ -30,18 +30,18 @@ Matrix<double> MatrixExperiment::randomMatrix(unsigned height, unsigned width, R
 
 
 //----------------------------------------------    LINEAR ALGORITHM
-iFloat MatrixExperiment::linearTest(vector<Matrix<double> > inputMats, MatOp op) {
+iFloat MatrixExperiment::linearTest(vector<Matrix<double> > inputMats,Op op) {
     if (inputMats.size()==0)
         throw MatrixExperimentException("Linear test error: input vector is empty");
 
-    Matrix<iFloat> res = inputMats[0];
+    Matrix<double> res = inputMats[0];
     for (unsigned i=1; i<inputMats.size(); i++) res = matOperate(res, inputMats[i], op);
 
-    return res.sum<double>();
+    return res.sum<iFloat>();
 }
 
 //----------------------------------------------    SPLIT/MERGE ALGORITHM
-Matrix<double> splitMerge(const vector<Matrix<double> > &inputMats, MatOp op, int l, int r) {
+Matrix<double> splitMerge(const vector<Matrix<double> > &inputMats,Op op, int l, int r) {
     if (l>r)
         throw MatrixExperimentException("SplitMerge error: l can't be > r for valid inputs");
     if (l==r) return inputMats[l];
@@ -49,31 +49,42 @@ Matrix<double> splitMerge(const vector<Matrix<double> > &inputMats, MatOp op, in
     return matOperate(splitMerge(inputMats, op, l, mid), splitMerge(inputMats, op, mid+1, r), op);
 }
 
-iFloat MatrixExperiment::splitMergeTest(vector<Matrix<double> > inputMats, MatOp op) {
+iFloat MatrixExperiment::splitMergeTest(vector<Matrix<double> > inputMats,Op op) {
     if (inputMats.size()==0)
-        throw MatrixExperimentException("Linear test error: input vector is empty");
+        throw MatrixExperimentException("Split merge test error: input vector is empty");
 
-    Matrix<iFloat> res = splitMerge(inputMats, op, 0, inputMats.size() - 1);
-    return res.sum<double>();
+    Matrix<double> res = splitMerge(inputMats, op, 0, inputMats.size() - 1);
+
+    return res.sum<iFloat>();
 }
 
 //---------------------------------------------     EXPERIMENTING
 // for an experiment, we random shuffle the input nTest times.
 // For each shuffle, we calculate the result of each algorithm
 
-vector<Result> MatrixExperiment::experiment(vector<Matrix<double> > inputMats, MatOp op, unsigned nTest, vector<MatAlgo> testAlgos) {
+iFloat MatrixExperiment::groundTruth(vector<Matrix<double> > inputMats, Op op)  {
+    if (inputMats.size()==0)
+        throw MatrixExperimentException("GroundTruth: input vector size 0");
+
+    vector<Matrix<iFloat> > hfInput = double2iFloat(inputMats);
+    Matrix<iFloat> res = hfInput[0];
+    for (unsigned i=1; i<hfInput.size(); i++) res = matOperate(res, hfInput[i], op);
+    return res.sum<iFloat>();
+}
+
+vector<Result> MatrixExperiment::experiment(vector<Matrix<double> > inputMats,Op op, unsigned nTest, vector<Algo> testAlgos) {
     vector<Result> res;
     res.clear();
 
     bool linear = 0, splitMerge = 0;
     for (unsigned i=0; i<testAlgos.size(); i++) {
-        if (testAlgos[i]==MatAlgo::LINEAR) linear = true;
-        if (testAlgos[i]==MatAlgo::SPLIT_MERGE) splitMerge = true;
+        if (testAlgos[i]==Algo::LINEAR) linear = true;
+        if (testAlgos[i]==Algo::SPLIT_MERGE) splitMerge = true;
     }
 
     for (unsigned t=1; t<=nTest; t++) {
-        if (linear) res.push_back(Result(linearTest(inputMats, op), MatAlgo::LINEAR));
-        if (splitMerge) res.push_back(Result(splitMergeTest(inputMats, op), MatAlgo::SPLIT_MERGE));
+        if (linear) res.push_back(Result(linearTest(inputMats, op), Algo::LINEAR));
+        if (splitMerge) res.push_back(Result(splitMergeTest(inputMats, op), Algo::SPLIT_MERGE));
 
         std::random_shuffle(inputMats.begin(), inputMats.end());
     }
