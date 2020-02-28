@@ -2,6 +2,7 @@
 #define EXPONENTIALDISTRIBUTION_H
 
 #include "distribution.h"
+#include <fstream>
 
 // TODO: this is not finished. I skipped this because I have to do the other part first for the program to run
 class ExponentialDistribution : public Distribution
@@ -20,6 +21,41 @@ public:
             if (i==0) cdf[i] = pdf[i];
             else cdf[i] = cdf[i-1] + pdf[i];
         }
+    }
+
+    static void exponentialDistributionTest() {
+
+        int nTest = 10;
+        int binNumber = 1000000;
+        double lowerBound, upperBound, lambda;
+        std::ofstream fo("exponentialDistributionTest.txt");
+        std::setprecision(10);
+
+        fo << nTest << "\n";
+        for (int t=1; t<=10; t++) {
+            lowerBound = -50;
+            upperBound = 50;
+
+            lambda = 0.0001 + utils::rand01();
+
+            ExponentialDistribution E(binNumber, lowerBound, upperBound, lambda);
+            double binSize = E.getBinSize();
+
+            /*--------------------------------*/
+            fo << std::fixed << binNumber << " " << lowerBound << " " << upperBound << " " << lambda << " " << lambda << "\n";
+
+            // x array
+            for (int i=0; i<binNumber; i++) fo << std::fixed << (lowerBound + double(i)*binSize) << " ";
+            fo << "\n";
+
+            // p(x) array
+            for (int i=0; i<binNumber; i++) fo << std::fixed << E[i] << " ";
+            fo << "\n";
+
+            qDebug() << "Normal Distribution test " << int(float(t)/nTest*100) << "% completed\n";
+        }
+
+        fo.close();
     }
 };
 
