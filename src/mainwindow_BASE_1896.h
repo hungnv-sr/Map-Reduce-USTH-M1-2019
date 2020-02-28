@@ -22,12 +22,11 @@ private slots:
 
     void on_pButtonOpenFile_2_clicked();
 
+    void on_pButtonRun_clicked();
+
     void on_cBoxDataType_currentIndexChanged(int index);
 
-
-    void on_gBoxAlgorithm_clicked();
-
-    void on_pButtonRun_clicked();
+    void on_tabDistribution_currentChanged(int index);
 
 private:
     Ui::MainWindow *ui;

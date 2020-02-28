@@ -24,7 +24,6 @@ private slots:
 
     void on_cBoxDataType_currentIndexChanged(int index);
 
-
     void on_gBoxAlgorithm_clicked();
 
     void on_pButtonRun_clicked();

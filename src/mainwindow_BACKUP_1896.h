@@ -24,10 +24,12 @@ private slots:
 
     void on_cBoxDataType_currentIndexChanged(int index);
 
-
+<<<<<<< HEAD
+=======
     void on_gBoxAlgorithm_clicked();
 
     void on_pButtonRun_clicked();
+>>>>>>> develop
 
 private:
     Ui::MainWindow *ui;
