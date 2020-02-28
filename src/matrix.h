@@ -96,17 +96,6 @@ public:
         return *this;
     }
 
-    // Only 1 of converting construct or converting operator is enough
-    /*
-    template<class dtypeOther>
-    Matrix(Matrix<dtypeOther> mat) {
-        width = mat.getWidth();
-        height = mat.getHeight();
-        allocate();
-        for (unsigned i=0; i<height*width; i++) values[i] = numeric_cast<dtype>(mat[i]);
-    }
-    */
-
     template<class dtypeOther>
     operator Matrix<dtypeOther>() const {
         Matrix<dtypeOther> res(height, width, 0);
@@ -222,7 +211,7 @@ public:
     template <class CalculationType>
     iFloat sum() const {
         CalculationType res = 0;
-        for (unsigned i=0; i<height*width;i++) res = res + values[i];
+        for (unsigned i=0; i<height*width;i++) res = res + CalculationType(values[i]);
         return res;
     }
 
