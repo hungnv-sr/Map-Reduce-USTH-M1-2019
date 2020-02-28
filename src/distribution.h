@@ -51,7 +51,7 @@ protected:
         }
 
         for (int i=0; i<binNumber; i++) {
-            pdf[i] = double(iFloat(pdf[i]) / sum);
+            pdf[i] = double(pdf[i] / sum);
             if (i==0) cdf[i] = pdf[i];
             else cdf[i] = cdf[i-1] + pdf[i];
         }
@@ -177,7 +177,7 @@ public:
         long long l = 0, r = binNumber-1, res = -1;
         while (l<=r) {
             long long mid = (l+r) / 2;
-            if (cdf[mid] >= cumulative) {
+            if (cdf[mid] > cumulative) {
                 res = mid;
                 r = mid-1;
             }

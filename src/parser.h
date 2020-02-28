@@ -30,7 +30,7 @@ class Parser
     double lowerBound, upperBound;
 
     bool isNumber(QChar c) {
-        return c>='0' && c<='48';
+        return c>='0' && c<='9';
     }
 
     bool isParen(QChar c) {
@@ -112,20 +112,25 @@ class Parser
         return nonsense;
     }
 
+    //---------------------------------------
+    // parse expression using shunting yard
+
+    // get 2 operands from stack and apply operator
     Distribution parseDist(const QString& s, int pos, int& returnPos) {
         std::vector<double> params;
         int i, j, n;
         Distribution nonsense(0,0,0);
 
-        if (s[pos+1]!='(') return nonsense;
-
         n = s.length();
+        if (s[pos+1]!='(') return nonsense;
+        if (pos+2 >= n) return nonsense;
+
         i = pos+2;
         while (i < n) {
             j = i;
             while (j<n && (s[j]!=',' && s[j]!=')')) j++;
             if (j==n) return nonsense; // can't find , or )
-            if (j==i+1) return nonsense; // invalid input cases such as: ,, ; ,) ; () ; (,
+            if (j==i) return nonsense; // invalid input cases such as: ,, ; ,) ; () ; (,
 
             QString number = s.mid(i, j-i); // get substring from i->j-1
             params.push_back(number.toDouble());
@@ -137,10 +142,7 @@ class Parser
         return createDistribution(s[pos], params);
     }
 
-    //---------------------------------------
-    // parse expression using shunting yard
 
-    // get 2 operands from stack and apply operator
     bool stackApplyOp(QChar op, stack<Distribution>& valueStack) {
         if (valueStack.size() < 2) return false; // fail
         Distribution valueRight = valueStack.top();
@@ -176,19 +178,19 @@ class Parser
             if (s[i]=='(') operatorStack.push(s[i]);
 
             if (s[i]==')') {
-                if (operatorStack.empty()) return nonsense;
-
                 while (operatorStack.top()!='(') {
                     QChar op = operatorStack.top();
                     operatorStack.pop();
 
                     if (!stackApplyOp(op, valueStack)) return nonsense;
                 }
+
+                if (operatorStack.top()!='(') return nonsense;
                 operatorStack.pop(); // pop the '(' out
             }
 
             if (isOperator(s[i])) {
-                QChar thisOp;
+                QChar thisOp = s[i];
                 while (!operatorStack.empty() && precedence(operatorStack.top()) >= thisOp) {
                     QChar op = operatorStack.top();
                     operatorStack.pop();

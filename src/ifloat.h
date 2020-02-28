@@ -11,7 +11,8 @@ using boost::multiprecision::cpp_dec_float_50;
 using boost::numeric_cast;
 using std::cout;
 
-typedef cpp_dec_float_50 float50;
+//typedef cpp_dec_float_50 float30;
+typedef number<cpp_dec_float<30> > float30;
 
 struct iFloatException : public std::exception {
 private:
@@ -34,8 +35,8 @@ public:
 //----------------------------------------------------------------------------------------------------------------------------------
 
 
-// iFloat is the wrapper class for Boost C++ class cpp_dec_float_50 (float50), which is float that has 50 decimal places precision
-// We need a wrapper class because float50 can use a lot of memory. In a function, it will cause stack overflow very quickly.
+// iFloat is the wrapper class for Boost C++ class cpp_dec_float_50 (float30), which is float that has 50 decimal places precision
+// We need a wrapper class because float30 can use a lot of memory. In a function, it will cause stack overflow very quickly.
 // Using a wrapper class, the memory is on the heap instead, so there's no problem.
 
 // Usage:
@@ -44,7 +45,7 @@ public:
 class iFloat
 {
 private:
-    float50 *value;
+    float30 *value;
 
     void cleanup() {
         if (value==nullptr)
@@ -53,20 +54,20 @@ private:
     }
 
     void copy(const iFloat& v) {
-        value = new float50;
+        value = new float30;
         *value = *(v.value);
     }
 
 public:
     //--------------------  CANONICAL FORM FUNCTIONS
     iFloat() {
-        value = new float50;
+        value = new float30;
         *value = 0;
     };
 
 
     iFloat(double x) {
-        value = new float50;
+        value = new float30;
         *value = x;
     }
 
@@ -81,7 +82,7 @@ public:
 
     iFloat& operator = (const iFloat& v) {
         if (this!=&v) {
-            // usually we need to cleanup(), but Boost C++ class float50 does not cause memory leak
+            // usually we need to cleanup(), but Boost C++ class float30 does not cause memory leak
             *value = *(v.value);
         }
         return *this;
@@ -96,7 +97,7 @@ public:
 
     operator float() const {return (*value).convert_to<float>();}
     */
-    operator double() const {return (*value).convert_to<double>();}
+    explicit operator double() const {return (*value).convert_to<double>();}
 
 
     //-------------------------------- CALCULATION OPERATORS
