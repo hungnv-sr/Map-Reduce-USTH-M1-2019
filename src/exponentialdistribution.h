@@ -8,16 +8,17 @@ class ExponentialDistribution : public Distribution
 {
 public:
     ExponentialDistribution(long long newBinNumber, double newLowerBound, double newUpperBound, double lambda) : Distribution(newBinNumber, newLowerBound, newUpperBound) {
-        double interval = (upperBound - lowerBound) / binNumber;
+        double binSize = (upperBound - lowerBound) / binNumber;
 
         for (long long i=0; i<binNumber; i++) {
-            double leftX = lowerBound + i*interval;
-            double rightX = leftX + interval;
+            double leftX = lowerBound + i*binSize;
+            double rightX = leftX + binSize;
 
             if (leftX < 0) pdf[i] = 0;
             else pdf[i] = (utils::expoPdf(lambda, leftX) + utils::expoPdf(lambda, rightX)) / 2;
 
-            if (i>0) cdf[i] = cdf[i-1] + pdf[i];
+            if (i==0) cdf[i] = pdf[i];
+            else cdf[i] = cdf[i-1] + pdf[i];
         }
     }
 };
