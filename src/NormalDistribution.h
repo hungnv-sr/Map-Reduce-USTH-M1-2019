@@ -5,10 +5,10 @@
 #include <cmath>
 
 // TODO: this is not finished. I skipped this because I have to do the other part first for the program to run
-class GaussianDistribution : public Distribution
+class NormalDistribution : public Distribution
 {
 public:
-    GaussianDistribution(long long newBinNumber, double newLowerBound, double newUpperBound, double mean, double variance) : Distribution(newBinNumber, newLowerBound, newUpperBound) {
+    NormalDistribution(long long newBinNumber, double newLowerBound, double newUpperBound, double mean, double variance) : Distribution(newBinNumber, newLowerBound, newUpperBound) {
         double interval = (upperBound - lowerBound) / binNumber;
 
         for (long long i=0; i<binNumber; i++) {

@@ -1,10 +1,9 @@
 #include "mainwindow.h"
 #include <iostream>
 #include <QApplication>
-#include "baseoperand.h"
 #include "distribution.h"
 #include "exponentialdistribution.h"
-#include "GaussianDistribution.h"
+#include "NormalDistribution.h"
 #include "uniformdistribution.h"
 
 #include "ifloat.h"
@@ -41,10 +40,15 @@ void matTest()
     std::cout << numeric_cast<double>(x);
 }
 
+void distributionTest() {
+    UniformDistribution::uniformDistributionTest();
+}
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-  //  matTest();
+    //matTest();
+    distributionTest();
 
     MainWindow w;
     w.show();

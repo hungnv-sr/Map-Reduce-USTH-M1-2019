@@ -28,3 +28,10 @@ double utils::gaussPdf(double mean, double variance, double x) {
 double utils::expoPdf(double lambda, double x) {
     return lambda * exp(-lambda*x);
 }
+
+double utils::rand01() {
+    static std::default_random_engine generator;
+    static std::uniform_real_distribution<double> distribution(0.0,1.0);
+
+    return distribution(generator);
+}

@@ -10,10 +10,10 @@ vector<Matrix<iFloat> > MatrixExperiment::double2iFloat(vector<Matrix<double> > 
     vector<Matrix<iFloat> > matfv;
 
     for (unsigned t=0; t<matdv.size(); t++) {
-        unsigned width = matdv[t].getWidth(), height = matdv[t].getHeight();
-        Matrix<iFloat> tmp(width, height, 0.0);
+        unsigned height = matdv[t].getHeight(), width = matdv[t].getWidth();
+        Matrix<iFloat> tmp(height, width, 0.0);
 
-        for (unsigned i=0; i<width*height; i++) tmp[i] = matdv[t][i];
+        for (unsigned i=0; i<height*width; i++) tmp[i] = matdv[t][i];
 
         matfv.push_back(tmp);
     }
@@ -22,9 +22,9 @@ vector<Matrix<iFloat> > MatrixExperiment::double2iFloat(vector<Matrix<double> > 
 }
 
 // generate a random matrix using the random generator rander
-Matrix<double> MatrixExperiment::randomMatrix(unsigned int width, unsigned int height, RandomGenerator rander) {
-    Matrix<double> res(width, height, 0);
-    for (unsigned i=0; i<width*height; i++) res[i] = rander.rand();
+Matrix<double> MatrixExperiment::randomMatrix(unsigned height, unsigned width, RandomGenerator& rander) {
+    Matrix<double> res(height, width, 0);
+    for (unsigned i=0; i<height*width; i++) res[i] = rander.rand();
     return res;
 }
 
