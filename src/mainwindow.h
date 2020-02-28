@@ -26,8 +26,6 @@ private slots:
 
     void on_cBoxDataType_currentIndexChanged(int index);
 
-    void on_tabDistribution_currentChanged(int index);
-
 private:
     Ui::MainWindow *ui;
 };

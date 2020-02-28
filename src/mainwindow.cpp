@@ -4,6 +4,7 @@
 #include <QtGui>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QVector>
 #include <QString>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -101,7 +102,10 @@ void MainWindow::on_pButtonRun_clicked()
     QString algorithm = ui->cBoxAlgorithm->currentText();                       // Read Algorithm
     QString matrixSize = ui->lEditMatSize->text();                              // Read Matrix Size
 
-    QString equation = ui->lEditEquation->text();
+    QString dist_str;
+    QString equation;
+
+    QVector<QString> varpack;
 
     if (dataType == "Array")
     {
@@ -128,9 +132,9 @@ void MainWindow::on_pButtonRun_clicked()
         // TO-DO
     }
 
-    ui->outputText->append(dataType);
-    ui->outputText->append(algorithm);
-    ui->outputText->append(matrixSize);
+    varpack.append(dataType);
+    varpack.append(algorithm);
+    varpack.append(matrixSize);
 
     if (ui->tabDistribution->currentIndex() == 0)
     {
@@ -151,21 +155,24 @@ void MainWindow::on_pButtonRun_clicked()
         if (ui->lEditPara_7->text().size() != 0 && ui->lEditPara_8->text().size() != 0)
             G_str.append("G(" + ui->lEditPara_7->text() + "," + ui->lEditPara_8->text() + ")");
 
-        QStringList Dist_list = (QStringList() << U_str << N_str << Exp_str << G_str);
-        Dist_list.removeAll("");
-        QString Dist_str = Dist_list.join(" + ");
+        QStringList dist_list = (QStringList() << U_str << N_str << Exp_str << G_str);
+        dist_list.removeAll("");
+        dist_str = dist_list.join(" + ");
 
-        ui->outputText->append(Dist_str);
+        varpack.append(dist_str);
     }
 
     if (ui->tabDistribution->currentIndex() == 1)
     {
-        QString equation = ui->lEditEquation->text();
-        ui->outputText->append(equation);
+        equation = ui->lEditEquation->text();
+        varpack.append(equation);
     }
 
     if (ui->tabDistribution->currentIndex() == 2)
-        ui->outputText->append(ui->txtBrowser_1->toPlainText());
+        varpack.append(ui->txtBrowser_1->toPlainText());
 
-    ui->outputText->append(ui->txtBrowser_2->toPlainText());
+    varpack.append(ui->txtBrowser_2->toPlainText());
+
+    for (int i = 0; i < varpack.size(); ++i)
+        ui->outputText->append(varpack[i]);                                     // Value of the i-th variable
 }
