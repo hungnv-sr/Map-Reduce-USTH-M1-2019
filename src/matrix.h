@@ -5,10 +5,17 @@
 #include <ifloat.h>
 #include <QDebug>
 
-struct MatrixException {
-  std::string m_msg;
-  MatrixException(const char*const msg) : m_msg(msg) {}
-  MatrixException(const MatrixException& me) : m_msg(me.m_msg) {}
+struct MatrixException : public std::exception {
+private:
+    QString msg;
+
+public:
+    MatrixException(QString mess) {
+        msg = mess;
+    }
+    const char* what() const throw() {
+        return msg.toStdString().c_str();
+    }
 };
 
 
