@@ -24,15 +24,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
 {
-    ui->cBoxAlgorithm->setCurrentIndex(0);
+    ui->cBoxOperation->setCurrentIndex(0);
 
-    int count = ui->cBoxAlgorithm->count();
+    int count = ui->cBoxOperation->count();
 
     if (count == 3)
     {
         if (index == 1)
         {
-            ui->cBoxAlgorithm->removeItem(2);
+            ui->cBoxOperation->removeItem(2);
             ui->lblMatSize->setVisible(true);
             ui->lEditMatSize->setVisible(true);
         }
@@ -41,7 +41,8 @@ void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
     {
         if (index < 1)
         {
-            ui->cBoxAlgorithm->insertItem(2, "Element-wise multiplication");
+            ui->lEditMatSize->clear();
+            ui->cBoxOperation->insertItem(2, "Element-wise multiplication");
             ui->lblMatSize->setVisible(false);
             ui->lEditMatSize->setVisible(false);
         }
@@ -94,12 +95,17 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
     ui->txtBrowser_2->setText(in.readAll());
 }
 
+void MainWindow::on_gBoxAlgorithm_clicked()
+{
+
+}
+
 void MainWindow::on_pButtonRun_clicked()
 {
     ui->outputText->clear();
 
     QString dataType = ui->cBoxDataType->currentText();                         // Read Data Type
-    QString algorithm = ui->cBoxAlgorithm->currentText();                       // Read Algorithm
+    QString operation = ui->cBoxOperation->currentText();                       // Read operation
     QString matrixSize = ui->lEditMatSize->text();                              // Read Matrix Size
 
     QString dist_str;
@@ -117,23 +123,23 @@ void MainWindow::on_pButtonRun_clicked()
         // TO-DO
     }
 
-    if (algorithm == "Sum")
+    if (operation == "Sum")
     {
         // TO-DO
     }
 
-    if (algorithm == "Multiplication")
+    if (operation == "Multiplication")
     {
         // TO-DO
     }
 
-    if (algorithm == "Element-wise multiplication")
+    if (operation == "Element-wise multiplication")
     {
         // TO-DO
     }
 
     varpack.append(dataType);
-    varpack.append(algorithm);
+    varpack.append(operation);
     varpack.append(matrixSize);
 
     if (ui->tabDistribution->currentIndex() == 0)
