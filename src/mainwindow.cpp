@@ -4,6 +4,7 @@
 #include <QtGui>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QVector>
 #include <QString>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -23,15 +24,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
 {
-    ui->cBoxAlgorithm->setCurrentIndex(0);
+    ui->cBoxOperation->setCurrentIndex(0);
 
-    int count = ui->cBoxAlgorithm->count();
+    int count = ui->cBoxOperation->count();
 
     if (count == 3)
     {
         if (index == 1)
         {
-            ui->cBoxAlgorithm->removeItem(2);
+            ui->cBoxOperation->removeItem(2);
             ui->lblMatSize->setVisible(true);
             ui->lEditMatSize->setVisible(true);
         }
@@ -40,7 +41,8 @@ void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
     {
         if (index < 1)
         {
-            ui->cBoxAlgorithm->insertItem(2, "Element-wise multiplication");
+            ui->lEditMatSize->clear();
+            ui->cBoxOperation->insertItem(2, "Element-wise multiplication");
             ui->lblMatSize->setVisible(false);
             ui->lEditMatSize->setVisible(false);
         }
@@ -93,15 +95,23 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
     ui->txtBrowser_2->setText(in.readAll());
 }
 
+void MainWindow::on_gBoxAlgorithm_clicked()
+{
+
+}
+
 void MainWindow::on_pButtonRun_clicked()
 {
     ui->outputText->clear();
 
     QString dataType = ui->cBoxDataType->currentText();                         // Read Data Type
-    QString algorithm = ui->cBoxAlgorithm->currentText();                       // Read Algorithm
+    QString operation = ui->cBoxOperation->currentText();                       // Read operation
     QString matrixSize = ui->lEditMatSize->text();                              // Read Matrix Size
 
-    QString equation = ui->lEditEquation->text();
+    QString dist_str;
+    QString equation;
+
+    QVector<QString> varpack;
 
     if (dataType == "Array")
     {
@@ -113,24 +123,24 @@ void MainWindow::on_pButtonRun_clicked()
         // TO-DO
     }
 
-    if (algorithm == "Sum")
+    if (operation == "Sum")
     {
         // TO-DO
     }
 
-    if (algorithm == "Multiplication")
+    if (operation == "Multiplication")
     {
         // TO-DO
     }
 
-    if (algorithm == "Element-wise multiplication")
+    if (operation == "Element-wise multiplication")
     {
         // TO-DO
     }
 
-    ui->outputText->append(dataType);
-    ui->outputText->append(algorithm);
-    ui->outputText->append(matrixSize);
+    varpack.append(dataType);
+    varpack.append(operation);
+    varpack.append(matrixSize);
 
     if (ui->tabDistribution->currentIndex() == 0)
     {
@@ -151,21 +161,24 @@ void MainWindow::on_pButtonRun_clicked()
         if (ui->lEditPara_7->text().size() != 0 && ui->lEditPara_8->text().size() != 0)
             G_str.append("G(" + ui->lEditPara_7->text() + "," + ui->lEditPara_8->text() + ")");
 
-        QStringList Dist_list = (QStringList() << U_str << N_str << Exp_str << G_str);
-        Dist_list.removeAll("");
-        QString Dist_str = Dist_list.join(" + ");
+        QStringList dist_list = (QStringList() << U_str << N_str << Exp_str << G_str);
+        dist_list.removeAll("");
+        dist_str = dist_list.join(" + ");
 
-        ui->outputText->append(Dist_str);
+        varpack.append(dist_str);
     }
 
     if (ui->tabDistribution->currentIndex() == 1)
     {
-        QString equation = ui->lEditEquation->text();
-        ui->outputText->append(equation);
+        equation = ui->lEditEquation->text();
+        varpack.append(equation);
     }
 
     if (ui->tabDistribution->currentIndex() == 2)
-        ui->outputText->append(ui->txtBrowser_1->toPlainText());
+        varpack.append(ui->txtBrowser_1->toPlainText());
 
-    ui->outputText->append(ui->txtBrowser_2->toPlainText());
+    varpack.append(ui->txtBrowser_2->toPlainText());
+
+    for (int i = 0; i < varpack.size(); ++i)
+        ui->outputText->append(varpack[i]);                                     // Value of the i-th variable
 }
