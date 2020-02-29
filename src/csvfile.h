@@ -6,6 +6,19 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <ifloat.h>
+#include <randomgenerator.h>
+
+struct Result {
+    iFloat value;
+    Algo algoUsed;
+    Result(iFloat v, Algo algo) {value = v; algoUsed = algo;}
+};
+enum Algo {
+	LINEAR, 
+	SPLIT_MERGE,
+	SORT, 
+	SORT_APPEND};
 
 class csvfile;
 
@@ -48,24 +61,6 @@ public:
         is_first_ = true;
     }
 
-    // void write_csv(std::string filename, std::vector<double> vector){
-    //     // Make a CSV file with one column of double values
-    //     // filename - the name of the file
-    //     try{
-    //         csvfile csv(filename);
-    //         // should have some header
-    //         int line = 1; // in case we need 1 more line for header, csv<< line++
-    //         for(int i = 0; i < vector.size(); ++i){
-    //             csv << line << vector[i];
-    //         }
-    //         csv << endrow;
-    //     }
-    //     catch (const std::exception &ex)
-    //     {
-    //         std::cout << "Exception was thrown: " << ex.what() << std::endl;
-    //     }
-    //     return ;
-    // }
     csvfile& operator << ( csvfile& (* val)(csvfile&))
     {
         return val(*this);
