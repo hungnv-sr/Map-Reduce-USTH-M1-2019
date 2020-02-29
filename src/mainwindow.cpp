@@ -69,6 +69,42 @@ void MainWindow::on_pButtonOpenFile_1_clicked()
 
 void MainWindow::on_pButtonGen_clicked()
 {
+    if (ui->rButtonSave->isChecked() == true)
+    {
+        if (ui->lEditSaveDir->text() == "")
+        {
+            QMessageBox::information(this, "Warning", "Save Directory has NOT set!");
+            return;
+        }
+        else
+        {
+            // Do randomly generated
+
+            // Save to Dir
+            QDateTime now = QDateTime::currentDateTime();
+            QString format = now.toString("dd.MMM.yyyy-hhmmss");
+            QString savefile = ui->lEditSaveDir->text() + format + ".txt";
+            QFile file(savefile);
+
+            if (!file.open(QIODevice::ReadOnly | QIODevice::Text | QIODevice::ReadWrite))
+            {
+            }
+
+            if (file.open(QIODevice::ReadWrite))
+            {
+                QTextStream stream(&file);
+                stream << "1_XYZ" << endl;
+                stream << "2_XYZ" << endl;
+            }
+        }
+    }
+    else
+    {
+        // Do randomly generated
+
+
+    }
+
     for (int i=0; i<1000; ++i)
     {
         // TO-DO
@@ -95,6 +131,31 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
     ui->txtBrowser_2->setText(in.readAll());
 }
 
+void MainWindow::on_rButtonSave_clicked()
+{
+    ui->progBar->setValue(0);
+    ui->lEditSaveDir->setEnabled(true);
+    ui->pButtonBrowseDir->setEnabled(true);
+}
+
+void MainWindow::on_pButtonBrowseDir_clicked()
+{
+    QString folderDir = QFileDialog::getExistingDirectory(
+                this,
+                tr("Open Directory"),
+                qApp->applicationDirPath(),
+                QFileDialog::ShowDirsOnly);
+
+    ui->lEditSaveDir->setText(folderDir);
+}
+
+void MainWindow::on_rButtonDontSave_clicked()
+{
+    ui->lEditSaveDir->clear();
+    ui->lEditSaveDir->setEnabled(false);
+    ui->pButtonBrowseDir->setEnabled(false);
+}
+
 void MainWindow::on_gBoxAlgorithm_clicked()
 {
 
@@ -113,6 +174,7 @@ void MainWindow::on_pButtonRun_clicked()
 
     QVector<QString> varpack;
 
+    /* DataType & Operation */
     if (dataType == "Array")
     {
         // TO-DO
@@ -142,6 +204,7 @@ void MainWindow::on_pButtonRun_clicked()
     varpack.append(operation);
     varpack.append(matrixSize);
 
+    /* Distribution Tab */
     if (ui->tabDistribution->currentIndex() == 0)
     {
         QString U_str = "";
@@ -177,8 +240,20 @@ void MainWindow::on_pButtonRun_clicked()
     if (ui->tabDistribution->currentIndex() == 2)
         varpack.append(ui->txtBrowser_1->toPlainText());
 
-    varpack.append(ui->txtBrowser_2->toPlainText());
+    /* Calculation Dataset Tab */
+    if (ui->tabCalcDataset->currentIndex() == 0)
+    {
+        varpack.append("0");
+    }
 
+    if (ui->tabCalcDataset->currentIndex() == 1)
+    {
+        varpack.append("0");
+    }
+
+    /* Packaging variables' value */
     for (int i = 0; i < varpack.size(); ++i)
         ui->outputText->append(varpack[i]);                                     // Value of the i-th variable
 }
+
+
