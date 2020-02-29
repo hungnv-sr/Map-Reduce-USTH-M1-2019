@@ -221,17 +221,17 @@ void MainWindow::on_pButtonRun_clicked()
         QString Exp_str = "";
         QString G_str = "";
 
-        if (ui->lEditPara_1->text().size() != 0 && ui->lEditPara_2->text().size() != 0)
-            U_str.append("U(" + ui->lEditPara_1->text() + "," + ui->lEditPara_2->text() + ")");
+        if (ui->lEditParaU_a->text().size() != 0 && ui->lEditParaU_b->text().size() != 0)
+            U_str.append("U(" + ui->lEditParaU_a->text() + "," + ui->lEditParaU_b->text() + ")");
 
-        if (ui->lEditPara_3->text().size() != 0 && ui->lEditPara_4->text().size() != 0)
-            N_str.append("N(" + ui->lEditPara_3->text() + "," + ui->lEditPara_4->text() + ")");
+        if (ui->lEditParaN_mean->text().size() != 0 && ui->lEditParaN_var->text().size() != 0)
+            N_str.append("N(" + ui->lEditParaN_mean->text() + "," + ui->lEditParaN_var->text() + ")");
 
-        if (ui->lEditPara_5->text().size() != 0)
-            Exp_str.append("Exp(" + ui->lEditPara_5->text() + ")");
+        if (ui->lEditParaExp_lambda->text().size() != 0)
+            Exp_str.append("Exp(" + ui->lEditParaExp_lambda->text() + ")");
 
-        if (ui->lEditPara_7->text().size() != 0 && ui->lEditPara_8->text().size() != 0)
-            G_str.append("G(" + ui->lEditPara_7->text() + "," + ui->lEditPara_8->text() + ")");
+        if (ui->lEditParaG_alpha->text().size() != 0 && ui->lEditParaG_lambda->text().size() != 0)
+            G_str.append("G(" + ui->lEditParaG_alpha->text() + "," + ui->lEditParaG_lambda->text() + ")");
 
         QStringList dist_list = (QStringList() << U_str << N_str << Exp_str << G_str);
         dist_list.removeAll("");
@@ -248,6 +248,13 @@ void MainWindow::on_pButtonRun_clicked()
 
     if (ui->tabDistribution->currentIndex() == 2)
         varpack.append(ui->txtBrowser_1->toPlainText());
+
+    /* Set Bin Number - Lower Bound - Upper Bound */
+    QString binNumber = ui->lEditBinNum->text();
+    QString lowerBound = ui->lEditLowerBound->text();
+    QString upperBound = ui->lEditUpperBound->text();
+
+    varpack.append(binNumber + " " + lowerBound + " " + upperBound);
 
     /* Calculation Dataset Tab */
     if (ui->tabCalcDataset->currentIndex() == 0)
