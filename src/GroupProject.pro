@@ -28,7 +28,13 @@ SOURCES += \
     utils.cpp
 
 HEADERS += \
+<<<<<<< HEAD
+    GaussianDistribution.h \
+    baseoperand.h \
+    csvfile.h \
+=======
     NormalDistribution.h \
+>>>>>>> develop
     distribution.h \
     experimentcontroller.h \
     exponentialdistribution.h \
@@ -40,7 +46,7 @@ HEADERS += \
     randomgenerator.h \
     uniformdistribution.h \
     utils.h \
-    vector.h
+    vector.h \
 
 FORMS += \
     mainwindow.ui
