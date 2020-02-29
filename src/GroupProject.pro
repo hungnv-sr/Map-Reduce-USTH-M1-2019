@@ -22,6 +22,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     arrayexperiment.cpp \
+    csvfile.cpp \
     main.cpp \
     mainwindow.cpp \
     matrixexperiment.cpp \
