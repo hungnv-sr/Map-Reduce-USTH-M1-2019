@@ -161,6 +161,7 @@ class Parser
         stack<Distribution> valueStack;
         stack<QChar> operatorStack;
 
+        if (s.length()==0) return nonsense;
         s = normalize(s);
         if (!validString(s)) return nonsense;
 
@@ -212,7 +213,7 @@ class Parser
         }
 
         if (operatorStack.size() > 0) return nonsense;
-        if (valueStack.size() > 1) return nonsense;
+        if (valueStack.size() != 1) return nonsense;
         valueStack.top().normalize();
         return valueStack.top();
     }
