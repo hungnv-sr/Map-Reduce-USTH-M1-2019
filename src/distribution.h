@@ -42,20 +42,7 @@ protected:
         for (unsigned i=0;i<binNumber;i++) {pdf[i] = b.pdf[i]; cdf[i] = b.cdf[i];}
     }
 
-    // solve cases where pdf[i] < 0. Allow the usage of operator *, -, /
-    void normalize() {
-        iFloat sum = 0;
-        for (int i=0; i<binNumber; i++) {
-            if (pdf[i] < 0) pdf[i] = 0;
-            sum = sum + pdf[i];
-        }
-
-        for (int i=0; i<binNumber; i++) {
-            pdf[i] = double(iFloat(pdf[i]) / sum);
-            if (i==0) cdf[i] = pdf[i];
-            else cdf[i] = cdf[i-1] + pdf[i];
-        }
-    }
+    // solve cases where pdf[i] < 0. Allow the usage of operator *, -, /    
 
 public:
     Distribution(long long newBinNumber, double newLowerBound, double newUpperBound) {
@@ -113,7 +100,7 @@ public:
         }
         Distribution res(binNumber, lowerBound, upperBound);
         for (int i=0;i<binNumber;i++) res[i] = pdf[i] + b[i];
-        res.normalize();
+
         return res;
     }
 
@@ -124,7 +111,7 @@ public:
         }
         Distribution res(binNumber, lowerBound, upperBound);
         for (int i=0;i<binNumber;i++) res[i] = pdf[i] - b[i];
-        res.normalize();
+
         return res;
     }
 
@@ -135,7 +122,7 @@ public:
         }
         Distribution res(binNumber, lowerBound, upperBound);
         for (int i=0;i<binNumber;i++) res[i] = pdf[i] * b[i];
-        res.normalize();
+
         return res;
     }
 
@@ -146,7 +133,7 @@ public:
         }
         Distribution res(binNumber, lowerBound, upperBound);
         for (int i=0;i<binNumber;i++) res[i] = pdf[i] / b[i];
-        res.normalize();
+
         return res;
     }
 
@@ -177,7 +164,7 @@ public:
         long long l = 0, r = binNumber-1, res = -1;
         while (l<=r) {
             long long mid = (l+r) / 2;
-            if (cdf[mid] >= cumulative) {
+            if (cdf[mid] > cumulative) {
                 res = mid;
                 r = mid-1;
             }
@@ -188,6 +175,20 @@ public:
             throw DistributionException("Something wrong with inverse sampling binary search");
 
         return res;
+    }
+
+    void normalize() {
+        iFloat sum = 0;
+        for (int i=0; i<binNumber; i++) {
+            if (pdf[i] < 0) pdf[i] = 0;
+            sum = sum + pdf[i];
+        }
+
+        for (int i=0; i<binNumber; i++) {
+            pdf[i] = double(pdf[i] / sum);
+            if (i==0) cdf[i] = pdf[i];
+            else cdf[i] = cdf[i-1] + pdf[i];
+        }
     }
 
     /*********************************************************/

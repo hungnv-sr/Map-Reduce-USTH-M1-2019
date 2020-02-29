@@ -2,19 +2,27 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#include <basedatatype.h>
 #include <ifloat.h>
 #include <QDebug>
 
-struct MatrixException {
-  std::string m_msg;
-  MatrixException(const char*const msg) : m_msg(msg) {}
-  MatrixException(const MatrixException& me) : m_msg(me.m_msg) {}
+struct MatrixException : public std::exception {
+private:
+    QString msg;
+
+public:
+    MatrixException(QString mess) {
+        msg = mess;
+    }
+    const char* what() const throw() {
+        return msg.toStdString().c_str();
+    }
 };
 
 
 //--------------------------------------------------------------------
 template <class dtype>
-class Matrix
+class Matrix : public BaseDataType
 {
 private:
     unsigned height, width;
@@ -88,17 +96,6 @@ public:
 
         return *this;
     }
-
-    // Only 1 of converting construct or converting operator is enough
-    /*
-    template<class dtypeOther>
-    Matrix(Matrix<dtypeOther> mat) {
-        width = mat.getWidth();
-        height = mat.getHeight();
-        allocate();
-        for (unsigned i=0; i<height*width; i++) values[i] = numeric_cast<dtype>(mat[i]);
-    }
-    */
 
     template<class dtypeOther>
     operator Matrix<dtypeOther>() const {
@@ -215,7 +212,7 @@ public:
     template <class CalculationType>
     iFloat sum() const {
         CalculationType res = 0;
-        for (unsigned i=0; i<height*width;i++) res = res + values[i];
+        for (unsigned i=0; i<height*width;i++) res = res + CalculationType(values[i]);
         return res;
     }
 
@@ -262,17 +259,16 @@ Matrix<dtype> operator * (const dtype2& v, const Matrix<dtype>& source) {
 
 //-------------------------------   GENERIC MATRIX CALCULATION FUNCTION
 
-enum MatOp{ADD, SUB, MUL, DIV, MATMUL};
 
-//template <class dtype1, class dtype2>
-inline Matrix<iFloat> matOperate(Matrix<iFloat> mat1, Matrix<iFloat> mat2, MatOp op) {
+template <class dtype>
+inline Matrix<dtype> matOperate(const Matrix<dtype> &mat1, const Matrix<dtype> &mat2, Op op) {
     if (op==ADD) return mat1 + mat2;
     if (op==SUB) return mat1 - mat2;
     if (op==MUL) return mat1 * mat2;
     if (op==DIV) return mat1 / mat2;
     if (op==MATMUL) return mat1.matmul(mat2);
 
-    throw MatrixException("MatOperate: Unknown MatOp");
+    throw MatrixException("Operate: Unknown Op");
 }
 
 

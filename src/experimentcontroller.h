@@ -3,7 +3,6 @@
 
 #include <ifloat.h>
 #include <matrix.h>
-#include <vector.h>
 #include <distribution.h>
 #include <uniformdistribution.h>
 #include <NormalDistribution.h>
@@ -22,8 +21,8 @@ class ExperimentController
     enum DataType{VECTOR, MATRIX};
 
     DataType testDataType;
-    MatOp op;
-    map<MatAlgo, bool> testAlgos;
+    Op op;
+    map<Algo, bool> testAlgos;
     unsigned matSize;
     unsigned dataLength;
     vector<Matrix<double> > testList;

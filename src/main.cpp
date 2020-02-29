@@ -32,7 +32,7 @@ void matTest()
     Matrix<double> d(3, 3, 0);
     d = c + 3.5;//a + b*c + c*3.5;
     d.print();
-    std::cout << c.sum<int>() << "\n";
+    std::cout << double(c.sum<int>()) << "\n";
     cpp_dec_float_50 x = 5.3;
     for (double t = 1; t<= 200; t++) x = x / t;
     //std::cout << (2.1 + x*3.5 - x) << "\n";
@@ -44,11 +44,23 @@ void distributionTest() {
     UniformDistribution::uniformDistributionTest();
 }
 
+void normalTest() {
+    NormalDistribution::normalDistributionTest();
+}
+
+void expoTest() {
+    ExponentialDistribution::exponentialDistributionTest();
+}
+
 int main(int argc, char *argv[])
 {
+    srand(time(NULL));
     QApplication a(argc, argv);
     //matTest();
-    distributionTest();
+    //distributionTest();
+    //normalTest();
+  //  expoTest();
+
 
     MainWindow w;
     w.show();

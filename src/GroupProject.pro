@@ -21,6 +21,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    arrayexperiment.cpp \
+    csvfile.cpp \
     main.cpp \
     mainwindow.cpp \
     matrixexperiment.cpp \
@@ -28,13 +30,13 @@ SOURCES += \
     utils.cpp
 
 HEADERS += \
-<<<<<<< HEAD
     GaussianDistribution.h \
+    arrayexperiment.h \
+    basedatatype.h \
+    baseexperiment.h \
     baseoperand.h \
     csvfile.h \
-=======
     NormalDistribution.h \
->>>>>>> develop
     distribution.h \
     experimentcontroller.h \
     exponentialdistribution.h \
@@ -42,11 +44,11 @@ HEADERS += \
     mainwindow.h \
     matrix.h \
     matrixexperiment.h \
+    numerical.h \
     parser.h \
     randomgenerator.h \
     uniformdistribution.h \
     utils.h \
-    vector.h \
 
 FORMS += \
     mainwindow.ui
