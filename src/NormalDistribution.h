@@ -10,6 +10,8 @@ class NormalDistribution : public Distribution
 {
 public:
     NormalDistribution(long long newBinNumber, double newLowerBound, double newUpperBound, double mean, double variance) : Distribution(newBinNumber, newLowerBound, newUpperBound) {
+        if (newBinNumber <= 1)
+            throw DistributionException("Normal Distribution: bin Number <= 1");
         if (newUpperBound <= newLowerBound)
             throw DistributionException("Normal Distribution: upper bound < lower bound");
         if (mean < newLowerBound  || mean > newUpperBound)
