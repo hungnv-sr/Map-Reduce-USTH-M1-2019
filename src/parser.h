@@ -220,15 +220,35 @@ class Parser
 
 
 public:
+    Parser() {
+        binNumber = 0;
+        lowerBound = 0;
+        upperBound = 0;
+    }
+
     Parser(long long newBinNumber, double newLowerBound, double newUpperBound) {
+        qDebug() << "parser binNumber = " << newBinNumber << "\n";
+        if (newBinNumber <= 1)
+            throw ParserException("Constructor: bin Number <= 1");
+
+        if (newLowerBound >= newUpperBound)
+            throw ParserException("Constructor: newLowerBound > newUpperBound");
+
         binNumber = newBinNumber;
         lowerBound = newLowerBound;
-        upperBound = newUpperBound;
+        upperBound = newUpperBound;              
+    }
+
+    bool valid() {
+        return binNumber > 1 && lowerBound < upperBound;
     }
 
     Distribution string2dist(QString s) {
+        if (!valid())
+            throw ParserException("String2Dist: parser is not initialized");
         return parseExpression(s);
     }
+
 
 };
 
