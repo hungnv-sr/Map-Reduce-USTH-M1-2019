@@ -106,6 +106,7 @@ vector<Result> ArrayExperiment::experiment(vector<double> inputs, Op op, unsigne
         qDebug() << "after running algorithms\n";
         if (shuffle) std::random_shuffle(inputs.begin(), inputs.end());
         else {
+            std::random_shuffle(inputs.begin(), inputs.end());
             arrGen.generateArray(inputs.size(), inputs);
         }
     }
