@@ -172,6 +172,7 @@ void MainWindow::on_pButtonGen_clicked()
         qDebug() << "reached here\n";
         try {
             arrayGenerator.generateArray(numData, arrData);
+            ui->progBar->setValue((int)(arrData.size()/numData)*100);
         }
         catch (SamplingException ex) {
             QMessageBox::information(this, "Error", "Distribution caused underflow. Decrease lower bound and increase upper bound");
@@ -295,6 +296,7 @@ void MainWindow::on_pButtonBrowseDir_clicked()
 
 void MainWindow::on_rButtonDontSave_clicked()
 {
+    ui->progBar->setValue(0);
     ui->lEditSaveDir->clear();
     ui->lEditSaveDir->setEnabled(false);
     ui->pButtonBrowseDir->setEnabled(false);
