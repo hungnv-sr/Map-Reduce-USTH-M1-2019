@@ -5,6 +5,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++11
 CONFIG   += console
 
+
 INCLUDEPATH += C:\Users\lehuy\Documents\Map-Reduce-USTH-M1-2019\boost_1_66_0
 INCLUDEPATH += C:\Users\lehuy\Documents\Map-Reduce-USTH-M1-2019\eigen-3.3.7
 
@@ -21,6 +22,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    arraydatagenerator.cpp \
     arrayexperiment.cpp \
     csvfile.cpp \
     main.cpp \
@@ -31,6 +33,7 @@ SOURCES += \
 
 HEADERS += \
     GaussianDistribution.h \
+    arraydatagenerator.h \
     arrayexperiment.h \
     basedatatype.h \
     baseexperiment.h \

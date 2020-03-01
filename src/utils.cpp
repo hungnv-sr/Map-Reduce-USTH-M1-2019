@@ -35,3 +35,19 @@ double utils::rand01() {
 
     return distribution(generator);
 }
+
+bool utils::saveArray(QString filename, const vector<double> &res, unsigned precision) {
+    try {
+        std::setprecision(precision);
+
+        std::ofstream fo(filename.toStdString().c_str());
+        fo << res.size() << "\n";
+        for (unsigned i=0; i<res.size(); i++) fo << std::fixed << res[i] << " ";
+        fo << "\n";
+        fo.close();
+    } catch (std::exception ex) {
+        return 0;
+    }
+
+    return 1;
+}

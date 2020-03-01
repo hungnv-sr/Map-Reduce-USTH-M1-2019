@@ -60,7 +60,11 @@ int main(int argc, char *argv[])
     //distributionTest();
     //normalTest();
   //  expoTest();
-
+    /*
+    std::setprecision(std::numeric_limits<float30>::digits10);
+    float30 x = 0.00001;
+    std::cout << (x*x*x*x) << "\n";
+    */
 
     MainWindow w;
     w.show();

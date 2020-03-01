@@ -163,6 +163,11 @@ public:
     iFloat operator / (const dtype2& v) const {
         return (*this) / iFloat(v);
     }
+
+    //-------------------------------- SCALAR CALCULATION OPERATORS
+    float30 getValue() {
+        return *value;
+    }
 };
 
 

@@ -2,6 +2,7 @@
 
 using std::vector;
 
+/*
 void outputFile(string filename, vector<Result> arr) {
     int n = arr.size();
     vector<string> algoNames;
@@ -55,3 +56,4 @@ void outputFile(string filename, vector<Result> arr) {
         std::cout << "Exception was thrown: " << ex.what() << std::endl;
     }
 }
+*/

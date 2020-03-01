@@ -9,6 +9,7 @@
 #include <randomgenerator.h>
 #include <algorithm>
 #include <queue>
+#include <arraydatagenerator.h>
 using std::vector;
 
 struct ArrayExperimentException : public std::exception {
@@ -41,7 +42,7 @@ public:
 
     iFloat groundTruth(vector<double> inputs, Op op);
 
-    vector<Result> experiment(vector<double> inputs, Op op, unsigned nTest, vector<Algo> testAlgos);
+    vector<Result> experiment(vector<double> inputs, Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle, Distribution distribution);
 
 };
 

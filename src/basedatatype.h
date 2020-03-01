@@ -3,6 +3,7 @@
 
 enum Op{ADD, SUB, MUL, DIV, MATMUL};
 
+enum DataType{NUMERIC, ARRAY, MATRIX};
 
 class BaseDataType
 {

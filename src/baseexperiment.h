@@ -5,7 +5,7 @@
 #include <randomgenerator.h>
 
 
-enum Algo {LINEAR, SPLIT_MERGE, SORT, SORT_APPEND};
+enum Algo {LINEAR, SPLIT_MERGE, SORT, SORT_APPEND, GROUND_TRUTH};
 
 struct Result {
     iFloat value;
