@@ -9,7 +9,6 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , distribution(0,0,0)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -61,6 +60,7 @@ void MainWindow::on_pButtonOpenFile_1_clicked()
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly))
     {
+        return;
     }
 
     QTextStream in(&file);
@@ -68,100 +68,13 @@ void MainWindow::on_pButtonOpenFile_1_clicked()
     ui->txtBrowser_1->setText(in.readAll());
 }
 
-
-QString MainWindow::getDistributionString() {
-
-    if (ui->tabDistribution->currentIndex() == 0)
-    {
-        QString U_str = "";
-        QString N_str = "";
-        QString Exp_str = "";
-        QString G_str = "";
-
-        if (ui->lEditPara_1->text().size() != 0 && ui->lEditPara_2->text().size() != 0)
-            U_str.append("U(" + ui->lEditPara_1->text() + "," + ui->lEditPara_2->text() + ")");
-
-        if (ui->lEditPara_3->text().size() != 0 && ui->lEditPara_4->text().size() != 0)
-            N_str.append("N(" + ui->lEditPara_3->text() + "," + ui->lEditPara_4->text() + ")");
-
-        if (ui->lEditPara_5->text().size() != 0)
-            Exp_str.append("Exp(" + ui->lEditPara_5->text() + ")");
-
-        if (ui->lEditPara_7->text().size() != 0 && ui->lEditPara_8->text().size() != 0)
-            G_str.append("G(" + ui->lEditPara_7->text() + "," + ui->lEditPara_8->text() + ")");
-
-        QStringList dist_list = (QStringList() << U_str << N_str << Exp_str << G_str);
-        dist_list.removeAll("");
-
-        return dist_list.join(" + ");
-    }
-
-    if (ui->tabDistribution->currentIndex() == 1)
-        return ui->lEditEquation->text();
-
-    return "";
-}
-
-vector<double> MainWindow::getDistributionParams() {
-    vector<double> res;
-    res.push_back(10000);
-    res.push_back(-20);
-    res.push_back(20);
-}
-
 void MainWindow::on_pButtonGen_clicked()
 {
-    try {
-        qDebug() << "buttonGen clicked \n";
-
-        QString distributionString = getDistributionString();
-        vector<double> distributionParams = getDistributionParams();
-
-        qDebug() << "reached here\n";
-        Parser parser;
-        qDebug() << "reached here2\n";
-        try {
-            parser = Parser((long long)distributionParams[0], distributionParams[1], distributionParams[2]);
-        }
-        catch (ParserException ex) {
-            qDebug() << "Hello we're here";
-            QMessageBox::information(this, "Error", ex.what());
-            qDebug() << "messaged box is displayed\n";
-            return;
-        }
-
-        qDebug() << "Hello raeched here\n";
-        distribution = parser.string2dist(distributionString);
-
-        if (!distribution.valid()) {
-            QMessageBox::information(this, "Error", "Expression is invalid");
-            return;
-        }
-    }
-    catch (std::exception &ex) {
-        qDebug() << "crashed here\n";
-        QMessageBox::information(this, "Error", ex.what());
-        return;
-    }
-
-    int nData = 10;
-    int dataSize = 5;
-
-    QString dataTypeStr = ui->cBoxDataType->currentText();
-    DataType dataType;
-    if (dataTypeStr=="Array") {
-        dataType = ARRAY;
-        ArrayGenerator arrayGenerator(distribution);
-        arrayGenerator.generateArray(nData, arrData);
-    }
-
-    QMessageBox::information(this, "Warning", "Generate data successful");
-
     if (ui->rButtonSave->isChecked() == true)
     {
         if (ui->lEditSaveDir->text() == "")
         {
-            QMessageBox::information(this, "Warning", "Save Directory is NOT set!");
+            QMessageBox::information(this, "Warning", "Save Directory has NOT set!");
             return;
         }
         else
@@ -170,22 +83,36 @@ void MainWindow::on_pButtonGen_clicked()
 
             // Save to Dir
             QDateTime now = QDateTime::currentDateTime();
-            QString format = now.toString("dd.MMM.yyyy-hhmmss");
+            QString format = now.toString("dd MMM yyyy - hh mm ss");
             QString savefile = ui->lEditSaveDir->text() + format + ".txt";
             QFile file(savefile);
 
-
-            if (dataType==ARRAY) {
-                QString savefile = ui->lEditSaveDir->text() + format + ".array";
-                bool fileSaveSuccess = utils::saveArray(savefile, arrData, 12);
-                if (!fileSaveSuccess) {
-                    QMessageBox::information(this, "Warning", "Can't save file. Please try again.");
-                }
-                else {
-                    QMessageBox::information(this, "Warning", "File save successful");
-                }
+            if (!file.open(QIODevice::ReadOnly | QIODevice::Text | QIODevice::ReadWrite))
+            {
+                return;
             }
+
+            if (file.open(QIODevice::ReadWrite))
+            {
+            }
+
+            QTextStream out(&file);
+            out << "1 - abc" << endl;
+            out << "2 - def" << endl;
         }
+    }
+    else
+    {
+        // Do randomly generated
+
+
+    }
+
+    for (int i=0; i<1000; ++i)
+    {
+        // TO-DO
+
+        ui->progBar->setValue(int((i+1)/10));
     }
 }
 
@@ -197,20 +124,20 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
                 "D://",
                 "All files (*.*);;Text File (*.txt)");
 
-    qDebug() << "on button open file 2 \n";
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly))
     {
+        ui->txtBrowser_2->setText("Failed to import file...");
+        return;
     }
 
     QTextStream in(&file);
 
-    ui->txtBrowser_2->setText(in.readAll());
+    ui->txtBrowser_2->setText("Imported Successfully!");
 }
 
 void MainWindow::on_rButtonSave_clicked()
 {
-    qDebug() << " rButtonSave_clicked\n";
     ui->progBar->setValue(0);
     ui->lEditSaveDir->setEnabled(true);
     ui->pButtonBrowseDir->setEnabled(true);
@@ -241,39 +168,122 @@ void MainWindow::on_gBoxAlgorithm_clicked()
 
 void MainWindow::on_pButtonRun_clicked()
 {
-    qDebug() << "button run clicked\n";
     ui->outputText->clear();
 
     QString dataType = ui->cBoxDataType->currentText();                         // Read Data Type
-    QString operationStr = ui->cBoxOperation->currentText();                       // Read operation
+    QString operation = ui->cBoxOperation->currentText();                       // Read Operation
     QString matrixSize = ui->lEditMatSize->text();                              // Read Matrix Size
+    QString numData = ui->lEditNumData->text();                                 // Read Number of Data
 
     QString dist_str;
     QString equation;
 
+    QString algo_str;
+
     QVector<QString> varpack;
-
-    if (operationStr=="Sum") operation = ADD;
-
-    testAlgos.clear();
-    testAlgos.push_back(LINEAR);
-    testAlgos.push_back(SPLIT_MERGE);
-    testAlgos.push_back(SORT);
-    testAlgos.push_back(SORT_APPEND);
-
-    bool shuffle = 1;
 
     /* DataType & Operation */
     if (dataType == "Array")
     {
-        if (arrData.size()==0) {
-            QMessageBox::information(this, "Warning", "Can't save file. Please try again.");
-            return;
-        }
+        // TO-DO
+    }
 
-        ArrayExperiment arrExper;
-        arrExper.experiment(arrData, operation, 5, testAlgos, shuffle, distribution);
-    }    
+    if (dataType == "Matrix")
+    {
+        // TO-DO
+    }
+
+    if (operation == "Sum")
+    {
+        // TO-DO
+    }
+
+    if (operation == "Multiplication")
+    {
+        // TO-DO
+    }
+
+    if (operation == "Element-wise multiplication")
+    {
+        // TO-DO
+    }
+
+    varpack.append(dataType);
+    varpack.append(operation);
+    varpack.append(matrixSize);
+    varpack.append(numData);
+
+    /* Distribution Tab */
+    if (ui->tabDistribution->currentIndex() == 0)
+    {
+        QString U_str = "";
+        QString N_str = "";
+        QString Exp_str = "";
+        QString G_str = "";
+
+        if (ui->lEditParaU_a->text().size() != 0 && ui->lEditParaU_b->text().size() != 0)
+            U_str.append("U(" + ui->lEditParaU_a->text() + "," + ui->lEditParaU_b->text() + ")");
+
+        if (ui->lEditParaN_mean->text().size() != 0 && ui->lEditParaN_var->text().size() != 0)
+            N_str.append("N(" + ui->lEditParaN_mean->text() + "," + ui->lEditParaN_var->text() + ")");
+
+        if (ui->lEditParaExp_lambda->text().size() != 0)
+            Exp_str.append("Exp(" + ui->lEditParaExp_lambda->text() + ")");
+
+        if (ui->lEditParaG_alpha->text().size() != 0 && ui->lEditParaG_lambda->text().size() != 0)
+            G_str.append("G(" + ui->lEditParaG_alpha->text() + "," + ui->lEditParaG_lambda->text() + ")");
+
+        QStringList dist_list = (QStringList() << U_str << N_str << Exp_str << G_str);
+        dist_list.removeAll("");
+        dist_str = dist_list.join(" + ");
+
+        varpack.append(dist_str);
+    }
+
+    if (ui->tabDistribution->currentIndex() == 1)
+    {
+        equation = ui->lEditEquation->text();
+        varpack.append(equation);
+    }
+
+    if (ui->tabDistribution->currentIndex() == 2)
+        varpack.append(ui->txtBrowser_1->toPlainText());
+
+    /* Set Bin Number - Lower Bound - Upper Bound */
+    QString binNumber = ui->lEditBinNum->text();
+    QString lowerBound = ui->lEditLowerBound->text();
+    QString upperBound = ui->lEditUpperBound->text();
+
+    varpack.append(binNumber + " " + lowerBound + " " + upperBound);
+
+    /* Calculation Dataset Tab */
+    if (ui->tabCalcDataset->currentIndex() == 0)
+    {
+        if (ui->lEditSaveDir->text() == "")
+            varpack.append("No direction found");
+
+        if (ui->lEditSaveDir->text() != "")
+            varpack.append("Dataset stored at " + ui->lEditSaveDir->text());
+    }
+
+    if (ui->tabCalcDataset->currentIndex() == 1)
+    {
+        varpack.append("0");
+    }
+
+    /* Algorithm */
+    QStringList algo_list;
+
+    if (ui->chkBoxLinear->isChecked()) algo_list.append("0 - Linear");
+    if (ui->chkBoxSplitMerge->isChecked()) algo_list.append("1 - Split/Merge");
+    if (ui->chkBoxSortLinear->isChecked()) algo_list.append("2 - Sort [Linear]");
+    if (ui->chkBoxSortAppend->isChecked()) algo_list.append("3 - Sort [Append]");
+    algo_str = algo_list.join("; ");
+
+    varpack.append(algo_str);
+
+    /* Packaging variables' value */
+    for (int i = 0; i < varpack.size(); ++i)
+        ui->outputText->append(varpack[i]);                                     // Value of the i-th variable
 }
-
 
