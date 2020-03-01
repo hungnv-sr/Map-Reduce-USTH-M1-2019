@@ -8,17 +8,8 @@
 #include <vector>
 #include <ifloat.h>
 #include <randomgenerator.h>
+#include <baseexperiment.h>
 
-struct Result {
-    iFloat value;
-    Algo algoUsed;
-    Result(iFloat v, Algo algo) {value = v; algoUsed = algo;}
-};
-enum Algo {
-	LINEAR, 
-	SPLIT_MERGE,
-	SORT, 
-	SORT_APPEND};
 
 class csvfile;
 

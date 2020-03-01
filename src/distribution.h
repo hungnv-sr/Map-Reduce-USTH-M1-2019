@@ -20,6 +20,19 @@ public:
     }
 };
 
+struct SamplingException : public std::exception {
+private:
+    QString msg;
+
+public:
+    SamplingException(QString mess) {
+        msg = mess;
+    }
+    const char* what() const throw() {
+        return msg.toStdString().c_str();
+    }
+};
+
 class Distribution
 {
 protected:
@@ -51,6 +64,12 @@ public:
         upperBound = newUpperBound;
 
         if (binNumber==0) binNumber = 1; // place-holder distribution variable
+        else {
+            if (binNumber < 0)
+                throw DistributionException("Constructor: bin number < 0");
+
+        }
+
         try {
             pdf = new double[binNumber];
             cdf = new iFloat[binNumber];
@@ -172,7 +191,7 @@ public:
         }
 
         if (res==-1)
-            throw DistributionException("Something wrong with inverse sampling binary search");
+            throw SamplingException("Inverse sampling failed because sum(cdf) < cumulative <= 1");
 
         return res;
     }
@@ -193,7 +212,7 @@ public:
 
     /*********************************************************/
     bool valid() {
-        return utils::floatEqual(lowerBound, upperBound, 0.000001);
+        return binNumber > 1 && upperBound > lowerBound;
     }
 };
 

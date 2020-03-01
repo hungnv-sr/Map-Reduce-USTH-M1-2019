@@ -163,28 +163,33 @@ public:
     iFloat operator / (const dtype2& v) const {
         return (*this) / iFloat(v);
     }
+
+    //-------------------------------- SCALAR CALCULATION OPERATORS
+    float30 getValue() {
+        return *value;
+    }
 };
 
 
 //-------------------------------- SCALAR CALCULATION OPERATORS, opposite order
 template<class dtype2>
 iFloat operator + (const dtype2& v, const iFloat& num) {
-    return num + v;
+    return num + iFloat(v);
 }
 
 template<class dtype2>
 iFloat operator - (const dtype2& v, const iFloat& num) {
-    return num - v;
+    return iFloat(v) - num;
 }
 
 template<class dtype2>
 iFloat operator * (const dtype2& v, const iFloat& num) {
-    return num * v;
+    return num * iFloat(v);
 }
 
 template<class dtype2>
 iFloat operator / (const dtype2& v, const iFloat& num) {
-    return num / v;
+    return iFloat(v) / num;
 }
 
 #endif // IFLOAT_H

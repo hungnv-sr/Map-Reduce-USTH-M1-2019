@@ -11,6 +11,16 @@ class UniformDistribution : public Distribution
 
 public:
     UniformDistribution(long long newBinNumber, double newLowerBound, double newUpperBound, double a, double b) : Distribution(newBinNumber, newLowerBound, newUpperBound) {
+        if (newBinNumber <= 1)
+            throw DistributionException("Uniform Distribution: bin Number <= 1");
+        if (newUpperBound <= newLowerBound)
+            throw DistributionException("Uniform Distribution: upper bound <= lower bound");
+        if (a >= b)
+            throw DistributionException("Uniform Distribution: a >= b");
+        if (a < newLowerBound || b > newUpperBound)
+            throw DistributionException("Uniform Distribution: a < newLowerBound || b > newUpperBound");
+
+
         double binSize = (upperBound - lowerBound) / binNumber;
         double p = binSize/(b-a);
 
@@ -21,6 +31,17 @@ public:
 
             if (i>0) cdf[i] = cdf[i-1] + pdf[i];
         }
+
+        normalize();
+    }
+
+    //---------------------------------
+    static bool validParams(long long newBinNumber, double newLowerBound, double newUpperBound, vector<double> params) {
+        if (newBinNumber <= 1 || newUpperBound <= newLowerBound) return false;
+        if (params.size() != 2) return false;
+        if (params[0] >= params[1]) return false;
+        if (params[0] < newLowerBound || params[1] > newUpperBound) return false;
+        return true;
     }
 
     static void uniformDistributionTest() {

@@ -60,7 +60,7 @@ iFloat ArrayExperiment::sortAppendTest(vector<double> inputs, Op op) {
         minHeap.pop();
         double b = minHeap.top();
         minHeap.pop();
-        minHeap.push(a+b);
+        minHeap.push(numOperate(a, b, op));
     }
 
     return minHeap.top();
@@ -77,9 +77,13 @@ iFloat ArrayExperiment::groundTruth(vector<double> inputs, Op op) {
     return res;
 }
 
-vector<Result> ArrayExperiment::experiment(vector<double> inputs, Op op, unsigned int nTest, vector<Algo> testAlgos) {
+vector<Result> ArrayExperiment::experiment(vector<double> inputs, Op op, unsigned int nTest, vector<Algo> testAlgos, bool shuffle=true, Distribution distribution=Distribution(0,0,0)) {
+    ArrayGenerator arrGen(distribution);
     vector<Result> res;
     res.clear();
+
+    res.push_back(Result(shuffle, GROUND_TRUTH)); // if we use shuffle it means a ground truth exist, so output 1
+    res.push_back(Result(groundTruth(inputs, op), GROUND_TRUTH));
 
     bool linear = 0, splitMerge = 0, sortLinear = 0, sortAppend = 0;
     for (unsigned i=0; i<testAlgos.size(); i++) {
@@ -95,7 +99,10 @@ vector<Result> ArrayExperiment::experiment(vector<double> inputs, Op op, unsigne
         if (sortLinear) res.push_back(Result(sortTest(inputs, op), SORT));
         if (sortAppend) res.push_back(Result(sortAppendTest(inputs, op), SORT_APPEND));
 
-        std::random_shuffle(inputs.begin(), inputs.end());
+        if (shuffle) std::random_shuffle(inputs.begin(), inputs.end());
+        else {
+            arrGen.generateArray(inputs.size(), inputs);
+        }
     }
 
     return res;

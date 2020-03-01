@@ -10,12 +10,14 @@ class NormalDistribution : public Distribution
 {
 public:
     NormalDistribution(long long newBinNumber, double newLowerBound, double newUpperBound, double mean, double variance) : Distribution(newBinNumber, newLowerBound, newUpperBound) {
+        if (newBinNumber <= 1)
+            throw DistributionException("Normal Distribution: bin Number <= 1");
         if (newUpperBound <= newLowerBound)
             throw DistributionException("Normal Distribution: upper bound < lower bound");
         if (mean < newLowerBound  || mean > newUpperBound)
             throw DistributionException("Normal Distribution: mean out of range");
         if (variance <= 0)
-            throw DistributionException("Variance <= 0");
+            throw DistributionException("Normal Distribution: Variance <= 0");
 
         double binSize = (upperBound - lowerBound) / binNumber;
 
@@ -27,13 +29,23 @@ public:
             if (i==0) cdf[i] = pdf[i];
             else cdf[i] = cdf[i-1] + pdf[i];
         }
+
+        normalize();
+    }
+
+    static bool validParams(long long newBinNumber, double newLowerBound, double newUpperBound, vector<double> params) {
+        if (newBinNumber <= 1 || newUpperBound <= newLowerBound) return false;
+        if (params.size() != 2) return false;
+        if (params[0] < newLowerBound || params[0] > newUpperBound) return false;
+        if (params[1] <= 0) return false;
+        return true;
     }
 
     static void normalDistributionTest() {
 
         int nTest = 10;
         int binNumber = 1000000;
-        double lowerBound, upperBound, a, b, c;
+        double lowerBound, upperBound, a, b;
         std::ofstream fo("normalDistributionTest.txt");
         std::setprecision(10);
 

@@ -2,6 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <parser.h>
+#include <arrayexperiment.h>
+#include <matrixexperiment.h>
+#include <experimentcontroller.h>
+#include <vector>
+using std::vector;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -10,6 +16,18 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+
+private:
+    int dataSize, numData;
+    DataType dataType;
+    Distribution distribution;
+    vector<double> arrData;
+    vector<Matrix<double> > matData;
+
+    Op operation;
+    vector<Algo> testAlgos;
+    vector<Result> results;
+
 
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -36,5 +54,9 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+    QString getDistributionString();
+
+    vector<double> getDistributionParams();
 };
 #endif // MAINWINDOW_H

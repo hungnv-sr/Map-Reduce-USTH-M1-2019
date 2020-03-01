@@ -10,6 +10,9 @@ RandomGenerator::RandomGenerator(Distribution newDistribution) : distribution(ne
 }
 
 double RandomGenerator::rand() {
+    if (!distribution.valid())
+        throw RandomGeneratorException("rand(): invalid distribution");
+
     iFloat U = dist01(generator);
     long long bin = distribution.inverseSampling(U);
     double binSize = distribution.getBinSize();

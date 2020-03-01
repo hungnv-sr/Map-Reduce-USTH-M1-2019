@@ -1,10 +1,16 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <iomanip>      // std::setprecision
+#include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include <cmath>
 #include <random>
-
+#include <QString>
+#include <vector>
+#include <QDebug>
+using std::vector;
 const double pi = M_PI;
 
 class utils
@@ -25,6 +31,9 @@ public:
 
     //*************
     static double rand01();
+
+    //**************
+    static bool saveArray(QString filename, const vector<double> &data, unsigned precision);
 
 };
 
