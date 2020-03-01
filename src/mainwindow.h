@@ -26,7 +26,10 @@ private:
 
     Op operation;
     vector<Algo> testAlgos;
+    unsigned nTest;
+    bool shuffle;
     vector<Result> results;
+
 
 
 public:

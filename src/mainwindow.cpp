@@ -309,94 +309,53 @@ void MainWindow::on_pButtonRun_clicked()
 {
     ui->outputText->clear();
 
-    QString dataType = ui->cBoxDataType->currentText();                         // Read Data Type
-    QString operation = ui->cBoxOperation->currentText();                       // Read Operation
-    QString matrixSize = ui->lEditMatSize->text();                              // Read Matrix Size
-    QString numData = ui->lEditNumData->text();                                 // Read Number of Data
 
-    QString dist_str;
-    QString equation;
+    nTest = 10;
+    if (ui->chkBoxGenNewData->isChecked()) shuffle = false; else shuffle = true;
 
-    QString algo_str;
+    if (!distribution.valid()) {
+        QMessageBox::information(this, "Error", "Please create a distribution first");
+        return;
+    }
+    qDebug() << "after distribution";
 
-    QVector<QString> varpack;
+    testAlgos.clear();
+    if (ui->chkBoxLinear->isChecked()) testAlgos.push_back(LINEAR);
+    if (ui->chkBoxSplitMerge->isChecked()) testAlgos.push_back(SPLIT_MERGE);
+    if (ui->chkBoxSortLinear->isChecked()) testAlgos.push_back(SORT);
+    if (ui->chkBoxSortAppend->isChecked()) testAlgos.push_back(SORT_APPEND);
 
-    /* DataType & Operation */
-    if (dataType == "Array")
-    {
-        // TO-DO
+    if (testAlgos.empty()) {
+        QMessageBox::information(this, "Error", "Please select some algorithms");
+        return;
+    }
+    qDebug() << "after testAlgos";
+
+    results.clear();
+
+    QString operationStr = ui->cBoxOperation->currentText();
+    if (operationStr=="Sum") operation = ADD;
+    else if (operationStr=="Multiplication") operation = MUL;
+    else if (operationStr=="Matmul") operation = MATMUL;
+    qDebug() << "after operation";
+
+    if (dataType==ARRAY) {
+        ArrayExperiment arrExperiment;
+        results = arrExperiment.experiment(arrData, operation, nTest, testAlgos, shuffle, distribution);
+        qDebug() << "after array experiment";
+
+        try {
+            arrExperiment.outputFile("arrResult.txt",results);
+        }
+        catch (std::exception ex) {
+            qDebug() << "Array experiment output: " << ex.what() << "\n";
+            QMessageBox::information(this, "Error", "Save results to file failed\n");
+            return;
+        }
+        QMessageBox::information(this, "Success", "Save results to file successful");
     }
 
-    if (dataType == "Matrix")
-    {
-        // TO-DO
-    }
 
-    if (operation == "Sum")
-    {
-        // TO-DO
-    }
-
-    if (operation == "Multiplication")
-    {
-        // TO-DO
-    }
-
-    if (operation == "Element-wise multiplication")
-    {
-        // TO-DO
-    }
-
-    varpack.append(dataType);
-    varpack.append(operation);
-    varpack.append(matrixSize);
-    varpack.append(numData);
-
-
-    if (ui->tabDistribution->currentIndex() == 2)
-        varpack.append(ui->txtBrowser_1->toPlainText());
-
-    /* Set Bin Number - Lower Bound - Upper Bound */
-    QString binNumber = ui->lEditBinNum->text();
-    QString lowerBound = ui->lEditLowerBound->text();
-    QString upperBound = ui->lEditUpperBound->text();
-
-    varpack.append(binNumber + " " + lowerBound + " " + upperBound);
-
-    /* Calculation Dataset Tab */
-    if (ui->tabCalcDataset->currentIndex() == 0)
-    {
-        if (ui->lEditSaveDir->text() == "")
-            varpack.append("No direction found");
-
-        if (ui->lEditSaveDir->text() != "")
-            varpack.append("Dataset stored at " + ui->lEditSaveDir->text());
-    }
-
-    if (ui->tabCalcDataset->currentIndex() == 1)
-    {
-        varpack.append("0");
-    }
-
-    /* Algorithm */
-    QStringList algo_list;
-
-    if (ui->chkBoxLinear->isChecked()) algo_list.append("0 - Linear");
-    if (ui->chkBoxSplitMerge->isChecked()) algo_list.append("1 - Split/Merge");
-    if (ui->chkBoxSortLinear->isChecked()) algo_list.append("2 - Sort [Linear]");
-    if (ui->chkBoxSortAppend->isChecked()) algo_list.append("3 - Sort [Append]");
-    algo_str = algo_list.join("; ");
-
-    varpack.append(algo_str);
-
-    /*  */
-    if (ui->chkBoxGenNewData->isChecked())
-        varpack.append("New Dataset [ON]");
-    else varpack.append("New Dataset [OFF]");
-
-    /* Packaging variables' value */
-    for (int i = 0; i < varpack.size(); ++i)
-        ui->outputText->append(varpack[i]);                                     // Value of the i-th variable
 }
 
 

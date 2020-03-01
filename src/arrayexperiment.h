@@ -27,7 +27,7 @@ public:
 
 //********************************************
 
-class ArrayExperiment
+class ArrayExperiment : public BaseExperiment
 {
 public:
     ArrayExperiment();
@@ -40,7 +40,7 @@ public:
 
     iFloat sortAppendTest(vector<double> inputs, Op op);
 
-    iFloat groundTruth(vector<double> inputs, Op op);
+    iFloat groundTruth(const vector<double> &inputs, Op op);
 
     vector<Result> experiment(vector<double> inputs, Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle, Distribution distribution);
 

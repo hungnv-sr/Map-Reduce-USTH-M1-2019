@@ -13,6 +13,11 @@ double utils::sqr(double x) {
     return x*x;
 }
 
+iFloat utils::isqrt(const iFloat &x) {
+    return iFloat(boost::multiprecision::sqrt(x.getValue()));
+}
+
+
 double utils::powerf(double x, int n) {
     if (n==0) return 1;
     double midpow = powerf(x, n/2);
