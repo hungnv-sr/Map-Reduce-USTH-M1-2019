@@ -36,16 +36,20 @@ double utils::rand01() {
     return distribution(generator);
 }
 
-bool utils::saveArray(QString filename, const vector<double> &res, unsigned precision) {
+bool utils::saveArray(QString filename, const vector<double> &data, unsigned precision) {
+    std::ofstream fo;
     try {
         std::setprecision(precision);
 
-        std::ofstream fo(filename.toStdString().c_str());
-        fo << res.size() << "\n";
-        for (unsigned i=0; i<res.size(); i++) fo << std::fixed << res[i] << " ";
+        fo = std::ofstream(filename.toStdString().c_str());
+        qDebug() << "filename = " << filename << "\n";
+        qDebug() << "data size = " << data.size() << "\n";
+        fo << data.size() << "\n";
+        for (unsigned i=0; i<data.size(); i++) fo << std::fixed << data[i] << " ";
         fo << "\n";
         fo.close();
-    } catch (std::exception ex) {
+    } catch (std::exception ex) {        
+        fo.close();
         return 0;
     }
 

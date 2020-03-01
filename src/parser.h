@@ -95,17 +95,17 @@ class Parser
     Distribution createDistribution(QChar distType, std::vector<double> params) {
         Distribution nonsense(0,0,0);
         if (distType=='U') {
-            if (params.size()!=2) return nonsense;
+            if (!UniformDistribution::validParams(binNumber, lowerBound, upperBound, params)) return nonsense;
             return UniformDistribution(binNumber, lowerBound, upperBound, params[0], params[1]);
         }
 
         if (distType=='N') {
-            if (params.size()!=2) return nonsense;
+            if (!NormalDistribution::validParams(binNumber, lowerBound, upperBound, params)) return nonsense;
             return NormalDistribution(binNumber, lowerBound, upperBound, params[0], params[1]);
         }
 
         if (distType=='E') {
-            if (params.size()!=1) return nonsense;
+            if (!ExponentialDistribution::validParams(binNumber, lowerBound, upperBound, params)) return nonsense;
             return ExponentialDistribution(binNumber, lowerBound, upperBound, params[0]);
         }
 
@@ -113,9 +113,8 @@ class Parser
     }
 
     //---------------------------------------
-    // parse expression using shunting yard
+    // parseExpression(str): parse expression using shunting yard
 
-    // get 2 operands from stack and apply operator
     Distribution parseDist(const QString& s, int pos, int& returnPos) {
         std::vector<double> params;
         int i, j, n;
@@ -142,6 +141,7 @@ class Parser
         return createDistribution(s[pos], params);
     }
 
+    // get 2 operands from stack and apply operator
 
     bool stackApplyOp(QChar op, stack<Distribution>& valueStack) {
         if (valueStack.size() < 2) return false; // fail
@@ -161,46 +161,57 @@ class Parser
         stack<Distribution> valueStack;
         stack<QChar> operatorStack;
 
+
         if (s.length()==0) return nonsense;
         s = normalize(s);
         if (!validString(s)) return nonsense;
 
         n = s.length();
+        i = 0;
         while (i<n) {
-            if (isNumber(s[i])) return nonsense; // stand-alone number is wrong.
+            if (isNumber(s[i])) {
+                return nonsense; // stand-alone number is wrong.
+            }
 
             // is an operand
             if (isDist(s[i])) {
                 Distribution dist = parseDist(s, i, i);
-                if (!dist.valid()) return nonsense;
+                if (!dist.valid()) {
+                    return nonsense;
+                }
                 valueStack.push(dist);
             }
-
+            else
             if (s[i]=='(') operatorStack.push(s[i]);
-
+            else
             if (s[i]==')') {
                 while (operatorStack.top()!='(') {
                     QChar op = operatorStack.top();
                     operatorStack.pop();
 
-                    if (!stackApplyOp(op, valueStack)) return nonsense;
+                    if (!stackApplyOp(op, valueStack)) {
+                        return nonsense;
+                    }
                 }
 
-                if (operatorStack.top()!='(') return nonsense;
+                if (operatorStack.top()!='(') {
+                    return nonsense;
+                }
                 operatorStack.pop(); // pop the '(' out
             }
-
+            else
             if (isOperator(s[i])) {
                 QChar thisOp = s[i];
                 while (!operatorStack.empty() && precedence(operatorStack.top()) >= thisOp) {
                     QChar op = operatorStack.top();
                     operatorStack.pop();
 
-                    if (!stackApplyOp(op, valueStack)) return nonsense;
+                    if (!stackApplyOp(op, valueStack)) {
+                        return nonsense;
+                    }
                 }
                 operatorStack.push(thisOp);
             }
-
 
             i++;
         }
@@ -227,12 +238,11 @@ public:
     }
 
     Parser(long long newBinNumber, double newLowerBound, double newUpperBound) {
-        qDebug() << "parser binNumber = " << newBinNumber << "\n";
         if (newBinNumber <= 1)
-            throw ParserException("Constructor: bin Number <= 1");
+            throw ParserException("Constructor: newBinNumber <= 1");
 
         if (newLowerBound >= newUpperBound)
-            throw ParserException("Constructor: newLowerBound > newUpperBound");
+            throw ParserException("Constructor: newLowerBound >= newUpperBound");
 
         binNumber = newBinNumber;
         lowerBound = newLowerBound;
@@ -249,7 +259,24 @@ public:
         return parseExpression(s);
     }
 
+    static bool validParams(long long binNumber, double lowerBound, double upperBound) {
+        return binNumber > 1 && lowerBound < upperBound;
+    }
 
+
+    //--------------------------------------------------
+    static void parserTest() {
+        Parser parser(10,0,10);
+        QString str = "U(3,7) + N(1,2) + E(3)";
+        Distribution dist = parser.parseExpression(str);
+        qDebug() << dist.valid() << "\n";
+
+        str = "U(5,4)";
+        qDebug() << parser.parseExpression(str).valid() << "\n";
+
+        str = "U(5,4) * N(1,2)";
+        qDebug() << parser.parseExpression(str).valid() << "\n";
+    }
 };
 
 #endif // PARSER_H

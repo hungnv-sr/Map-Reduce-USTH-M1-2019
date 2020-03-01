@@ -9,6 +9,7 @@
 #include <random>
 #include <QString>
 #include <vector>
+#include <QDebug>
 using std::vector;
 const double pi = M_PI;
 

@@ -16,8 +16,9 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+
 private:
-    int dataSize, nData;
+    int dataSize, numData;
     DataType dataType;
     Distribution distribution;
     vector<double> arrData;
@@ -51,13 +52,11 @@ private slots:
 
     void on_pButtonRun_clicked();
 
-    //------------------------------------------------------
-public:
+private:
+    Ui::MainWindow *ui;
+
     QString getDistributionString();
 
     vector<double> getDistributionParams();
-
-private:
-    Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

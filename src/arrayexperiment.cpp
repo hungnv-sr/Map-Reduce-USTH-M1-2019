@@ -60,7 +60,7 @@ iFloat ArrayExperiment::sortAppendTest(vector<double> inputs, Op op) {
         minHeap.pop();
         double b = minHeap.top();
         minHeap.pop();
-        minHeap.push(a+b);
+        minHeap.push(numOperate(a, b, op));
     }
 
     return minHeap.top();

@@ -40,33 +40,22 @@ void matTest()
     std::cout << numeric_cast<double>(x);
 }
 
-void distributionTest() {
-    UniformDistribution::uniformDistributionTest();
-}
-
-void normalTest() {
-    NormalDistribution::normalDistributionTest();
-}
-
-void expoTest() {
-    ExponentialDistribution::exponentialDistributionTest();
-}
 
 int main(int argc, char *argv[])
 {
     srand(time(NULL));
     QApplication a(argc, argv);
-    //matTest();
-    //distributionTest();
-    //normalTest();
-  //  expoTest();
+
     /*
     std::setprecision(std::numeric_limits<float30>::digits10);
     float30 x = 0.00001;
     std::cout << (x*x*x*x) << "\n";
     */
 
+    Parser::parserTest();
+
     MainWindow w;
     w.show();
+
     return a.exec();
 }

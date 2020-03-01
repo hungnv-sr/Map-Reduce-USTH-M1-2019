@@ -13,8 +13,8 @@ public:
             throw DistributionException("Exponential Distribution: bin Number <= 1");
         if (newUpperBound <= newLowerBound)
             throw DistributionException("Exponential Distribution: upper bound < lower bound");
-        if (lambda==0.0)
-            throw DistributionException("Exponential Distribution: mean out of range");
+        if (lambda <= 0)
+            throw DistributionException("Exponential Distribution: lambda <= 0");
 
 
         double binSize = (upperBound - lowerBound) / binNumber;
@@ -29,6 +29,15 @@ public:
             if (i==0) cdf[i] = pdf[i];
             else cdf[i] = cdf[i-1] + pdf[i];
         }
+
+        normalize();
+    }
+
+    static bool validParams(long long newBinNumber, double newLowerBound, double newUpperBound, vector<double> params) {
+        if (newBinNumber <= 1 || newUpperBound <= newLowerBound) return false;
+        if (params.size() != 1) return false;
+        if (params[0] <= 0) return false;
+        return true;
     }
 
     static void exponentialDistributionTest() {
