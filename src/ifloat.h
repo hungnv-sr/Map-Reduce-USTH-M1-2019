@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <boost/multiprecision/cpp_dec_float.hpp>
 #include <boost/multiprecision/cpp_int.hpp>
+#include <boost/multiprecision/number.hpp>
 using boost::multiprecision::number;
 using boost::multiprecision::cpp_dec_float;
 using boost::multiprecision::cpp_dec_float_50;
@@ -12,7 +13,7 @@ using boost::numeric_cast;
 using std::cout;
 
 //typedef cpp_dec_float_50 float30;
-typedef number<cpp_dec_float<30> > float30;
+typedef number<cpp_dec_float<50> > float50;
 
 struct iFloatException : public std::exception {
 private:
@@ -45,7 +46,7 @@ public:
 class iFloat
 {
 private:
-    float30 *value;
+    float50 *value;
 
     void cleanup() {
         if (value==nullptr)
@@ -54,20 +55,24 @@ private:
     }
 
     void copy(const iFloat& v) {
-        value = new float30;
+        value = new float50;
         *value = *(v.value);
     }
 
 public:
     //--------------------  CANONICAL FORM FUNCTIONS
     iFloat() {
-        value = new float30;
+        value = new float50;
         *value = 0;
     };
 
+    iFloat(float50 x) {
+        value = new float50;
+        *value = x;
+    }
 
     iFloat(double x) {
-        value = new float30;
+        value = new float50;
         *value = x;
     }
 
@@ -165,9 +170,12 @@ public:
     }
 
     //-------------------------------- SCALAR CALCULATION OPERATORS
-    float30 getValue() {
+    float50 getValue() const {
         return *value;
     }
+
+    friend std::ostream & operator << (std::ostream &out, const iFloat &c);
+
 };
 
 
@@ -191,5 +199,14 @@ template<class dtype2>
 iFloat operator / (const dtype2& v, const iFloat& num) {
     return iFloat(v) / num;
 }
+
+//------------------------------    OUTPUT OPERATOR
+inline std::ostream & operator << (std::ostream &out, const iFloat &c)
+{
+    out << ((*c.value).str());
+    return out;
+}
+
+
 
 #endif // IFLOAT_H
