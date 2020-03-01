@@ -9,6 +9,14 @@ class ExponentialDistribution : public Distribution
 {
 public:
     ExponentialDistribution(long long newBinNumber, double newLowerBound, double newUpperBound, double lambda) : Distribution(newBinNumber, newLowerBound, newUpperBound) {
+        if (newBinNumber <= 1)
+            throw DistributionException("Exponential Distribution: bin Number <= 1");
+        if (newUpperBound <= newLowerBound)
+            throw DistributionException("Exponential Distribution: upper bound < lower bound");
+        if (lambda==0.0)
+            throw DistributionException("Exponential Distribution: mean out of range");
+
+
         double binSize = (upperBound - lowerBound) / binNumber;
 
         for (long long i=0; i<binNumber; i++) {
