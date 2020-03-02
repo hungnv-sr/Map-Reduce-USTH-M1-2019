@@ -11,6 +11,7 @@
 #include <vector>
 #include <QDebug>
 #include <ifloat.h>
+#include <matrix.h>
 using std::vector;
 const double pi = M_PI;
 
@@ -33,12 +34,13 @@ public:
     static double expoPdf(double lambda, double x);
 
 
-
     //*************
     static double rand01();
 
     //**************
     static bool saveArray(QString filename, const vector<double> &data, unsigned precision);
+
+    static bool saveMatrix(QString filename, const vector<Matrix<double> > &data, unsigned precision);
 
 };
 

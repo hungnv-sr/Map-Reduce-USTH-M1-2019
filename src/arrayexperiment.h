@@ -40,6 +40,8 @@ public:
 
     iFloat linearTest(const vector<double> &inputs, Op op);
 
+    double splitMerge(const vector<double> &inputs, Op op, int l, int r);
+
     iFloat splitMergeTest(const vector<double> &input, Op op);
 
     iFloat sortTest(vector<double> inputs, Op op);
@@ -54,7 +56,6 @@ public slots:
     void slotRunArrayExperiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle);
 
 signals:
-    //void signalExperimentFinish(vector<Result> arr);
     void signalExperimentFinish(vector<Result> res);
 };
 

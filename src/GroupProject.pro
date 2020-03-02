@@ -27,16 +27,15 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     matrixexperiment.cpp \
+    matrixgenerator.cpp \
     randomgenerator.cpp \
     utils.cpp
 
 HEADERS += \
-    GaussianDistribution.h \
     arrayexperiment.h \
     arraygenerator.h \
     basedatatype.h \
     baseexperiment.h \
-    baseoperand.h \
     csvfile.h \
     NormalDistribution.h \
     distribution.h \
@@ -46,6 +45,7 @@ HEADERS += \
     mainwindow.h \
     matrix.h \
     matrixexperiment.h \
+    matrixgenerator.h \
     numerical.h \
     parser.h \
     randomgenerator.h \

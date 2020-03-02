@@ -47,13 +47,39 @@ bool utils::saveArray(QString filename, const vector<double> &data, unsigned pre
         std::setprecision(precision);
 
         fo = std::ofstream(filename.toStdString().c_str());
+        fo << std::setprecision(precision);
+
         qDebug() << "filename = " << filename << "\n";
-        qDebug() << "data size = " << data.size() << "\n";
+
         fo << data.size() << "\n";
         for (unsigned i=0; i<data.size(); i++) fo << std::fixed << data[i] << " ";
         fo << "\n";
         fo.close();
     } catch (std::exception ex) {        
+        fo.close();
+        return 0;
+    }
+
+    return 1;
+}
+
+bool utils::saveMatrix(QString filename, const vector<Matrix<double> > &data, unsigned int precision) {
+    std::ofstream fo;
+    try {
+        std::setprecision(precision);
+
+        fo = std::ofstream(filename.toStdString().c_str());
+        fo << std::setprecision(precision);
+
+        qDebug() << "filename = " << filename << "\n";
+
+        fo << data.size() << " " << data[0].getHeight() << " " << data[0].getWidth() << "\n";
+        for (unsigned i=0; i<data.size(); i++) {
+            for (unsigned t=0; t<data[i].getLength(); t++) fo << std::fixed << data[i][t] << " ";
+            fo << "\n";
+        }
+        fo.close();
+    } catch (std::exception ex) {
         fo.close();
         return 0;
     }

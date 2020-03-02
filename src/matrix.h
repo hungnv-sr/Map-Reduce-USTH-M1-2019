@@ -30,8 +30,6 @@ private:
 protected:
     dtype *values;
 
-    Matrix() {}
-
     unsigned offset(unsigned row, unsigned col) const {
         return row*width + col;
     }
@@ -58,6 +56,11 @@ protected:
     }
 
 public:
+    Matrix() {
+        height = 0;
+        width = 0;
+    }
+
     //-------------------       CANONICAL FORM
     Matrix(const unsigned newHeight, const unsigned newWidth, const dtype init=0.0) {
         height = newHeight;
@@ -229,6 +232,10 @@ public:
 
     unsigned getWidth() const {
         return width;
+    }
+
+    unsigned getLength() const {
+        return height*width;
     }
 
 

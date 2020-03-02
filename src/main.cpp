@@ -34,6 +34,8 @@ int main(int argc, char *argv[])
     qRegisterMetaType<vector<Result> >("vector<Result>");
     qRegisterMetaType<Algo>("Algo");
     qRegisterMetaType<vector<Algo> >("vector<Algo>");
+    qRegisterMetaType<Matrix<double> >("Matrix<double>");
+    qRegisterMetaType<vector<Matrix<double> > >("vector<Matrix<double> >");
 
 
     /*

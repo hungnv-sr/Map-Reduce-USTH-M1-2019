@@ -30,7 +30,7 @@ void MainWindow::slotGenerateArrayFinish(const vector<double> &arr) {
     arrData = arr;
     createDataThread.quit();
     createDataThread.wait();
-    QMessageBox::information(this, "Success", "Generate data successful");
+    QMessageBox::information(this, "Success", "Generate array data successful");
     resource.release(1);        
 }
 
@@ -42,16 +42,24 @@ void MainWindow::slotArrayExperimentFinish(const vector<Result> &res) {
     resource.release(1);
 
     try {
-            BaseExperiment::staticOutputFile("arrResult.txt",results);
+            BaseExperiment::staticOutputFile("arrResultAutosave.txt",results);
         }
         catch (std::exception ex) {
             qDebug() << "Array experiment output: " << ex.what() << "\n";
-            QMessageBox::information(this, "Error", "Save results to file failed\n");
+            QMessageBox::information(this, "Error", "Auto-save results to file failed\n");
             return;
         }
-        QMessageBox::information(this, "Success", "Save results to file successful");
+    QMessageBox::information(this, "Success", "Auto-save results to file successful");
 }
 
+void MainWindow::slotGenerateMatrixFinish(const vector<Matrix<double> > &mats) {
+    numData = mats.size();
+    matData = mats;
+    createDataThread.quit();
+    createDataThread.wait();
+    QMessageBox::information(this, "Success", "Generate matrix data successful");
+    resource.release(1);
+}
 
 //-------------------   FUNCTIONS TO START AND RUN NEW THREADS
 bool MainWindow::threadGenerateArray() {
@@ -71,6 +79,8 @@ bool MainWindow::threadGenerateArray() {
     createDataThread.start();
 
     emit signalGenerateArray(numData);
+
+    return true;
 }
 
 bool MainWindow::threadRunArrayExperiment() {
@@ -92,7 +102,35 @@ bool MainWindow::threadRunArrayExperiment() {
     experimentThread.start();
 
     emit signalArrayExperiment(operation, nTest, testAlgos, shuffle);
+
+    return true;
 }
+
+bool MainWindow::threadGenerateMatrix() {
+    if (numData <= 0)
+        throw MainWindowException("threadGenerateMatrix: numData <= 0");
+    if (matSize <= 0)
+        throw MainWindowException("threadGenerateMatrix: matSize <= 0");
+    if (!distribution.valid())
+        throw MainWindowException("threadGenerateMatrix: distribution invalid");
+
+    if (!resource.tryAcquire()) return false;
+
+    MatrixGenerator *matGen = new MatrixGenerator(distribution);
+    matGen->moveToThread(&createDataThread);
+    connect(&createDataThread, &QThread::finished, matGen, &QObject::deleteLater);
+    connect(this, &MainWindow::signalGenerateMatrix, matGen, &MatrixGenerator::slotGenerateMatrix);
+    connect(matGen, &MatrixGenerator::signalGenerateFinish, this, &MainWindow::slotGenerateMatrixFinish);
+
+    createDataThread.start();
+
+    emit signalGenerateMatrix(numData, matSize);
+
+    return true;
+}
+
+
+//--------------------  ON-CLICK LISTENER
 
 void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
 {
@@ -100,11 +138,11 @@ void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
 
     int count = ui->cBoxOperation->count();
 
-    if (count == 3)
+    qDebug() << "cBox data type count " << count << "\n";
+    if (count == 2)
     {
         if (index == 1)
         {
-            ui->cBoxOperation->removeItem(2);
             ui->lblMatSize->setVisible(true);
             ui->lEditMatSize->setVisible(true);
         }
@@ -114,7 +152,7 @@ void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
         if (index < 1)
         {
             ui->lEditMatSize->clear();
-            ui->cBoxOperation->insertItem(2, "Element-wise multiplication");
+            //ui->cBoxOperation->insertItem(2, "Element-wise multiplication");
             ui->lblMatSize->setVisible(false);
             ui->lEditMatSize->setVisible(false);
         }
@@ -203,19 +241,10 @@ vector<double> MainWindow::getDistributionParams() {
     return res;
 }
 
-void MainWindow::on_pButtonGen_clicked()
+void MainWindow::on_pButtonCreateDistribution_clicked()
 {
-    qDebug() << "buttonGen clicked \n";
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
-        return;
-    }
-
-    QString numDataStr = ui->lEditNumData->text();
-    bool validNumData;
-    numData = numDataStr.toDouble(&validNumData);
-    if (!validNumData || numData <= 0) {
-        QMessageBox::information(this, "Error", "Invalid number of data element");
         return;
     }
 
@@ -240,11 +269,59 @@ void MainWindow::on_pButtonGen_clicked()
         return;
     }
 
+    QMessageBox::information(this, "Success", "Create distribution successful");
+}
+
+
+void MainWindow::on_pButtonGen_clicked()
+{
+    qDebug() << "buttonGen clicked \n";
+    if (!resource.available()) {
+        QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
+        return;
+    }
+
+    QString numDataStr = ui->lEditNumData->text();
+    bool validNumData;
+    numData = numDataStr.toDouble(&validNumData);
+    if (!validNumData || numData <= 0) {
+        QMessageBox::information(this, "Error", "Invalid number of data element");
+        return;
+    }
+
+    if (!distribution.valid()) {
+        QMessageBox::information(this, "Error", "Please create a distribution first");
+        return;
+    }
+
     QString dataTypeStr = ui->cBoxDataType->currentText();
+    if (dataTypeStr=="Matrix") {
+        QString matSizeStr = ui->lEditMatSize->text();
+        bool validMatSize;
+        matSize = matSizeStr.toDouble(&validMatSize);
+        if (!validMatSize || matSize <= 0) {
+            QMessageBox::information(this, "Error", "Invalid matrix size");
+            return;
+        }
+    }
+
+
     if (dataTypeStr=="Array") {
         dataType = ARRAY;
         ArrayGenerator arrayGenerator(distribution);
-        threadGenerateArray();
+        if (!threadGenerateArray()) {
+            QMessageBox::information(this, "Error", "Generate failed. Please try again");
+            return;
+        }
+        QMessageBox::information(this, "Update", "Generate array is in progress");
+    }
+    else if (dataTypeStr=="Matrix") {
+        dataType = MATRIX;
+        MatrixGenerator matrixGenerator(distribution);
+        if (!threadGenerateMatrix()) {
+            QMessageBox::information(this, "Error", "Generate failed. Please try again");
+            return;
+        }
         QMessageBox::information(this, "Update", "Generate array is in progress");
     }
 
@@ -275,10 +352,20 @@ void MainWindow::on_pButtonSaveDataset_clicked()
             QString savefile = ui->lEditSaveDir->text() + "/" + format + ".array";
             bool fileSaveSuccess = utils::saveArray(savefile, arrData, 12);
             if (!fileSaveSuccess) {
-                QMessageBox::information(this, "Error", "Can't save file. Please try again.");
+                QMessageBox::information(this, "Error", "Can't save array to file. Please try again.");
             }
             else {
-                QMessageBox::information(this, "Success", "File save successful");
+                QMessageBox::information(this, "Success", "File save array successful");
+            }
+        }
+        else {
+            QString savefile = ui->lEditSaveDir->text() + "/" + format + ".matrix";
+            bool fileSaveSuccess = utils::saveMatrix(savefile, matData, 12);
+            if (!fileSaveSuccess) {
+                QMessageBox::information(this, "Error", "Can't save matrix file. Please try again.");
+            }
+            else {
+                QMessageBox::information(this, "Success", "File save matrix successful");
             }
         }
     }
@@ -286,6 +373,11 @@ void MainWindow::on_pButtonSaveDataset_clicked()
 
 void MainWindow::on_pButtonOpenFile_2_clicked()
 {
+    if (!resource.available()) {
+        QMessageBox::information(this, "Error", "Another task is in progress. Please wait");
+        return;
+    }
+
     QString filename = QFileDialog::getOpenFileName(
                 this,
                 tr("Open File"),
@@ -318,6 +410,7 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
         return;
     }
 
+    ui->txtBrowser_2->setText("Importing file...");
     try {
         if (dataType==ARRAY) {
             fin >> numData;
@@ -330,7 +423,14 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
             fin.close();
         }
         else if (dataType==MATRIX) {
-            qDebug() << "Need to code import file for matrix\n";
+            fin >> numData >> matSize >> matSize;
+            matData.clear();
+            Matrix<double> currentMat(matSize, matSize);
+            for (unsigned i=0; i<numData; i++) {
+                for (unsigned t=0; t<matSize*matSize; t++) fin >> currentMat[i];
+                matData.push_back(currentMat);
+            }
+            fin.close();
         }
     }
     catch (...) {
@@ -343,12 +443,7 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
     ui->txtBrowser_2->setText("Data imported successfully!");
 }
 
-void MainWindow::on_rButtonSave_clicked()
-{
-    ui->progBar->setValue(0);
-    ui->lEditSaveDir->setEnabled(true);
-    ui->pButtonBrowseDir->setEnabled(true);
-}
+
 
 void MainWindow::on_pButtonBrowseDir_clicked()
 {
@@ -361,12 +456,6 @@ void MainWindow::on_pButtonBrowseDir_clicked()
     ui->lEditSaveDir->setText(folderDir);
 }
 
-void MainWindow::on_rButtonDontSave_clicked()
-{
-    ui->lEditSaveDir->clear();
-    ui->lEditSaveDir->setEnabled(false);
-    ui->pButtonBrowseDir->setEnabled(false);
-}
 
 void MainWindow::on_gBoxAlgorithm_clicked()
 {
@@ -375,8 +464,7 @@ void MainWindow::on_gBoxAlgorithm_clicked()
 
 void MainWindow::on_pButtonRun_clicked()
 {
-    ui->outputText->clear();
-
+    ui->outputText->clear();       
 
     nTest = 10;
     if (ui->chkBoxGenNewData->isChecked()) shuffle = false; else shuffle = true;
@@ -413,6 +501,5 @@ void MainWindow::on_pButtonRun_clicked()
         QMessageBox::information(this, "Update", "Array experiment is in progress");
     }
 }
-
 
 

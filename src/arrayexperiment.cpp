@@ -18,7 +18,7 @@ iFloat ArrayExperiment::linearTest(const vector<double> &inputs, Op op) {
 
 
 //----------------------------------------------    SPLIT/MERGE ALGORITHM
-double splitMerge(const vector<double> &inputs, Op op, int l, int r) {
+double ArrayExperiment::splitMerge(const vector<double> &inputs, Op op, int l, int r) {
     if (l>r)
         throw ArrayExperimentException("SplitMerge error: l can't be > r for valid inputs");
 

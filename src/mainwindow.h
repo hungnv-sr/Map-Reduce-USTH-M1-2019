@@ -40,10 +40,10 @@ private:
     QThread experimentThread;
 
 
-    unsigned dataSize, numData;
+    unsigned dataSize, numData, matSize;
     DataType dataType;
     Distribution distribution;
-    vector<double> arrData;
+    vector<double> arrData;    
     vector<Matrix<double> > matData;
 
     Op operation;
@@ -67,11 +67,7 @@ private slots:
 
     void on_cBoxDataType_currentIndexChanged(int index);
 
-    void on_rButtonSave_clicked();
-
     void on_pButtonBrowseDir_clicked();
-
-    void on_rButtonDontSave_clicked();
 
     void on_gBoxAlgorithm_clicked();
 
@@ -79,21 +75,35 @@ private slots:
 
     void on_pButtonSaveDataset_clicked();
 
+    void on_pButtonCreateDistribution_clicked();
+
     //-----------------------   SIGNAL AND SLOTS FOR THREADS
 private slots:
     void slotGenerateArrayFinish(const vector<double>& arr);
 
     void slotArrayExperimentFinish(const vector<Result> &res);
+
+    void slotGenerateMatrixFinish(const vector<Matrix<double> > &mats);
+
+    void slotMatrixExperimentFinish(const vector<Result> &res);
 signals:
     void signalGenerateArray(int nData);
 
     void signalArrayExperiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle);
+
+    void signalGenerateMatrix(int nData, int matSize);
+
+    void signalMatrixExperiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle);
+
     //-----------------------   FUNCTIONS FOR CREATE DISTRIBUTION, GENERATE DATA, AND EXPERIMENT USING THREAD
 private:
     bool threadGenerateArray();
 
     bool threadRunArrayExperiment();
 
+    bool threadGenerateMatrix();
+
+    bool threadRunMatrixExperiment();
 
 
 
