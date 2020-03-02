@@ -184,7 +184,7 @@ void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
     qDebug() << "cBox data type count " << count << "\n";
     if (count == 2)
     {
-        if (index == 1)
+        if (index == 0)
         {
             ui->lblMatSize->setVisible(true);
             ui->lEditMatSize->setVisible(true);
@@ -192,7 +192,7 @@ void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
     }
     else
     {
-        if (index < 1)
+        if (index == 1)
         {
             ui->lEditMatSize->clear();
             //ui->cBoxOperation->insertItem(2, "Element-wise multiplication");
@@ -357,9 +357,11 @@ void MainWindow::on_pButtonGen_clicked()
     if (dataTypeStr=="Array") {
         dataType = ARRAY;
         ArrayGenerator arrayGenerator(distribution);
+
         if (!threadGenerateArray()) {
             QMessageBox::information(this, "Error", "Generate failed. Please try again");
             return;
+
         }
         QMessageBox::information(this, "Update", "Generate array is in progress");
     }
@@ -417,6 +419,7 @@ void MainWindow::on_pButtonSaveDataset_clicked()
             }
         }
     }
+
 }
 
 void MainWindow::on_pButtonOpenFile_2_clicked()
@@ -492,7 +495,6 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
 }
 
 
-
 void MainWindow::on_pButtonBrowseDir_clicked()
 {
     if (!resource.available()) {
@@ -508,7 +510,6 @@ void MainWindow::on_pButtonBrowseDir_clicked()
 
     ui->lEditSaveDir->setText(folderDir);
 }
-
 
 void MainWindow::on_gBoxAlgorithm_clicked()
 {
