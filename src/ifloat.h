@@ -5,19 +5,27 @@
 #include <QDebug>
 #include <boost/multiprecision/cpp_dec_float.hpp>
 #include <boost/multiprecision/cpp_int.hpp>
+#include <boost/multiprecision/number.hpp>
 using boost::multiprecision::number;
 using boost::multiprecision::cpp_dec_float;
 using boost::multiprecision::cpp_dec_float_50;
 using boost::numeric_cast;
 using std::cout;
 
-typedef cpp_dec_float_50 float50;
+//typedef cpp_dec_float_50 float30;
+typedef number<cpp_dec_float<50> > float50;
 
-struct iFloatException
-{
-    std::string m_msg;
-    iFloatException( const char*const msg ) : m_msg(msg) {}
-    iFloatException( const iFloatException& ve ) : m_msg(ve.m_msg) {}
+struct iFloatException : public std::exception {
+private:
+    QString msg;
+
+public:
+    iFloatException(QString mess) {
+        msg = mess;
+    }
+    const char* what() const throw() {
+        return msg.toStdString().c_str();
+    }
 };
 
 //----------------      TUTORIAL ON BOOST C++ FLOAT
@@ -28,8 +36,8 @@ struct iFloatException
 //----------------------------------------------------------------------------------------------------------------------------------
 
 
-// iFloat is the wrapper class for Boost C++ class cpp_dec_float_50 (float50), which is float that has 50 decimal places precision
-// We need a wrapper class because float50 can use a lot of memory. In a function, it will cause stack overflow very quickly.
+// iFloat is the wrapper class for Boost C++ class cpp_dec_float_50 (float30), which is float that has 50 decimal places precision
+// We need a wrapper class because float30 can use a lot of memory. In a function, it will cause stack overflow very quickly.
 // Using a wrapper class, the memory is on the heap instead, so there's no problem.
 
 // Usage:
@@ -58,6 +66,10 @@ public:
         *value = 0;
     };
 
+    iFloat(float50 x) {
+        value = new float50;
+        *value = x;
+    }
 
     iFloat(double x) {
         value = new float50;
@@ -75,7 +87,7 @@ public:
 
     iFloat& operator = (const iFloat& v) {
         if (this!=&v) {
-            // usually we need to cleanup(), but Boost C++ class float50 does not cause memory leak
+            // usually we need to cleanup(), but Boost C++ class float30 does not cause memory leak
             *value = *(v.value);
         }
         return *this;
@@ -90,7 +102,7 @@ public:
 
     operator float() const {return (*value).convert_to<float>();}
     */
-    operator double() const {return (*value).convert_to<double>();}
+    explicit operator double() const {return (*value).convert_to<double>();}
 
 
     //-------------------------------- CALCULATION OPERATORS
@@ -124,11 +136,21 @@ public:
         return res;
     }
 
+    bool operator > (const iFloat& v) const {
+        return (*value) > (*v.value);
+    }
+
+    bool operator < (const iFloat& v) const {
+        return (*value) < (*v.value);
+    }
+
+    bool operator == (const iFloat &v) const {
+        return (*value) == (*v.value);
+    }
 
     //-------------------------------- SCALAR CALCULATION OPERATORS
     template <class dtype2>
-    iFloat operator + (const dtype2& v) const {
-        qDebug() << "operator + template is used\n";
+    iFloat operator + (const dtype2& v) const {        
         return (*this) + iFloat(v);
     }
 
@@ -146,28 +168,45 @@ public:
     iFloat operator / (const dtype2& v) const {
         return (*this) / iFloat(v);
     }
+
+    //-------------------------------- SCALAR CALCULATION OPERATORS
+    float50 getValue() const {
+        return *value;
+    }
+
+    friend std::ostream & operator << (std::ostream &out, const iFloat &c);
+
 };
 
 
 //-------------------------------- SCALAR CALCULATION OPERATORS, opposite order
 template<class dtype2>
 iFloat operator + (const dtype2& v, const iFloat& num) {
-    return num + v;
+    return num + iFloat(v);
 }
 
 template<class dtype2>
 iFloat operator - (const dtype2& v, const iFloat& num) {
-    return num - v;
+    return iFloat(v) - num;
 }
 
 template<class dtype2>
 iFloat operator * (const dtype2& v, const iFloat& num) {
-    return num * v;
+    return num * iFloat(v);
 }
 
 template<class dtype2>
 iFloat operator / (const dtype2& v, const iFloat& num) {
-    return num / v;
+    return iFloat(v) / num;
 }
+
+//------------------------------    OUTPUT OPERATOR
+inline std::ostream & operator << (std::ostream &out, const iFloat &c)
+{
+    out << ((*c.value).str());
+    return out;
+}
+
+
 
 #endif // IFLOAT_H

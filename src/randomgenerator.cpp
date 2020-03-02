@@ -4,11 +4,17 @@ using std::default_random_engine;
 using std::uniform_real_distribution;
 
 
-RandomGenerator::RandomGenerator()
-{
-   dist = new uniform_real_distribution<double>(0,1);
+RandomGenerator::RandomGenerator(Distribution newDistribution) : distribution(newDistribution), generator(randomDevice()), dist01(0,1)
+{    
+
 }
 
 double RandomGenerator::rand() {
-    return (*dist)(generator);
+    if (!distribution.valid())
+        throw RandomGeneratorException("rand(): invalid distribution");
+
+    iFloat U = dist01(generator);
+    long long bin = distribution.inverseSampling(U);
+    double binSize = distribution.getBinSize();
+    return binSize * bin + dist01(generator)*binSize;
 }

@@ -2,7 +2,7 @@
 #ifndef MATRIXEXPERIMENT_H
 #define MATRIXEXPERIMENT_H
 
-
+#include <baseexperiment.h>
 #include <vector>
 #include <matrix.h>
 #include <ifloat.h>
@@ -10,37 +10,35 @@
 using std::vector;
 
 
-struct MatrixExperimentException {
-  std::string m_msg;
-  MatrixExperimentException(const char*const msg) : m_msg(msg) {}
-  MatrixExperimentException(const MatrixException& me) : m_msg(me.m_msg) {}
+struct MatrixExperimentException : public std::exception {
+private:
+    QString msg;
+
+public:
+    MatrixExperimentException(QString mess) {
+        msg = mess;
+    }
+    const char* what() const throw() {
+        return msg.toStdString().c_str();
+    }
 };
 
-enum MatAlgo {LINEAR, SPLIT_MERGE};
-
-struct Result {
-    iFloat value;
-    MatAlgo algoUsed;
-    Result(iFloat v, MatAlgo algo) {value = v; algoUsed = algo;}
-};
-
-class MatrixExperiment
+class MatrixExperiment : public BaseExperiment
 {
 public:
     MatrixExperiment();
 
     vector<Matrix<iFloat> > double2iFloat(vector<Matrix<double> > matdv);
 
-    Matrix<double> randomMatrix(unsigned width, unsigned height, RandomGenerator rander);
+    Matrix<double> randomMatrix(unsigned height, unsigned width, RandomGenerator& rander);    
 
+    iFloat linearTest(vector<Matrix<double> > inputMats, Op op);
 
-    iFloat linearTest(vector<Matrix<double> > inputMats, MatOp op);
+    iFloat splitMergeTest(vector<Matrix<double> > inputMats, Op op);
 
-    iFloat splitMergeTest(vector<Matrix<double> > inputMats, MatOp op);
+    iFloat groundTruth(vector<Matrix<double> >, Op op);
 
-    iFloat sortTest(vector<Matrix<double> > inputMats, MatOp op);
-
-    vector<Result> experiment(vector<Matrix<double> > inputMats, MatOp op, unsigned nTest, vector<MatAlgo> testAlgos);
+    vector<Result> experiment(vector<Matrix<double> > inputMats, Op op, unsigned nTest, vector<Algo> testAlgos);
 
 };
 

@@ -1,10 +1,9 @@
 #include "mainwindow.h"
 #include <iostream>
 #include <QApplication>
-#include "baseoperand.h"
 #include "distribution.h"
 #include "exponentialdistribution.h"
-#include "GaussianDistribution.h"
+#include "NormalDistribution.h"
 #include "uniformdistribution.h"
 
 #include "ifloat.h"
@@ -14,6 +13,7 @@
 #include <Eigen/Dense>
 using std::cout;
 
+#include <iostream>
 #include <boost/multiprecision/cpp_dec_float.hpp>
 #include <boost/multiprecision/cpp_int.hpp>
 using boost::multiprecision::number;
@@ -23,30 +23,22 @@ using boost::numeric_cast;
 using std::cout;
 
 
-void matTest()
-{
-
-    Matrix<double> a(3, 3, 1.5);
-    Matrix<int> b(3, 3, 1);
-    Matrix<float> c(3,3,2.7);
-
-    Matrix<double> d(3, 3, 0);
-    d = c + 3.5;//a + b*c + c*3.5;
-    d.print();
-    std::cout << c.sum<int>() << "\n";
-    cpp_dec_float_50 x = 5.3;
-    for (double t = 1; t<= 200; t++) x = x / t;
-    //std::cout << (2.1 + x*3.5 - x) << "\n";
-    std::cout << x << "\n";
-    std::cout << numeric_cast<double>(x);
-}
-
 int main(int argc, char *argv[])
 {
+    srand(time(NULL));
     QApplication a(argc, argv);
-  //  matTest();
+
+    /*
+    std::cout << std::setprecision(std::numeric_limits<cpp_dec_float_50>::digits10);
+    cpp_dec_float_50 x = cpp_dec_float_50(0.0001);
+    cpp_dec_float_50 y = x*x*x*x;
+    std::string s = y.str(25);
+    std::cout << s << "\n";
+    */
+
 
     MainWindow w;
     w.show();
+
     return a.exec();
 }

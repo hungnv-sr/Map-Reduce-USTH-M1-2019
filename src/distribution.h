@@ -2,40 +2,48 @@
 #define DISTRIBUTION_H
 #include <QDebug>
 #include "utils.h"
+#include <algorithm>
+#include <ifloat.h>
 
 // TODO: this is not finished so please don't read.
 // I skipped this because I have to do the other part first for the program to run
-struct DistributionException
-{
-    std::string m_msg;
-    DistributionException( const char*const msg ) : m_msg(msg) {}
-    DistributionException( const DistributionException& ve ) : m_msg(ve.m_msg) {}
+struct DistributionException : public std::exception {
+private:
+    QString msg;
+
+public:
+    DistributionException(QString mess) {
+        msg = mess;
+    }
+    const char* what() const throw() {
+        return msg.toStdString().c_str();
+    }
+};
+
+struct SamplingException : public std::exception {
+private:
+    QString msg;
+
+public:
+    SamplingException(QString mess) {
+        msg = mess;
+    }
+    const char* what() const throw() {
+        return msg.toStdString().c_str();
+    }
 };
 
 class Distribution
 {
 protected:
-    long long binNumber;
+    long long binNumber;   
     double lowerBound, upperBound;
     double* pdf;
-    double* cdf;
-
-    Distribution(long long newBinNumber, double newLowerBound, double newUpperBound) {
-        binNumber = newBinNumber;
-        lowerBound = newLowerBound;
-        upperBound = newUpperBound;
-
-        try {
-            pdf = new double[binNumber];
-            for (int i=0;i<binNumber;i++) {pdf[i] = 0; cdf[i] = 0;}
-        }
-        catch (std::exception const &ex) {
-            qDebug() << ex.what() << "\n";
-        }
-    }
+    iFloat* cdf;
 
     void cleanup() {
         delete[] pdf;
+        delete[] cdf;
     }
 
     void copy(const Distribution& b) {
@@ -43,29 +51,34 @@ protected:
         lowerBound = b.lowerBound;
         upperBound = b.upperBound;
         pdf = new double[binNumber];
-        for (unsigned i=0;i<binNumber;i++) pdf[i] = b.pdf[i];
+        cdf = new iFloat[binNumber];
+        for (unsigned i=0;i<binNumber;i++) {pdf[i] = b.pdf[i]; cdf[i] = b.cdf[i];}
     }
 
-    long long inverseSampling(double cumulative) {
-        if (cumulative < 0 || cumulative > 1)
-            throw DistributionException("Inverse sampling error: ");
-        long long l = 0, r = binNumber, res = -1;
-        while (l<=r) {
-            long long mid = (l+r) / 2;
-            if (cdf[mid] >= cumulative) {
-                res = mid;
-                r = mid-1;
-            }
-            else l = mid+1;
-        }
-
-        if (res==-1)
-            throw DistributionException("Something wrong with inverse sampling binary search");
-
-        return res;
-    }
+    // solve cases where pdf[i] < 0. Allow the usage of operator *, -, /    
 
 public:
+    Distribution(long long newBinNumber, double newLowerBound, double newUpperBound) {
+        binNumber = newBinNumber;
+        lowerBound = newLowerBound;
+        upperBound = newUpperBound;
+
+        if (binNumber==0) binNumber = 1; // place-holder distribution variable
+        else {
+            if (binNumber < 0)
+                throw DistributionException("Constructor: bin number < 0");
+
+        }
+
+        try {
+            pdf = new double[binNumber];
+            cdf = new iFloat[binNumber];
+            for (int i=0;i<binNumber;i++) {pdf[i] = 0; cdf[i] = 0;}
+        }
+        catch (std::exception const &ex) {
+            qDebug() << ex.what() << "\n";
+        }
+    }
 
     Distribution(const Distribution& b) {
         copy(b);
@@ -99,40 +112,107 @@ public:
         return pdf[i];
     }
 
-    Distribution operator + (const Distribution& b) {
+    Distribution operator + (const Distribution& b) const  {
         if (binNumber != b.binNumber) {
             qDebug() << "Operator + : Distribution must have same histogram size";
             throw DistributionException("Operator + error: different group sizes");
         }
         Distribution res(binNumber, lowerBound, upperBound);
         for (int i=0;i<binNumber;i++) res[i] = pdf[i] + b[i];
+
         return res;
     }
 
-    Distribution operator - (const Distribution& b) {
+    Distribution operator - (const Distribution& b) const {
         if (binNumber != b.binNumber) {
             qDebug() << "Operator - : Distribution must have same histogram size";
             throw DistributionException("Operator - error: different group sizes");
         }
         Distribution res(binNumber, lowerBound, upperBound);
         for (int i=0;i<binNumber;i++) res[i] = pdf[i] - b[i];
+
         return res;
     }
 
-    Distribution operator * (const Distribution& b) {
+    Distribution operator * (const Distribution& b) const {
         if (binNumber != b.binNumber) {
             qDebug() << "Operator * : Distribution must have same histogram size";
             throw DistributionException("Operator * error: different group sizes");
         }
         Distribution res(binNumber, lowerBound, upperBound);
         for (int i=0;i<binNumber;i++) res[i] = pdf[i] * b[i];
+
         return res;
     }
 
-    Distribution operator * (const int& k) {
+    Distribution operator / (const Distribution& b) const {
+        if (binNumber != b.binNumber) {
+            qDebug() << "Operator / : Distribution must have same histogram size";
+            throw DistributionException("Operator * error: different group sizes");
+        }
         Distribution res(binNumber, lowerBound, upperBound);
-        for (int i=0;i<binNumber;i++) res[i] = k*pdf[i];
+        for (int i=0;i<binNumber;i++) res[i] = pdf[i] / b[i];
+
         return res;
+    }
+
+    /*****************************      GETTER/SETTER/INVERSE SAMPLING*/
+    long long getBinNumber() const {
+        return binNumber;
+    }
+
+    double getLowerBound() const {
+        return lowerBound;
+    }
+
+    double getUpperBound() const {
+        return upperBound;
+    }
+
+    double getBinSize() const {
+        return (upperBound - lowerBound) / binNumber;
+    }
+
+    double getCdf(long long i) {
+        return double(cdf[i]);
+    }
+
+    long long inverseSampling(iFloat cumulative) {
+        if (cumulative < iFloat(0) || cumulative > iFloat(1))
+            throw DistributionException("Inverse sampling error: invalid cumulative value");
+        long long l = 0, r = binNumber-1, res = -1;
+        while (l<=r) {
+            long long mid = (l+r) / 2;
+            if (cdf[mid] > cumulative) {
+                res = mid;
+                r = mid-1;
+            }
+            else l = mid+1;
+        }
+
+        if (res==-1)
+            throw SamplingException("Inverse sampling failed because sum(cdf) < cumulative <= 1");
+
+        return res;
+    }
+
+    void normalize() {
+        iFloat sum = 0;
+        for (int i=0; i<binNumber; i++) {
+            if (pdf[i] < 0) pdf[i] = 0;
+            sum = sum + pdf[i];
+        }
+
+        for (int i=0; i<binNumber; i++) {
+            pdf[i] = double(pdf[i] / sum);
+            if (i==0) cdf[i] = pdf[i];
+            else cdf[i] = cdf[i-1] + pdf[i];
+        }
+    }
+
+    /*********************************************************/
+    bool valid() {
+        return binNumber > 1 && upperBound > lowerBound;
     }
 };
 
