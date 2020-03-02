@@ -48,7 +48,7 @@ private:
 
     Op operation;
     vector<Algo> testAlgos;
-    unsigned nTest;
+    unsigned numTest;
     bool shuffle;
     vector<Result> results;
 
@@ -86,14 +86,17 @@ private slots:
     void slotGenerateMatrixFinish(const vector<Matrix<double> > &mats);
 
     void slotMatrixExperimentFinish(const vector<Result> &res);
+
+    void on_pButtonSaveResult_clicked();
+
 signals:
     void signalGenerateArray(int nData);
 
-    void signalArrayExperiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle);
+    void signalArrayExperiment(Op op, unsigned numTest, vector<Algo> testAlgos, bool shuffle);
 
     void signalGenerateMatrix(int nData, int matSize);
 
-    void signalMatrixExperiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle);
+    void signalMatrixExperiment(Op op, unsigned numTest, vector<Algo> testAlgos, bool shuffle);
 
     //-----------------------   FUNCTIONS FOR CREATE DISTRIBUTION, GENERATE DATA, AND EXPERIMENT USING THREAD
 private:

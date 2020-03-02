@@ -39,7 +39,6 @@ HEADERS += \
     csvfile.h \
     NormalDistribution.h \
     distribution.h \
-    experimentcontroller.h \
     exponentialdistribution.h \
     ifloat.h \
     mainwindow.h \

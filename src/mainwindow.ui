@@ -276,7 +276,7 @@
                 </attribute>
                 <layout class="QHBoxLayout" name="horizontalLayout_7">
                  <item>
-                  <layout class="QHBoxLayout" name="hLayoutInput_2_Page_1" stretch="8,1,8,1,8,1,8">
+                  <layout class="QHBoxLayout" name="hLayoutInput_2_Page_1" stretch="8,1,8,1,8,1,0">
                    <property name="spacing">
                     <number>12</number>
                    </property>
@@ -738,6 +738,9 @@
                      </property>
                      <item row="0" column="0">
                       <widget class="QLabel" name="lblGamma_1">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="maximumSize">
                         <size>
                          <width>65</width>
@@ -763,6 +766,9 @@
                      </item>
                      <item row="1" column="1">
                       <widget class="QLineEdit" name="lEditParaG_alpha">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="minimumSize">
                         <size>
                          <width>75</width>
@@ -779,6 +785,9 @@
                      </item>
                      <item row="0" column="1">
                       <widget class="QLabel" name="lblGamma_2">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="font">
                         <font>
                          <italic>true</italic>
@@ -794,6 +803,9 @@
                      </item>
                      <item row="2" column="1">
                       <widget class="QLineEdit" name="lEditParaG_lambda">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="minimumSize">
                         <size>
                          <width>75</width>
@@ -810,6 +822,9 @@
                      </item>
                      <item row="1" column="0">
                       <widget class="QLabel" name="lblParaG_alpha">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="maximumSize">
                         <size>
                          <width>65</width>
@@ -832,6 +847,9 @@
                      </item>
                      <item row="2" column="0">
                       <widget class="QLabel" name="lblParaG_lambda">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="maximumSize">
                         <size>
                          <width>65</width>
@@ -1243,7 +1261,7 @@
                 <enum>QTabWidget::Rounded</enum>
                </property>
                <property name="currentIndex">
-                <number>0</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="tabInput_3_Page_1">
                 <attribute name="title">
@@ -1426,6 +1444,19 @@
                 <layout class="QHBoxLayout" name="horizontalLayout_11">
                  <item>
                   <layout class="QGridLayout" name="gLayoutOpenFile_2">
+                   <item row="0" column="0">
+                    <widget class="QPushButton" name="pButtonOpenFile_2">
+                     <property name="maximumSize">
+                      <size>
+                       <width>75</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>Open File...</string>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="0" column="1">
                     <layout class="QGridLayout" name="gLayoutMessage_2">
                      <item row="1" column="0">
@@ -1460,38 +1491,6 @@
                       </widget>
                      </item>
                     </layout>
-                   </item>
-                   <item row="0" column="0">
-                    <widget class="QPushButton" name="pButtonOpenFile_2">
-                     <property name="maximumSize">
-                      <size>
-                       <width>75</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>Open File...</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="2">
-                    <widget class="QPushButton" name="pButtonOK_2">
-                     <property name="minimumSize">
-                      <size>
-                       <width>75</width>
-                       <height>23</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>75</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>OK</string>
-                     </property>
-                    </widget>
                    </item>
                   </layout>
                  </item>
@@ -1801,7 +1800,7 @@
             </layout>
            </item>
            <item>
-            <widget class="QPushButton" name="pButtonConfirmDataset_3">
+            <widget class="QPushButton" name="pButtonSaveResult">
              <property name="minimumSize">
               <size>
                <width>125</width>

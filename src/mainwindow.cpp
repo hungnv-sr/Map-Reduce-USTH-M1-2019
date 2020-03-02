@@ -39,17 +39,17 @@ void MainWindow::slotArrayExperimentFinish(const vector<Result> &res) {
     experimentThread.quit();
     experimentThread.wait();
     QMessageBox::information(this, "Success", "Array experiment successful");
-    resource.release(1);
 
     try {
-            BaseExperiment::staticOutputFile("arrResultAutosave.txt",results);
+            BaseExperiment::staticOutputFile("arrayResultAutosave.txt",results);
         }
         catch (std::exception ex) {
             qDebug() << "Array experiment output: " << ex.what() << "\n";
-            QMessageBox::information(this, "Error", "Auto-save results to file failed\n");
+            QMessageBox::information(this, "Error", "Auto-save array results to file failed\n");
             return;
         }
-    QMessageBox::information(this, "Success", "Auto-save results to file successful");
+    QMessageBox::information(this, "Success", "Auto-save array results to file successful");
+    resource.release(1);
 }
 
 void MainWindow::slotGenerateMatrixFinish(const vector<Matrix<double> > &mats) {
@@ -58,6 +58,24 @@ void MainWindow::slotGenerateMatrixFinish(const vector<Matrix<double> > &mats) {
     createDataThread.quit();
     createDataThread.wait();
     QMessageBox::information(this, "Success", "Generate matrix data successful");
+    resource.release(1);
+}
+
+void MainWindow::slotMatrixExperimentFinish(const vector<Result> &res) {
+    results = res;
+    experimentThread.quit();
+    experimentThread.wait();
+    QMessageBox::information(this, "Success", "Matrix experiment successful");
+
+    try {
+            BaseExperiment::staticOutputFile("matrixResultAutosave.txt",results);
+        }
+        catch (std::exception ex) {
+            qDebug() << "Matrix experiment output: " << ex.what() << "\n";
+            QMessageBox::information(this, "Error", "Auto-save matrix results to file failed\n");
+            return;
+        }
+    QMessageBox::information(this, "Success", "Auto-save matrix results to file successful");
     resource.release(1);
 }
 
@@ -101,7 +119,7 @@ bool MainWindow::threadRunArrayExperiment() {
 
     experimentThread.start();
 
-    emit signalArrayExperiment(operation, nTest, testAlgos, shuffle);
+    emit signalArrayExperiment(operation, numTest, testAlgos, shuffle);
 
     return true;
 }
@@ -125,6 +143,31 @@ bool MainWindow::threadGenerateMatrix() {
     createDataThread.start();
 
     emit signalGenerateMatrix(numData, matSize);
+
+    return true;
+}
+
+bool MainWindow::threadRunMatrixExperiment() {
+    if (dataType!=MATRIX)
+        throw MainWindowException("threadRunMatrixExperiment: dataType != MATRIX");
+    if (numData<=0)
+        throw MainWindowException("threadRunMatrixExperiment: numData<=0");
+    if (matSize<=0)
+        throw MainWindowException("threadRunMatrixExperiment: numData<=0");
+    if (!distribution.valid())
+        throw MainWindowException("threadRunMatrixExperiment: distribution invalid");
+
+    if (!resource.tryAcquire()) return false;
+
+    MatrixExperiment *matExper = new MatrixExperiment(matData, distribution);
+    matExper -> moveToThread(&experimentThread);
+    connect(&experimentThread, &QThread::finished, matExper, &QObject::deleteLater);
+    connect(this, &MainWindow::signalMatrixExperiment, matExper, &MatrixExperiment::slotRunMatrixExperiment);
+    connect(matExper, &MatrixExperiment::signalExperimentFinish, this, &MainWindow::slotMatrixExperimentFinish);
+
+    experimentThread.start();
+
+    emit signalMatrixExperiment(operation, numTest, testAlgos, shuffle);
 
     return true;
 }
@@ -161,6 +204,11 @@ void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
 
 void MainWindow::on_pButtonOpenFile_1_clicked()
 {
+    if (!resource.available()) {
+        QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
+        return;
+    }
+
     QString filename = QFileDialog::getOpenFileName(
                 this,
                 tr("Open File"),
@@ -345,7 +393,7 @@ void MainWindow::on_pButtonSaveDataset_clicked()
         QDateTime now = QDateTime::currentDateTime();
         QString format = now.toString("dd.MMM.yyyy-hhmmss");
         QString savefile = ui->lEditSaveDir->text() + format + ".txt";
-        QFile file(savefile);
+        //QFile file(savefile);
 
 
         if (dataType==ARRAY) {
@@ -447,6 +495,11 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
 
 void MainWindow::on_pButtonBrowseDir_clicked()
 {
+    if (!resource.available()) {
+        QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
+        return;
+    }
+
     QString folderDir = QFileDialog::getExistingDirectory(
                 this,
                 tr("Open Directory"),
@@ -464,16 +517,33 @@ void MainWindow::on_gBoxAlgorithm_clicked()
 
 void MainWindow::on_pButtonRun_clicked()
 {
-    ui->outputText->clear();       
+    if (!resource.available()) {
+        QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
+        return;
+    }
 
-    nTest = 10;
-    if (ui->chkBoxGenNewData->isChecked()) shuffle = false; else shuffle = true;
+    ui->outputText->clear();
+
+    if (numData <= 0) {
+        QMessageBox::information(this, "Error", "Number of data element <= 0");
+        return;
+    }
 
     if (!distribution.valid()) {
         QMessageBox::information(this, "Error", "Please create a distribution first");
         return;
     }
     qDebug() << "after distribution";
+
+    QString numTestStr = ui->lEditNumTest->text();
+    bool validNumTest;
+    numTest = numTestStr.toDouble(&validNumTest);
+    if (!validNumTest || numTest <= 0) {
+        QMessageBox::information(this, "Error", "Invalid number of test");
+        return;
+    }
+
+    if (ui->chkBoxGenNewData->isChecked()) shuffle = false; else shuffle = true;
 
     testAlgos.clear();
     if (ui->chkBoxLinear->isChecked()) testAlgos.push_back(LINEAR);
@@ -487,19 +557,47 @@ void MainWindow::on_pButtonRun_clicked()
     }
     qDebug() << "after testAlgos";
 
-    results.clear();
-
     QString operationStr = ui->cBoxOperation->currentText();
     if (operationStr=="Sum") operation = ADD;
     else if (operationStr=="Multiplication") operation = MUL;
     else if (operationStr=="Matmul") operation = MATMUL;
+
     qDebug() << "after operation";
 
+    results.clear();
+
     if (dataType==ARRAY) {
-        ArrayExperiment arrExperiment(arrData, distribution);
         threadRunArrayExperiment();
         QMessageBox::information(this, "Update", "Array experiment is in progress");
     }
+    else {
+        threadRunMatrixExperiment();
+        QMessageBox::information(this, "Update", "Matrix experiment is in progress");
+    }
 }
 
+void MainWindow::on_pButtonSaveResult_clicked()
+{
+    if (!resource.available()) {
+        QMessageBox::information(this, "Error", "Auto-save matrix results to file failed\n");
+    }
 
+    if (results.size() <= 2) {
+        QMessageBox::information(this, "Error", "There is no result to save");
+        return;
+    }
+
+    QDateTime now = QDateTime::currentDateTime();
+    QString format = now.toString("dd.MMM.yyyy-hhmmss");
+    QString savefile = "result" + format + ".txt";
+
+    try {
+            BaseExperiment::staticOutputFile(savefile,results);
+        }
+        catch (std::exception ex) {
+            qDebug() << "Matrix experiment output: " << ex.what() << "\n";
+            QMessageBox::information(this, "Error", "Save current results to file failed");
+            return;
+        }
+    QMessageBox::information(this, "Success", "Save current results to file " + savefile + " successful");
+}
