@@ -24,6 +24,7 @@ SOURCES += \
     arrayexperiment.cpp \
     arraygenerator.cpp \
     csvfile.cpp \
+    logconsole.cpp \
     main.cpp \
     mainwindow.cpp \
     matrixexperiment.cpp \
@@ -42,6 +43,7 @@ HEADERS += \
     distribution.h \
     exponentialdistribution.h \
     ifloat.h \
+    logconsole.h \
     mainwindow.h \
     matrix.h \
     matrixexperiment.h \
@@ -54,6 +56,7 @@ HEADERS += \
     utils.h \
 
 FORMS += \
+    logconsole.ui \
     mainwindow.ui
 
 # Default rules for deployment.
