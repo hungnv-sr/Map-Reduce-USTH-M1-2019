@@ -18,7 +18,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
-    int dataSize, numData;
+    unsigned dataSize, numData;
     DataType dataType;
     Distribution distribution;
     vector<double> arrData;
@@ -26,7 +26,10 @@ private:
 
     Op operation;
     vector<Algo> testAlgos;
+    unsigned nTest;
+    bool shuffle;
     vector<Result> results;
+
 
 
 public:

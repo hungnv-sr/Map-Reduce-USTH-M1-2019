@@ -60,7 +60,7 @@ class Parser
     }
 
     bool balancedBracket(QString s) {
-        unsigned cnt = 0;
+        int cnt = 0;
         for (int i=0; i<s.length(); i++) {
             if (s[i]=='(') cnt += 1;
             else if (s[i]==')') cnt -= 1;
@@ -127,7 +127,10 @@ class Parser
         i = pos+2;
         while (i < n) {
             j = i;
-            while (j<n && (s[j]!=',' && s[j]!=')')) j++;
+            while (j<n && (s[j]!=',' && s[j]!=')')) {
+                if (s[j]=='(') return nonsense;
+                j++;
+            }
             if (j==n) return nonsense; // can't find , or )
             if (j==i) return nonsense; // invalid input cases such as: ,, ; ,) ; () ; (,
 
