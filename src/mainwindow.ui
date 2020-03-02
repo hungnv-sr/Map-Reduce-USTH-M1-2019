@@ -6,10 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-
-    <width>817</width>
-    <height>1127</height>
-
+    <width>762</width>
+    <height>1092</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -207,6 +205,33 @@
                  <width>250</width>
                  <height>16777215</height>
                 </size>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2" colspan="2">
+              <widget class="QPushButton" name="pButtonLogConsole">
+               <property name="minimumSize">
+                <size>
+                 <width>250</width>
+                 <height>23</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>250</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <italic>false</italic>
+                </font>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+               <property name="text">
+                <string>Turn ON/OFF Log Console</string>
                </property>
               </widget>
              </item>
@@ -1271,7 +1296,7 @@
                 </attribute>
                 <layout class="QHBoxLayout" name="horizontalLayout_9">
                  <item>
-                  <layout class="QHBoxLayout" name="hLayoutInput_3_Page_1" stretch="1,2,6,0">
+                  <layout class="QHBoxLayout" name="hLayoutInput_3_Page_1" stretch="1,6,0">
                    <property name="spacing">
                     <number>20</number>
                    </property>
@@ -1303,25 +1328,6 @@
                      </property>
                      <property name="text">
                       <string>Generate!</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QProgressBar" name="progBar">
-                     <property name="minimumSize">
-                      <size>
-                       <width>0</width>
-                       <height>23</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>250</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="value">
-                      <number>0</number>
                      </property>
                     </widget>
                    </item>
@@ -1409,9 +1415,7 @@
                     </widget>
                    </item>
                    <item>
-
                     <widget class="QPushButton" name="pButtonSaveDataset">
-
                      <property name="minimumSize">
                       <size>
                        <width>75</width>
@@ -1542,7 +1546,7 @@
               </widget>
              </item>
              <item>
-              <layout class="QGridLayout" name="gLayoutInput_3" columnstretch="0,0,0,0">
+              <layout class="QGridLayout" name="gLayoutInput_3" columnstretch="0,0,0,0,0">
                <property name="leftMargin">
                 <number>10</number>
                </property>
@@ -1561,32 +1565,46 @@
                <property name="verticalSpacing">
                 <number>5</number>
                </property>
-               <item row="0" column="0" colspan="2">
-                <widget class="QLabel" name="lblOperation">
+               <item row="1" column="2" colspan="2">
+                <widget class="QLineEdit" name="lEditNumTest">
                  <property name="minimumSize">
                   <size>
-                   <width>0</width>
-                   <height>14</height>
+                   <width>50</width>
+                   <height>23</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>16777215</width>
-                   <height>14</height>
+                   <width>250</width>
+                   <height>16777215</height>
                   </size>
                  </property>
-                 <property name="font">
-                  <font>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
+                </widget>
+               </item>
+               <item row="1" column="0" colspan="2">
+                <widget class="QComboBox" name="cBoxOperation">
+                 <property name="minimumSize">
+                  <size>
+                   <width>50</width>
+                   <height>23</height>
+                  </size>
                  </property>
-                 <property name="text">
-                  <string>Operation</string>
+                 <property name="maximumSize">
+                  <size>
+                   <width>250</width>
+                   <height>16777215</height>
+                  </size>
                  </property>
-                 <property name="indent">
-                  <number>10</number>
-                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Sum</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Multiplication</string>
+                  </property>
+                 </item>
                 </widget>
                </item>
                <item row="0" column="2" colspan="2">
@@ -1617,45 +1635,72 @@
                  </property>
                 </widget>
                </item>
-               <item row="1" column="0" colspan="2">
-                <widget class="QComboBox" name="cBoxOperation">
+               <item row="0" column="0" colspan="2">
+                <widget class="QLabel" name="lblOperation">
                  <property name="minimumSize">
                   <size>
-                   <width>50</width>
-                   <height>23</height>
+                   <width>0</width>
+                   <height>14</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>250</width>
-                   <height>16777215</height>
+                   <width>16777215</width>
+                   <height>14</height>
                   </size>
                  </property>
-                 <item>
-                  <property name="text">
-                   <string>Sum</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Multiplication</string>
-                  </property>
-                 </item>
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Operation</string>
+                 </property>
+                 <property name="indent">
+                  <number>10</number>
+                 </property>
                 </widget>
                </item>
-               <item row="1" column="2" colspan="2">
-                <widget class="QLineEdit" name="lEditNumTest">
+               <item row="1" column="4">
+                <widget class="QCheckBox" name="chkBoxGenNewData">
+                 <property name="font">
+                  <font>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Generate new</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="4">
+                <widget class="QLabel" name="lblNumTest_2">
                  <property name="minimumSize">
                   <size>
-                   <width>50</width>
-                   <height>23</height>
+                   <width>0</width>
+                   <height>14</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>250</width>
-                   <height>16777215</height>
+                   <width>16777215</width>
+                   <height>14</height>
                   </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Shuffle/Generate</string>
+                 </property>
+                 <property name="indent">
+                  <number>10</number>
                  </property>
                 </widget>
                </item>
@@ -1671,7 +1716,7 @@
             </widget>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="hLayoutControl" stretch="4,0,1">
+            <layout class="QHBoxLayout" name="hLayoutControl" stretch="4,1">
              <property name="spacing">
               <number>10</number>
              </property>
@@ -1751,23 +1796,8 @@
                   </property>
                  </widget>
                 </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QGroupBox" name="gBoxGenSetting">
-               <property name="font">
-                <font>
-                 <weight>75</weight>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="title">
-                <string>Generate setting</string>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_2">
                 <item>
-                 <widget class="QCheckBox" name="chkBoxGenNewData">
+                 <widget class="QCheckBox" name="chkBoxSortAppend_2">
                   <property name="font">
                    <font>
                     <weight>50</weight>
@@ -1775,7 +1805,7 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>New dataset </string>
+                   <string>Knuth</string>
                   </property>
                  </widget>
                 </item>
@@ -1804,18 +1834,16 @@
             </layout>
            </item>
            <item>
-
             <widget class="QPushButton" name="pButtonSaveResult">
-
              <property name="minimumSize">
               <size>
-               <width>125</width>
+               <width>150</width>
                <height>23</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>125</width>
+               <width>150</width>
                <height>16777215</height>
               </size>
              </property>
@@ -1884,10 +1912,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-
-     <width>817</width>
+     <width>762</width>
      <height>26</height>
-
     </rect>
    </property>
   </widget>
