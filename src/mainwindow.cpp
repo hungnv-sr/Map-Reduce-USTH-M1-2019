@@ -31,21 +31,21 @@ void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
 
     if (count == 3)
     {
-        if (index == 1)
+        if (index == 0)
         {
             ui->cBoxOperation->removeItem(2);
-            ui->lblMatSize->setVisible(true);
-            ui->lEditMatSize->setVisible(true);
+            ui->lblMatSize->setVisible(false);
+            ui->lEditMatSize->setVisible(false);
         }
     }
     else
     {
-        if (index < 1)
+        if (index == 1)
         {
             ui->lEditMatSize->clear();
-            ui->cBoxOperation->insertItem(2, "Element-wise multiplication");
-            ui->lblMatSize->setVisible(false);
-            ui->lEditMatSize->setVisible(false);
+            ui->cBoxOperation->insertItem(2, "Matrix multiplication");
+            ui->lblMatSize->setVisible(true);
+            ui->lEditMatSize->setVisible(true);
         }
     }
 }
@@ -182,39 +182,6 @@ void MainWindow::on_pButtonGen_clicked()
     }
 
     QMessageBox::information(this, "Success", "Generate data successful");
-
-
-    if (ui->rButtonSave->isChecked() == true)
-    {
-        if (ui->lEditSaveDir->text() == "")
-        {
-            QMessageBox::information(this, "Error", "Save Directory is NOT set!");
-            return;
-        }
-        else
-        {
-            // Do randomly generated
-
-            // Save to Dir
-            QDateTime now = QDateTime::currentDateTime();
-            QString format = now.toString("dd.MMM.yyyy-hhmmss");
-            QString savefile = ui->lEditSaveDir->text() + format + ".txt";
-            QFile file(savefile);
-
-
-            if (dataType==ARRAY) {
-                QString savefile = ui->lEditSaveDir->text() + "/" + format + ".array";
-                bool fileSaveSuccess = utils::saveArray(savefile, arrData, 12);
-                if (!fileSaveSuccess) {
-                    QMessageBox::information(this, "Error", "Can't save file. Please try again.");
-                }
-                else {
-                    QMessageBox::information(this, "Success", "File save successful");
-                }
-            }
-        }
-    }
-
 }
 
 void MainWindow::on_pButtonOpenFile_2_clicked()
@@ -276,13 +243,6 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
     ui->txtBrowser_2->setText("Data imported successfully!");
 }
 
-void MainWindow::on_rButtonSave_clicked()
-{
-    ui->progBar->setValue(0);
-    ui->lEditSaveDir->setEnabled(true);
-    ui->pButtonBrowseDir->setEnabled(true);
-}
-
 void MainWindow::on_pButtonBrowseDir_clicked()
 {
     QString folderDir = QFileDialog::getExistingDirectory(
@@ -294,12 +254,36 @@ void MainWindow::on_pButtonBrowseDir_clicked()
     ui->lEditSaveDir->setText(folderDir);
 }
 
-void MainWindow::on_rButtonDontSave_clicked()
+void MainWindow::on_pButtonSave_clicked()
 {
     ui->progBar->setValue(0);
-    ui->lEditSaveDir->clear();
-    ui->lEditSaveDir->setEnabled(false);
-    ui->pButtonBrowseDir->setEnabled(false);
+    if (ui->lEditSaveDir->text() == "")
+    {
+        QMessageBox::information(this, "Error", "Save Directory is NOT set!");
+        return;
+    }
+    else
+    {
+        // Do randomly generated
+
+        // Save to Dir
+        QDateTime now = QDateTime::currentDateTime();
+        QString format = now.toString("dd.MMM.yyyy-hhmmss");
+        QString savefile = ui->lEditSaveDir->text() + format + ".txt";
+        QFile file(savefile);
+
+
+        if (dataType==ARRAY) {
+            QString savefile = ui->lEditSaveDir->text() + "/" + format + ".array";
+            bool fileSaveSuccess = utils::saveArray(savefile, arrData, 12);
+            if (!fileSaveSuccess) {
+                QMessageBox::information(this, "Error", "Can't save file. Please try again.");
+            }
+            else {
+                QMessageBox::information(this, "Success", "File save successful");
+            }
+        }
+    }
 }
 
 void MainWindow::on_gBoxAlgorithm_clicked()
@@ -400,5 +384,3 @@ void MainWindow::on_pButtonRun_clicked()
     for (int i = 0; i < varpack.size(); ++i)
         ui->outputText->append(varpack[i]);                                     // Value of the i-th variable
 }
-
-
