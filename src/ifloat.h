@@ -149,6 +149,7 @@ public:
     }
 
     //-------------------------------- SCALAR CALCULATION OPERATORS
+    /*
     template <class dtype2>
     iFloat operator + (const dtype2& v) const {        
         return (*this) + iFloat(v);
@@ -168,7 +169,7 @@ public:
     iFloat operator / (const dtype2& v) const {
         return (*this) / iFloat(v);
     }
-
+    */
     //-------------------------------- SCALAR CALCULATION OPERATORS
     float50 getValue() const {
         return *value;

@@ -7,6 +7,7 @@
 #include <matrix.h>
 #include <ifloat.h>
 #include <randomgenerator.h>
+#include <matrixgenerator.h>
 using std::vector;
 
 
@@ -23,23 +24,35 @@ public:
     }
 };
 
-class MatrixExperiment : public BaseExperiment
+class MatrixExperiment : public QObject
 {
+    Q_OBJECT
+
+    vector<Matrix<double> > inputMats;
+    Distribution distribution;
+
 public:
-    MatrixExperiment();
+    MatrixExperiment(vector<Matrix<double> > newInputMats, Distribution newDistribution);
+
 
     vector<Matrix<iFloat> > double2iFloat(vector<Matrix<double> > matdv);
 
-    Matrix<double> randomMatrix(unsigned height, unsigned width, RandomGenerator& rander);    
+    iFloat linearTest(const vector<Matrix<double> > &inputMats, Op op);
 
-    iFloat linearTest(vector<Matrix<double> > inputMats, Op op);
+    Matrix<double> splitMerge(const vector<Matrix<double> > &inputMats,Op op, int l, int r);
 
-    iFloat splitMergeTest(vector<Matrix<double> > inputMats, Op op);
+    iFloat splitMergeTest(const vector<Matrix<double> > &inputMats, Op op);
 
-    iFloat groundTruth(vector<Matrix<double> >, Op op);
 
-    vector<Result> experiment(vector<Matrix<double> > inputMats, Op op, unsigned nTest, vector<Algo> testAlgos);
+    iFloat groundTruth(const vector<Matrix<double> > &inputMats, Op op);
 
+    vector<Result> experiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle);
+
+public slots:
+    void slotRunMatrixExperiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle);
+
+signals:
+    void signalExperimentFinish(vector<Result> res);
 };
 
 #endif //MATRIXEXPERIMENT_H

@@ -39,6 +39,7 @@ class Parser
 
     bool isDist(QChar c) {
         if (c=='U' || c=='E' || c=='N' || c=='G') return true;
+        return false;
     }
 
     bool isOperator(QChar c) {
