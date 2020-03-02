@@ -45,11 +45,9 @@ private slots:
 
     void on_cBoxDataType_currentIndexChanged(int index);
 
-    void on_rButtonSave_clicked();
-
     void on_pButtonBrowseDir_clicked();
 
-    void on_rButtonDontSave_clicked();
+    void on_pButtonSave_clicked();
 
     void on_gBoxAlgorithm_clicked();
 
