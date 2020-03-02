@@ -58,6 +58,12 @@ protected:
     // solve cases where pdf[i] < 0. Allow the usage of operator *, -, /    
 
 public:
+    Distribution() {
+        binNumber = 0;
+        lowerBound = 0;
+        upperBound = 0;
+    }
+
     Distribution(long long newBinNumber, double newLowerBound, double newUpperBound) {
         binNumber = newBinNumber;
         lowerBound = newLowerBound;

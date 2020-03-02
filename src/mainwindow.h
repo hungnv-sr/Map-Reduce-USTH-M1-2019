@@ -8,6 +8,7 @@
 #include <matrixexperiment.h>
 #include <vector>
 #include <QThread>
+#include <parserwrapper.h>
 #include <QSemaphore>
 using std::vector;
 
@@ -37,12 +38,13 @@ private:
     QSemaphore resource;
     QThread createDistributionThread;
     QThread createDataThread;
-    QThread experimentThread;
+    QThread experimentThread;    
 
 
     unsigned dataSize, numData, matSize;
     DataType dataType;
     Distribution distribution;
+    Parser parser;
     vector<double> arrData;    
     vector<Matrix<double> > matData;
 
@@ -77,6 +79,8 @@ private slots:
 
     void on_pButtonCreateDistribution_clicked();
 
+    void on_pButtonSaveResult_clicked();
+
     //-----------------------   SIGNAL AND SLOTS FOR THREADS
 private slots:
     void slotGenerateArrayFinish(const vector<double>& arr);
@@ -87,8 +91,7 @@ private slots:
 
     void slotMatrixExperimentFinish(const vector<Result> &res);
 
-    void on_pButtonSaveResult_clicked();
-
+    void slotParseDistributionFinish(const Distribution &distribution);
 signals:
     void signalGenerateArray(int nData);
 
@@ -97,6 +100,8 @@ signals:
     void signalGenerateMatrix(int nData, int matSize);
 
     void signalMatrixExperiment(Op op, unsigned numTest, vector<Algo> testAlgos, bool shuffle);
+
+    void signalParseDistribution(QString distStr);
 
     //-----------------------   FUNCTIONS FOR CREATE DISTRIBUTION, GENERATE DATA, AND EXPERIMENT USING THREAD
 private:
@@ -108,7 +113,7 @@ private:
 
     bool threadRunMatrixExperiment();
 
-
+    bool threadParseDistribution();
 
 
 private:
