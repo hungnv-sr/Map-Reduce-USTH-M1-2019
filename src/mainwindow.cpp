@@ -79,6 +79,18 @@ void MainWindow::slotMatrixExperimentFinish(const vector<Result> &res) {
     resource.release(1);
 }
 
+void MainWindow::slotParseDistributionFinish(const Distribution &parsedDistribution) {
+    distribution = parsedDistribution;
+    createDistributionThread.quit();
+    createDistributionThread.wait();
+    if (distribution.valid())
+        QMessageBox::information(this, "Success", "Create distribution successful");
+    else {
+        QMessageBox::information(this, "Error", "Distribution expression is invalid");
+    }
+    resource.release(1);
+}
+
 //-------------------   FUNCTIONS TO START AND RUN NEW THREADS
 bool MainWindow::threadGenerateArray() {
     if (numData <= 0)
@@ -168,6 +180,25 @@ bool MainWindow::threadRunMatrixExperiment() {
     experimentThread.start();
 
     emit signalMatrixExperiment(operation, numTest, testAlgos, shuffle);
+
+    return true;
+}
+
+bool MainWindow::threadParseDistribution() {
+    if (!parser.valid())
+        throw MainWindowException("threaParseDistribution: parser invalid");
+
+    if (!resource.tryAcquire()) return false;
+
+    ParserWrapper *parseWrapper = new ParserWrapper(parser);
+    parseWrapper -> moveToThread(&createDistributionThread);
+    connect(&createDistributionThread, &QThread::finished, parseWrapper, &QObject::deleteLater);
+    connect(this, &MainWindow::signalParseDistribution, parseWrapper, &ParserWrapper::slotParseDistribution);
+    connect(parseWrapper, &ParserWrapper::signalParseFinish, this, &MainWindow::slotParseDistributionFinish);
+
+    createDistributionThread.start();
+
+    emit signalParseDistribution(getDistributionString());
 
     return true;
 }
@@ -307,17 +338,15 @@ void MainWindow::on_pButtonCreateDistribution_clicked()
         return;
     }
 
-    Parser parser(distributionParams[0], distributionParams[1], distributionParams[2]);
+    parser = Parser(distributionParams[0], distributionParams[1], distributionParams[2]);
 
-    QString distributionString = getDistributionString();
-    distribution = parser.string2dist(distributionString);
-
-    if (!distribution.valid()) {
-        QMessageBox::information(this, "Error", "Distribution expression is invalid");
+    if (!threadParseDistribution()) {
+        QMessageBox::information(this, "Error", "Another task is in progress. Please wait and try again");
         return;
     }
-
-    QMessageBox::information(this, "Success", "Create distribution successful");
+    else {
+        QMessageBox::information(this, "Update", "Creating distribution is in progress");
+    }
 }
 
 
