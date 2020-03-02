@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>761</width>
-    <height>923</height>
+    <width>831</width>
+    <height>1129</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1502,7 +1502,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pButtonConfirmDataset">
+              <widget class="QPushButton" name="pButtonSaveDataset">
                <property name="minimumSize">
                 <size>
                  <width>125</width>
@@ -1524,7 +1524,7 @@
                 <enum>Qt::LeftToRight</enum>
                </property>
                <property name="text">
-                <string>Confirm dataset</string>
+                <string>Save dataset</string>
                </property>
               </widget>
              </item>
@@ -1722,8 +1722,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>761</width>
-     <height>22</height>
+     <width>831</width>
+     <height>30</height>
     </rect>
    </property>
   </widget>

@@ -9,7 +9,7 @@
 #include <randomgenerator.h>
 #include <algorithm>
 #include <queue>
-#include <arraydatagenerator.h>
+#include <arraygenerator.h>
 using std::vector;
 
 struct ArrayExperimentException : public std::exception {
@@ -27,10 +27,16 @@ public:
 
 //********************************************
 
-class ArrayExperiment : public BaseExperiment
+class ArrayExperiment : public QObject
 {
+    Q_OBJECT
+
+    vector<double> inputs;
+    Distribution distribution;
+
+
 public:
-    ArrayExperiment();
+    ArrayExperiment(vector<double> newInputs, Distribution newDistribution);
 
     iFloat linearTest(const vector<double> &inputs, Op op);
 
@@ -42,8 +48,14 @@ public:
 
     iFloat groundTruth(const vector<double> &inputs, Op op);
 
-    vector<Result> experiment(vector<double> inputs, Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle, Distribution distribution);
+    vector<Result> experiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle);
 
+public slots:
+    void slotRunArrayExperiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle);
+
+signals:
+    //void signalExperimentFinish(vector<Result> arr);
+    void signalExperimentFinish(vector<Result> res);
 };
 
 #endif // ARRAYEXPERIMENT_H

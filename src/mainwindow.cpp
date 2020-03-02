@@ -8,7 +8,8 @@
 #include <QString>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+    : QMainWindow(parent)    
+    , resource(1)
     , distribution(0,0,0)
     , ui(new Ui::MainWindow)
 {
@@ -21,6 +22,76 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+//-------------------   THREAD RESULTS HANDLER
+void MainWindow::slotGenerateArrayFinish(const vector<double> &arr) {
+    numData = arr.size();
+    arrData = arr;
+    createDataThread.quit();
+    createDataThread.wait();
+    QMessageBox::information(this, "Success", "Generate data successful");
+    resource.release(1);        
+}
+
+void MainWindow::slotArrayExperimentFinish(const vector<Result> &res) {
+    results = res;
+    experimentThread.quit();
+    experimentThread.wait();
+    QMessageBox::information(this, "Success", "Array experiment successful");
+    resource.release(1);
+
+    try {
+            BaseExperiment::staticOutputFile("arrResult.txt",results);
+        }
+        catch (std::exception ex) {
+            qDebug() << "Array experiment output: " << ex.what() << "\n";
+            QMessageBox::information(this, "Error", "Save results to file failed\n");
+            return;
+        }
+        QMessageBox::information(this, "Success", "Save results to file successful");
+}
+
+
+//-------------------   FUNCTIONS TO START AND RUN NEW THREADS
+bool MainWindow::threadGenerateArray() {
+    if (numData <= 0)
+        throw MainWindowException("MainWindow generateArray: numData <= 0");
+    if (!distribution.valid())
+        throw MainWindowException("MainWindow generateArray: distribution invalid");
+
+    if (!resource.tryAcquire()) return false;
+
+    ArrayGenerator *arrGen = new ArrayGenerator(distribution);
+    arrGen->moveToThread(&createDataThread);
+    connect(&createDataThread, &QThread::finished, arrGen, &QObject::deleteLater);
+    connect(this, &MainWindow::signalGenerateArray, arrGen, &ArrayGenerator::slotGenerateArray);
+    connect(arrGen, &ArrayGenerator::signalGenerateFinish, this, &MainWindow::slotGenerateArrayFinish);
+
+    createDataThread.start();
+
+    emit signalGenerateArray(numData);
+}
+
+bool MainWindow::threadRunArrayExperiment() {
+    if (dataType!=ARRAY)
+        throw MainWindowException("threadRunArrayExperiment: dataType != ARRAY");
+    if (numData<=0)
+        throw MainWindowException("threadRunArrayExperiment: numData<=0");
+    if (!distribution.valid())
+        throw MainWindowException("threadRunArrayExperiment: distribution invalid");
+
+    if (!resource.tryAcquire()) return false;
+
+    ArrayExperiment *arrExper = new ArrayExperiment(arrData, distribution);
+    arrExper -> moveToThread(&experimentThread);
+    connect(&experimentThread, &QThread::finished, arrExper, &QObject::deleteLater);
+    connect(this, &MainWindow::signalArrayExperiment, arrExper, &ArrayExperiment::slotRunArrayExperiment);
+    connect(arrExper, &ArrayExperiment::signalExperimentFinish, this, &MainWindow::slotArrayExperimentFinish);
+
+    experimentThread.start();
+
+    emit signalArrayExperiment(operation, nTest, testAlgos, shuffle);
 }
 
 void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
@@ -135,6 +206,10 @@ vector<double> MainWindow::getDistributionParams() {
 void MainWindow::on_pButtonGen_clicked()
 {
     qDebug() << "buttonGen clicked \n";
+    if (!resource.available()) {
+        QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
+        return;
+    }
 
     QString numDataStr = ui->lEditNumData->text();
     bool validNumData;
@@ -169,51 +244,44 @@ void MainWindow::on_pButtonGen_clicked()
     if (dataTypeStr=="Array") {
         dataType = ARRAY;
         ArrayGenerator arrayGenerator(distribution);
-        qDebug() << "reached here\n";
-        try {
-            arrayGenerator.generateArray(numData, arrData);
-        }
-        catch (SamplingException ex) {
-            QMessageBox::information(this, "Error", "Distribution caused underflow. Decrease lower bound and increase upper bound");
-            arrData.clear();
-            return;
-        }
+        threadGenerateArray();
+        QMessageBox::information(this, "Update", "Generate array is in progress");
     }
 
-    QMessageBox::information(this, "Success", "Generate data successful");
+}
 
+void MainWindow::on_pButtonSaveDataset_clicked()
+{
+    if (!resource.available()) {
+        QMessageBox::information(this, "Error", "Another task is in progress. Please wait");
+        return;
+    }
 
-    if (ui->rButtonSave->isChecked() == true)
+    if (ui->lEditSaveDir->text() == "")
     {
-        if (ui->lEditSaveDir->text() == "")
-        {
-            QMessageBox::information(this, "Error", "Save Directory is NOT set!");
-            return;
-        }
-        else
-        {
-            // Do randomly generated
-
-            // Save to Dir
-            QDateTime now = QDateTime::currentDateTime();
-            QString format = now.toString("dd.MMM.yyyy-hhmmss");
-            QString savefile = ui->lEditSaveDir->text() + format + ".txt";
-            QFile file(savefile);
+        QMessageBox::information(this, "Error", "Save Directory is NOT set!");
+        return;
+    }
+    else
+    {
+        // Save to Dir
+        QDateTime now = QDateTime::currentDateTime();
+        QString format = now.toString("dd.MMM.yyyy-hhmmss");
+        QString savefile = ui->lEditSaveDir->text() + format + ".txt";
+        QFile file(savefile);
 
 
-            if (dataType==ARRAY) {
-                QString savefile = ui->lEditSaveDir->text() + "/" + format + ".array";
-                bool fileSaveSuccess = utils::saveArray(savefile, arrData, 12);
-                if (!fileSaveSuccess) {
-                    QMessageBox::information(this, "Error", "Can't save file. Please try again.");
-                }
-                else {
-                    QMessageBox::information(this, "Success", "File save successful");
-                }
+        if (dataType==ARRAY) {
+            QString savefile = ui->lEditSaveDir->text() + "/" + format + ".array";
+            bool fileSaveSuccess = utils::saveArray(savefile, arrData, 12);
+            if (!fileSaveSuccess) {
+                QMessageBox::information(this, "Error", "Can't save file. Please try again.");
+            }
+            else {
+                QMessageBox::information(this, "Success", "File save successful");
             }
         }
     }
-
 }
 
 void MainWindow::on_pButtonOpenFile_2_clicked()
@@ -340,22 +408,11 @@ void MainWindow::on_pButtonRun_clicked()
     qDebug() << "after operation";
 
     if (dataType==ARRAY) {
-        ArrayExperiment arrExperiment;
-        results = arrExperiment.experiment(arrData, operation, nTest, testAlgos, shuffle, distribution);
-        qDebug() << "after array experiment";
-
-        try {
-            arrExperiment.outputFile("arrResult.txt",results);
-        }
-        catch (std::exception ex) {
-            qDebug() << "Array experiment output: " << ex.what() << "\n";
-            QMessageBox::information(this, "Error", "Save results to file failed\n");
-            return;
-        }
-        QMessageBox::information(this, "Success", "Save results to file successful");
+        ArrayExperiment arrExperiment(arrData, distribution);
+        threadRunArrayExperiment();
+        QMessageBox::information(this, "Update", "Array experiment is in progress");
     }
-
-
 }
+
 
 

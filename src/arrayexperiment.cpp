@@ -1,7 +1,6 @@
 #include "arrayexperiment.h"
 
-ArrayExperiment::ArrayExperiment()
-{
+ArrayExperiment::ArrayExperiment(vector<double> newInputs, Distribution newDistribution) : inputs(newInputs), distribution(newDistribution) {
 
 }
 
@@ -78,7 +77,7 @@ iFloat ArrayExperiment::groundTruth(const vector<double> &inputs, Op op) {
     return res;
 }
 
-vector<Result> ArrayExperiment::experiment(vector<double> inputs, Op op, unsigned int nTest, vector<Algo> testAlgos, bool shuffle=true, Distribution distribution=Distribution(0,0,0)) {
+vector<Result> ArrayExperiment::experiment(Op op, unsigned int nTest, vector<Algo> testAlgos, bool shuffle=true) {
     ArrayGenerator arrGen(distribution);
     vector<Result> res;
     res.clear();
@@ -106,10 +105,15 @@ vector<Result> ArrayExperiment::experiment(vector<double> inputs, Op op, unsigne
         qDebug() << "after running algorithms\n";
         if (shuffle) std::random_shuffle(inputs.begin(), inputs.end());
         else {
-            std::random_shuffle(inputs.begin(), inputs.end());
             arrGen.generateArray(inputs.size(), inputs);
         }
     }
 
     return res;
+}
+
+//--------------------------------------------  SIGNALS AND SLOTS FOR THREAD FUNCTIONS
+void ArrayExperiment::slotRunArrayExperiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle) {
+    vector<Result> res = experiment(op, nTest, testAlgos, shuffle);
+    emit signalExperimentFinish(res);
 }

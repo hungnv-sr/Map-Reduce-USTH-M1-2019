@@ -22,13 +22,22 @@ public:
 };
 
 
-class ArrayGenerator
+class ArrayGenerator : public QObject
 {
+    Q_OBJECT
+
     RandomGenerator rander;
 public:
     ArrayGenerator(Distribution distribution);
 
-    void generateArray(int nData, vector<double> &res);
+    void generateArray(int nData, vector<double> &arr);
+
+public slots:
+    void slotGenerateArray(int nData);
+
+signals:
+    void signalGenerateFinish(const vector<double>& arr);
+
 };
 
 #endif // ARRAYDATAGENERATOR_H

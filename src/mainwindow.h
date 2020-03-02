@@ -3,11 +3,27 @@
 
 #include <QMainWindow>
 #include <parser.h>
+#include <arraygenerator.h>
 #include <arrayexperiment.h>
 #include <matrixexperiment.h>
-#include <experimentcontroller.h>
 #include <vector>
+#include <QThread>
+#include <QSemaphore>
 using std::vector;
+
+struct MainWindowException : public std::exception {
+private:
+    QString msg;
+
+public:
+    MainWindowException(QString mess) {
+        msg = mess;
+    }
+    const char* what() const throw() {
+        return msg.toStdString().c_str();
+    }
+};
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,6 +34,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
+    QSemaphore resource;
+    QThread createDistributionThread;
+    QThread createDataThread;
+    QThread experimentThread;
+
+
     unsigned dataSize, numData;
     DataType dataType;
     Distribution distribution;
@@ -54,6 +76,27 @@ private slots:
     void on_gBoxAlgorithm_clicked();
 
     void on_pButtonRun_clicked();
+
+    void on_pButtonSaveDataset_clicked();
+
+    //-----------------------   SIGNAL AND SLOTS FOR THREADS
+private slots:
+    void slotGenerateArrayFinish(const vector<double>& arr);
+
+    void slotArrayExperimentFinish(const vector<Result> &res);
+signals:
+    void signalGenerateArray(int nData);
+
+    void signalArrayExperiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle);
+    //-----------------------   FUNCTIONS FOR CREATE DISTRIBUTION, GENERATE DATA, AND EXPERIMENT USING THREAD
+private:
+    bool threadGenerateArray();
+
+    bool threadRunArrayExperiment();
+
+
+
+
 
 private:
     Ui::MainWindow *ui;

@@ -15,6 +15,8 @@ struct Result {
     iFloat value;
     Algo algoUsed;
     Result(iFloat v, Algo algo) {value = v; algoUsed = algo;}
+
+    Result() {value = 0; algoUsed = GROUND_TRUTH;}
 };
 
 class BaseExperiment
@@ -90,6 +92,10 @@ public:
         fo.close();
     }
 
+    static void staticOutputFile(QString filename, vector<Result> results) {
+        BaseExperiment exper;
+        exper.outputFile(filename, results);
+    }
 };
 
 #endif // BASEEXPERIMENT_H
