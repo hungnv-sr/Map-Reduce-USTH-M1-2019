@@ -11,7 +11,7 @@ void  ArrayGenerator::generateArray(int nData, vector<double> &arr) {
     for (int i=0; i<nData; i++) arr.push_back(rander.rand());
 }
 
-void ArrayGenerator::slotGenerateArray(int nData) {
+void ArrayGenerator::slotGenerateArray(int nData) {    
     vector<double> arr;
     arr.clear();
 

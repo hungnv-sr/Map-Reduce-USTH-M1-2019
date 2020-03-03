@@ -28,7 +28,6 @@ SOURCES += \
     mainwindow.cpp \
     matrixexperiment.cpp \
     matrixgenerator.cpp \
-    parserwrapper.cpp \
     randomgenerator.cpp \
     utils.cpp
 
@@ -46,7 +45,6 @@ HEADERS += \
     matrixgenerator.h \
     numerical.h \
     parser.h \
-    parserwrapper.h \
     randomgenerator.h \
     uniformdistribution.h \
     utilityenum.h \

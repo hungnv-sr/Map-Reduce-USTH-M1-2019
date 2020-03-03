@@ -8,7 +8,7 @@
 #include <matrixexperiment.h>
 #include <vector>
 #include <QThread>
-#include <parserwrapper.h>
+#include <parser.h>
 #include <QSemaphore>
 #include <logconsole.h>
 
@@ -46,7 +46,9 @@ private:
     unsigned dataSize, numData, matSize;
     DataType dataType;
     Distribution distribution;
-    Parser parser;
+    //Parser parser;
+    long long binNumber;
+    double lowerBound, upperBound;
     vector<double> arrData;    
     vector<Matrix<double> > matData;
 

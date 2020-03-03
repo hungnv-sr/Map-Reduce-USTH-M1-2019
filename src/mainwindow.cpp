@@ -125,6 +125,7 @@ void MainWindow::slotUpdateProgress(int value) {
 
 //-------------------   FUNCTIONS TO START AND RUN NEW THREADS
 bool MainWindow::threadGenerateArray() {
+    slotUpdateProgress(0);
     if (numData <= 0)
         throw MainWindowException("MainWindow generateArray: numData <= 0");
     if (!distribution.valid())
@@ -147,6 +148,7 @@ bool MainWindow::threadGenerateArray() {
 }
 
 bool MainWindow::threadRunArrayExperiment() {
+    slotUpdateProgress(0);
     if (dataType!=ARRAY)
         throw MainWindowException("threadRunArrayExperiment: dataType != ARRAY");
     if (numData<=0)
@@ -171,6 +173,7 @@ bool MainWindow::threadRunArrayExperiment() {
 }
 
 bool MainWindow::threadGenerateMatrix() {
+    slotUpdateProgress(0);
     if (numData <= 0)
         throw MainWindowException("threadGenerateMatrix: numData <= 0");
     if (matSize <= 0)
@@ -195,6 +198,7 @@ bool MainWindow::threadGenerateMatrix() {
 }
 
 bool MainWindow::threadRunMatrixExperiment() {
+    slotUpdateProgress(0);
     if (dataType!=MATRIX)
         throw MainWindowException("threadRunMatrixExperiment: dataType != MATRIX");
     if (numData<=0)
@@ -221,16 +225,16 @@ bool MainWindow::threadRunMatrixExperiment() {
 }
 
 bool MainWindow::threadParseDistribution() {
-    if (!parser.valid())
-        throw MainWindowException("threaParseDistribution: parser invalid");
+    slotUpdateProgress(0);
 
     if (!resource.tryAcquire()) return false;
 
-    ParserWrapper *parseWrapper = new ParserWrapper(parser);
-    parseWrapper -> moveToThread(&createDistributionThread);
-    connect(&createDistributionThread, &QThread::finished, parseWrapper, &QObject::deleteLater);
-    connect(this, &MainWindow::signalParseDistribution, parseWrapper, &ParserWrapper::slotParseDistribution);
-    connect(parseWrapper, &ParserWrapper::signalParseFinish, this, &MainWindow::slotParseDistributionFinish);
+    Parser *parser = new Parser(binNumber, lowerBound, upperBound);
+    parser->moveToThread(&createDistributionThread);
+    connect(&createDistributionThread, &QThread::finished, parser, &QObject::deleteLater);
+    connect(this, &MainWindow::signalParseDistribution, parser, &Parser::slotParseDistribution);
+    connect(parser, &Parser::signalParseFinish, this, &MainWindow::slotParseDistributionFinish);
+    connect(parser, &Parser::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
 
     createDistributionThread.start();
 
@@ -376,7 +380,9 @@ void MainWindow::on_pButtonCreateDistribution_clicked()
         return;
     }
 
-    parser = Parser(distributionParams[0], distributionParams[1], distributionParams[2]);
+    binNumber = distributionParams[0];
+    lowerBound = distributionParams[1];
+    upperBound = distributionParams[2];
 
     if (!threadParseDistribution()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait and try again");

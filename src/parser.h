@@ -1,12 +1,13 @@
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef DISTRIBUTIONGENERATOR_H
+#define DISTRIBUTIONGENERATOR_H
 
 #include <distribution.h>
 #include <NormalDistribution.h>
 #include <uniformdistribution.h>
 #include <exponentialdistribution.h>
 #include <stack>
-#include <map>
+#include <ifloat.h>
+#include <parser.h>
 using std::stack;
 
 struct ParserException : public std::exception {
@@ -23,9 +24,11 @@ public:
 };
 
 
-class Parser
+class Parser : public QObject
 {
-    int binNumber;
+    Q_OBJECT
+
+    long long binNumber;
     double lowerBound, upperBound;
 
     bool isNumber(QChar c) {
@@ -50,7 +53,7 @@ class Parser
         if (isParen(c)) return true;
         if (isDist(c)) return true;
         if (isOperator(c)) return true;
-        if (c==',' || c=='.') return true;        
+        if (c==',' || c=='.') return true;
         return false;
     }
 
@@ -217,19 +220,23 @@ class Parser
             }
 
             i++;
+            signalUpdateProgress(i*80/n);
         }
 
+        int steps = operatorStack.size();
         while (!operatorStack.empty()) {
             QChar op = operatorStack.top();
             operatorStack.pop();
 
             if (!stackApplyOp(op, valueStack)) return nonsense;
+            signalUpdateProgress(80 + (steps-operatorStack.size())*10/steps);
         }
 
         if (operatorStack.size() > 0) return nonsense;
         if (valueStack.size() != 1) return nonsense;
         Distribution res = valueStack.top();
-        res.normalize();
+        signalUpdateProgress(99);
+        res.normalize();                
         return res;
     }
 
@@ -250,7 +257,7 @@ public:
 
         binNumber = newBinNumber;
         lowerBound = newLowerBound;
-        upperBound = newUpperBound;              
+        upperBound = newUpperBound;
     }
 
     bool valid() {
@@ -268,21 +275,37 @@ public:
     }
 
 
-    //--------------------------------------------------
-    static void parserTest() {
-        Parser parser(10,0,10);
-        QString str = "U(3,7) + N(1,2) + E(3)";
-        Distribution dist = parser.parseExpression(str);
-        qDebug() << dist.valid() << "\n";
-
-        str = "U(5,4)";
-        qDebug() << parser.parseExpression(str).valid() << "\n";
-
-        str = "U(5,4) * N(1,2)";
-        qDebug() << parser.parseExpression(str).valid() << "\n";
+    //----------------------------------------------------
+public slots:
+    void slotParseDistribution(QString distStr) {
+        try {
+            Distribution distribution = string2dist(distStr);
+            emit signalParseFinish(distribution);
+        }
+        catch (SamplingException samplingException) {
+            emit signalAlert("Distribution requires too high accuracy. Please try another.");
+            emit signalParseFinish(Distribution(0,0,0));
+        }
+        catch (std::underflow_error) {
+            emit signalAlert("Distribution requires too high accuracy. Please try another number.");
+            emit signalParseFinish(Distribution(0,0,0));
+        }
+        catch (std::overflow_error) {
+            emit signalAlert("Distribution requires too high accuracy. Please try another.");
+            emit signalParseFinish(Distribution(0,0,0));
+        }
+        catch (std::bad_alloc) {
+            emit signalAlert("Distrubtion require too much memory, not enough RAM. Please buy more RAM.");
+            emit signalParseFinish(Distribution(0,0,0));
+        }
     }
 
+signals:
+    void signalParseFinish(const Distribution &distribution);
 
+    void signalAlert(QString alert);
+
+    void signalUpdateProgress(int value);
 };
 
-#endif // PARSER_H
+#endif // DISTRIBUTIONGENERATOR_H

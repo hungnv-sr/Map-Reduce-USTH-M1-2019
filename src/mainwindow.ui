@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>762</width>
-    <height>1092</height>
+    <width>790</width>
+    <height>1230</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1288,7 +1288,7 @@
                 <enum>QTabWidget::Rounded</enum>
                </property>
                <property name="currentIndex">
-                <number>1</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="tabInput_3_Page_1">
                 <attribute name="title">
@@ -1912,8 +1912,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>762</width>
-     <height>26</height>
+     <width>790</width>
+     <height>30</height>
     </rect>
    </property>
   </widget>
