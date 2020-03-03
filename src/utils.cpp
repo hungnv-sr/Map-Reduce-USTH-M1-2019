@@ -52,8 +52,9 @@ double utils::rand01() {
 }
 
 bool utils::saveArray(QString filename, const vector<double> &data, unsigned precision) {
+    if (data.size()==0) return 0;
     std::ofstream fo;
-    try {
+    try {        
         std::setprecision(precision);
 
         fo = std::ofstream(filename.toStdString().c_str());
@@ -65,7 +66,8 @@ bool utils::saveArray(QString filename, const vector<double> &data, unsigned pre
         for (unsigned i=0; i<data.size(); i++) fo << std::fixed << data[i] << " ";
         fo << "\n";
         fo.close();
-    } catch (std::exception ex) {        
+    } catch (std::exception ex) {
+        qDebug() << "File crash " << ex.what() << "\n";
         fo.close();
         return 0;
     }
@@ -74,6 +76,7 @@ bool utils::saveArray(QString filename, const vector<double> &data, unsigned pre
 }
 
 bool utils::saveMatrix(QString filename, const vector<Matrix<double> > &data, unsigned int precision) {
+    if (data.size()==0) return 0;
     std::ofstream fo;
     try {
         std::setprecision(precision);

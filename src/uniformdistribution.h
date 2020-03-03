@@ -4,11 +4,9 @@
 #include <fstream>
 
 
-// TODO: this is not finished. I skipped this because I have to do the other part first for the program to run
 // U(a,b): uniform distribution from a->b
 class UniformDistribution : public Distribution
 {
-
 public:
     UniformDistribution(long long newBinNumber, double newLowerBound, double newUpperBound, double a, double b) : Distribution(newBinNumber, newLowerBound, newUpperBound) {
         if (newBinNumber <= 1)
