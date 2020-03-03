@@ -32,4 +32,8 @@ void ParserWrapper::slotParseDistribution(QString dist) {
         emit signalAlert("Distribution requires too high accuracy. Please try another.");
         emit signalParseFinish(Distribution(0,0,0));
     }
+    catch (std::bad_alloc) {
+        emit signalAlert("Distrubtion require too much memory, not enough RAM. Please buy more RAM.");
+        emit signalParseFinish(Distribution(0,0,0));
+    }
 }

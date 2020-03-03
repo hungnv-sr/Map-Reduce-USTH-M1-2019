@@ -388,7 +388,7 @@ void MainWindow::on_pButtonGen_clicked()
     }
 
     QString numDataStr = ui->lEditNumData->text();
-    bool validNumData;
+    bool validNumData = false;
     numData = numDataStr.toDouble(&validNumData);
     if (!validNumData || numData <= 0) {
         QMessageBox::information(this, "Error", "Invalid number of data element");
