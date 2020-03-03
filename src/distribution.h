@@ -37,8 +37,8 @@ class Distribution
 {
 protected:
     long long binNumber;   
-    double lowerBound, upperBound;
-    double* pdf;
+    iFloat lowerBound, upperBound;
+    iFloat* pdf;
     iFloat* cdf;
 
     void cleanup() {
@@ -50,7 +50,7 @@ protected:
         binNumber = b.binNumber;
         lowerBound = b.lowerBound;
         upperBound = b.upperBound;
-        pdf = new double[binNumber];
+        pdf = new iFloat[binNumber];
         cdf = new iFloat[binNumber];
         for (unsigned i=0;i<binNumber;i++) {pdf[i] = b.pdf[i]; cdf[i] = b.cdf[i];}
     }
@@ -64,7 +64,7 @@ public:
         upperBound = 0;
     }
 
-    Distribution(long long newBinNumber, double newLowerBound, double newUpperBound) {
+    Distribution(long long newBinNumber, iFloat newLowerBound, iFloat newUpperBound) {
         binNumber = newBinNumber;
         lowerBound = newLowerBound;
         upperBound = newUpperBound;
@@ -77,14 +77,14 @@ public:
         }
 
         try {
-            pdf = new double[binNumber];
+            pdf = new iFloat[binNumber];
             cdf = new iFloat[binNumber];
             for (int i=0;i<binNumber;i++) {pdf[i] = 0; cdf[i] = 0;}
         }
         catch (std::exception const &ex) {
             qDebug() << ex.what() << "\n";
         }
-    }
+    }     
 
     Distribution(const Distribution& b) {
         copy(b);
@@ -105,16 +105,16 @@ public:
     bool operator==(const Distribution& b) {
         if (binNumber!=b.binNumber || lowerBound!=b.lowerBound || upperBound!=b.upperBound)
             return false;
-        for (unsigned i=0; i<binNumber; i++) if (!utils::floatEqual(pdf[i], b.pdf[i], 0.00000001)) return false;
+        for (unsigned i=0; i<binNumber; i++) if (pdf[i] != b.pdf[i]) return false;
         return true;
     }
 
     /*********************************************************/
-    double& operator[](int i) {
+    iFloat& operator[](int i) {
         return pdf[i];
     }
 
-    double operator[](int i) const {
+    iFloat operator[](int i) const {
         return pdf[i];
     }
 
@@ -167,20 +167,20 @@ public:
         return binNumber;
     }
 
-    double getLowerBound() const {
+    iFloat getLowerBound() const {
         return lowerBound;
     }
 
-    double getUpperBound() const {
+    iFloat getUpperBound() const {
         return upperBound;
     }
 
-    double getBinSize() const {
+    iFloat getBinSize() const {
         return (upperBound - lowerBound) / binNumber;
     }
 
-    double getCdf(long long i) {
-        return double(cdf[i]);
+    iFloat getCdf(long long i) {
+        return cdf[i];
     }
 
     long long inverseSampling(iFloat cumulative) {
@@ -196,21 +196,25 @@ public:
             else l = mid+1;
         }
 
-        if (res==-1)
-            throw SamplingException("Inverse sampling failed because sum(cdf) < cumulative <= 1");
+        //if (res==-1)
+        //    throw SamplingException("Inverse sampling failed because sum(cdf) < cumulative <= 1");
+        if (res==-1) {
+            res = binNumber - 1;
+            qDebug() << "CRITICAL ERROR: INVERSE SAMPLING FAIL";
+        }
 
         return res;
     }
 
     void normalize() {
         iFloat sum = 0;
-        for (int i=0; i<binNumber; i++) {
+        for (long long i=0; i<binNumber; i++) {
             if (pdf[i] < 0) pdf[i] = 0;
             sum = sum + pdf[i];
         }
 
-        for (int i=0; i<binNumber; i++) {
-            pdf[i] = double(pdf[i] / sum);
+        for (long long i=0; i<binNumber; i++) {
+            pdf[i] = pdf[i] / sum;
             if (i==0) cdf[i] = pdf[i];
             else cdf[i] = cdf[i-1] + pdf[i];
         }

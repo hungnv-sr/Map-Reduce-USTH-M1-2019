@@ -42,7 +42,7 @@ void MainWindow::slotArrayExperimentFinish(const vector<Result> &res) {
     QMessageBox::information(this, "Success", "Array experiment successful");
 
     try {
-            BaseExperiment::staticOutputFile("arrayResultAutosave.txt",results);
+            utils::outputFile("arrayResultAutosave.txt",results);
         }
         catch (std::exception ex) {
             qDebug() << "Array experiment output: " << ex.what() << "\n";
@@ -69,7 +69,7 @@ void MainWindow::slotMatrixExperimentFinish(const vector<Result> &res) {
     QMessageBox::information(this, "Success", "Matrix experiment successful");
 
     try {
-            BaseExperiment::staticOutputFile("matrixResultAutosave.txt",results);
+            utils::outputFile("matrixResultAutosave.txt",results);
         }
         catch (std::exception ex) {
             qDebug() << "Matrix experiment output: " << ex.what() << "\n";
@@ -90,6 +90,10 @@ void MainWindow::slotParseDistributionFinish(const Distribution &parsedDistribut
         QMessageBox::information(this, "Error", "Distribution expression is invalid");
     }
     resource.release(1);
+}
+
+void MainWindow::slotReceiveAlert(QString alert) {
+    QMessageBox::information(this, "Error", alert);
 }
 
 //-------------------   FUNCTIONS TO START AND RUN NEW THREADS
@@ -623,7 +627,7 @@ void MainWindow::on_pButtonSaveResult_clicked()
     QString savefile = "result" + format + ".txt";
 
     try {
-            BaseExperiment::staticOutputFile(savefile,results);
+            utils::outputFile(savefile,results);
         }
         catch (std::exception ex) {
             qDebug() << "Matrix experiment output: " << ex.what() << "\n";

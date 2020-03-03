@@ -21,15 +21,16 @@ public:
             throw DistributionException("Uniform Distribution: a < newLowerBound || b > newUpperBound");
 
 
-        double binSize = (upperBound - lowerBound) / binNumber;
-        double p = binSize/(b-a);
-
-        for (long long i=0; i<binNumber; i++) {
-            double x = lowerBound + i*binSize;
+        iFloat binSize = (upperBound - lowerBound) / binNumber;
+        iFloat p = binSize/(b-a);
+        iFloat x = lowerBound;
+        for (long long i=0; i<binNumber; i++) {            
             if (x<a || x>b) pdf[i] = 0;
             else pdf[i] = p;
+            x = x + binSize;
 
-            if (i>0) cdf[i] = cdf[i-1] + pdf[i];
+            if (i==0) cdf[i] = pdf[i];
+            else cdf[i] = cdf[i-1] + pdf[i];
         }
 
         normalize();
@@ -64,7 +65,7 @@ public:
             b = lowerBound + b*(upperBound - lowerBound);
 
             UniformDistribution u(binNumber, lowerBound, upperBound, a, b);
-            double binSize = u.getBinSize();
+            iFloat binSize = u.getBinSize();
 
             /*--------------------------------*/
             fo << std::fixed << binNumber << " " << lowerBound << " " << upperBound << " " << a << " " << b << "\n";

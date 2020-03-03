@@ -92,6 +92,8 @@ private slots:
     void slotMatrixExperimentFinish(const vector<Result> &res);
 
     void slotParseDistributionFinish(const Distribution &distribution);
+
+    void slotReceiveAlert(QString alert);
 signals:
     void signalGenerateArray(int nData);
 

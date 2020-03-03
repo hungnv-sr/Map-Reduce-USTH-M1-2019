@@ -19,12 +19,27 @@ public:
         if (variance <= 0)
             throw DistributionException("Normal Distribution: Variance <= 0");
 
-        double binSize = (upperBound - lowerBound) / binNumber;
 
+
+        /*
         for (long long i=0; i<binNumber; i++) {
-            double leftX = lowerBound + i*binSize;
-            double rightX = leftX + binSize;
+            iFloat leftX = lowerBound + i*binSize;
+            iFloat rightX = leftX + binSize;
             pdf[i] = (utils::gaussPdf(mean, variance, leftX) + utils::gaussPdf(mean, variance, rightX)) / 2;
+
+            if (i==0) cdf[i] = pdf[i];
+            else cdf[i] = cdf[i-1] + pdf[i];
+        }*/
+
+        // optimized code
+        iFloat binSize = (upperBound - lowerBound) / binNumber;
+        iFloat leftX = lowerBound, leftPdf = utils::gaussPdf(mean, variance, leftX);
+        iFloat rightX = lowerBound + binSize, rightPdf = utils::gaussPdf(mean, variance, rightX);
+        for (long long i=0; i<binNumber; i++) {
+            pdf[i] = (leftPdf + rightPdf) / 2;
+            leftPdf = rightPdf;
+            rightX = rightX + binSize;
+            rightPdf = utils::gaussPdf(mean, variance, rightX);
 
             if (i==0) cdf[i] = pdf[i];
             else cdf[i] = cdf[i-1] + pdf[i];
@@ -61,7 +76,7 @@ public:
             b = 10 + b*100;
 
             NormalDistribution N(binNumber, lowerBound, upperBound, a, b);
-            double binSize = N.getBinSize();
+            iFloat binSize = N.getBinSize();
 
             /*--------------------------------*/
             fo << std::fixed << binNumber << " " << lowerBound << " " << upperBound << " " << a << " " << b << "\n";
