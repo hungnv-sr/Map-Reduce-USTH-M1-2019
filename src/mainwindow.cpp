@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "logconsole.h"
+#include "ui_logconsole.h"
 #include <QtCore>
 #include <QtGui>
 #include <QMessageBox>
@@ -18,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->lblMatSize->setVisible(false);
     ui->lEditMatSize->setVisible(false);
+
+    console = new LogConsole();
 }
 
 MainWindow::~MainWindow()
@@ -32,7 +35,8 @@ void MainWindow::slotGenerateArrayFinish(const vector<double> &arr) {
     createDataThread.quit();
     createDataThread.wait();
     QMessageBox::information(this, "Success", "Generate array data successful");
-    resource.release(1);        
+    console->getUI()->txtBrowserLog->append("Generate array data successful");
+    resource.release(1);
 }
 
 void MainWindow::slotArrayExperimentFinish(const vector<Result> &res) {
@@ -40,16 +44,19 @@ void MainWindow::slotArrayExperimentFinish(const vector<Result> &res) {
     experimentThread.quit();
     experimentThread.wait();
     QMessageBox::information(this, "Success", "Array experiment successful");
+    console->getUI()->txtBrowserLog->append("Array experiment successful");
 
     try {
-            utils::outputFile("arrayResultAutosave.txt",results);
+            BaseExperiment::staticOutputFile("arrayResultAutosave.txt",results);
         }
         catch (std::exception ex) {
             qDebug() << "Array experiment output: " << ex.what() << "\n";
             QMessageBox::information(this, "Error", "Auto-save array results to file failed\n");
+            console->getUI()->txtBrowserLog->append("Auto-save array results to file failed");
             return;
         }
     QMessageBox::information(this, "Success", "Auto-save array results to file successful");
+    console->getUI()->txtBrowserLog->append("Auto-save array results to file successful");
     resource.release(1);
 }
 
@@ -59,6 +66,7 @@ void MainWindow::slotGenerateMatrixFinish(const vector<Matrix<double> > &mats) {
     createDataThread.quit();
     createDataThread.wait();
     QMessageBox::information(this, "Success", "Generate matrix data successful");
+    console->getUI()->txtBrowserLog->append("Generate matrix data successful");
     resource.release(1);
 }
 
@@ -67,16 +75,19 @@ void MainWindow::slotMatrixExperimentFinish(const vector<Result> &res) {
     experimentThread.quit();
     experimentThread.wait();
     QMessageBox::information(this, "Success", "Matrix experiment successful");
+    console->getUI()->txtBrowserLog->append("Matrix experiment successful");
 
     try {
-            utils::outputFile("matrixResultAutosave.txt",results);
+            BaseExperiment::staticOutputFile("matrixResultAutosave.txt",results);
         }
         catch (std::exception ex) {
             qDebug() << "Matrix experiment output: " << ex.what() << "\n";
             QMessageBox::information(this, "Error", "Auto-save matrix results to file failed\n");
+            console->getUI()->txtBrowserLog->append("Auto-save matrix results to file failed");
             return;
         }
     QMessageBox::information(this, "Success", "Auto-save matrix results to file successful");
+    console->getUI()->txtBrowserLog->append("Auto-save matrix results to file successful");
     resource.release(1);
 }
 
@@ -85,9 +96,13 @@ void MainWindow::slotParseDistributionFinish(const Distribution &parsedDistribut
     createDistributionThread.quit();
     createDistributionThread.wait();
     if (distribution.valid())
+    {
         QMessageBox::information(this, "Success", "Create distribution successful");
+        console->getUI()->txtBrowserLog->append("Create distribution successful");
+    }
     else {
         QMessageBox::information(this, "Error", "Distribution expression is invalid");
+        console->getUI()->txtBrowserLog->append("Distribution expression is invalid");
     }
     resource.release(1);
 }
@@ -242,6 +257,7 @@ void MainWindow::on_pButtonOpenFile_1_clicked()
 {
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
+        console->getUI()->txtBrowserLog->append("Another task is in progress. Please wait.");
         return;
     }
 
@@ -255,6 +271,7 @@ void MainWindow::on_pButtonOpenFile_1_clicked()
     if (!file.open(QIODevice::ReadOnly))
     {
         QMessageBox::information(this, "Error", "File cannot be opened");
+        console->getUI()->txtBrowserLog->append("File cannot be opened");
         return;
     }
 
@@ -329,17 +346,21 @@ void MainWindow::on_pButtonCreateDistribution_clicked()
 {
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
+        console->getUI()->txtBrowserLog->append("Another task is in progress. Please wait.");
+
         return;
     }
 
     vector<double> distributionParams = getDistributionParams();
     if (distributionParams.size() != 3) {
         QMessageBox::information(this, "Error", "Invalid distribution parameters");
+        console->getUI()->txtBrowserLog->append("Invalid distribution parameters");
         return;
     }
 
     if (!Parser::validParams(distributionParams[0], distributionParams[1], distributionParams[2])) {
         QMessageBox::information(this, "Error", "Invalid distribution parameters values");
+        console->getUI()->txtBrowserLog->append("Invalid distribution parameters values");
         return;
     }
 
@@ -347,10 +368,12 @@ void MainWindow::on_pButtonCreateDistribution_clicked()
 
     if (!threadParseDistribution()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait and try again");
+        console->getUI()->txtBrowserLog->append("Another task is in progress. Please wait and try again");
         return;
     }
     else {
         QMessageBox::information(this, "Update", "Creating distribution is in progress");
+        console->getUI()->txtBrowserLog->append("Creating distribution is in progress");
     }
 }
 
@@ -360,6 +383,7 @@ void MainWindow::on_pButtonGen_clicked()
     qDebug() << "buttonGen clicked \n";
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
+        console->getUI()->txtBrowserLog->append("Another task is in progress. Please wait.");
         return;
     }
 
@@ -368,11 +392,13 @@ void MainWindow::on_pButtonGen_clicked()
     numData = numDataStr.toDouble(&validNumData);
     if (!validNumData || numData <= 0) {
         QMessageBox::information(this, "Error", "Invalid number of data element");
+        console->getUI()->txtBrowserLog->append("Invalid number of data element");
         return;
     }
 
     if (!distribution.valid()) {
         QMessageBox::information(this, "Error", "Please create a distribution first");
+        console->getUI()->txtBrowserLog->append("Please create a distribution first");
         return;
     }
 
@@ -383,6 +409,7 @@ void MainWindow::on_pButtonGen_clicked()
         matSize = matSizeStr.toDouble(&validMatSize);
         if (!validMatSize || matSize <= 0) {
             QMessageBox::information(this, "Error", "Invalid matrix size");
+            console->getUI()->txtBrowserLog->append("Invalid matrix size");
             return;
         }
     }
@@ -394,19 +421,23 @@ void MainWindow::on_pButtonGen_clicked()
 
         if (!threadGenerateArray()) {
             QMessageBox::information(this, "Error", "Generate failed. Please try again");
+            console->getUI()->txtBrowserLog->append("Generate failed. Please try again");
             return;
 
         }
         QMessageBox::information(this, "Update", "Generate array is in progress");
+        console->getUI()->txtBrowserLog->append("Generate array is in progress");
     }
     else if (dataTypeStr=="Matrix") {
         dataType = MATRIX;
         MatrixGenerator matrixGenerator(distribution);
         if (!threadGenerateMatrix()) {
             QMessageBox::information(this, "Error", "Generate failed. Please try again");
+            console->getUI()->txtBrowserLog->append("Generate failed. Please try again");
             return;
         }
         QMessageBox::information(this, "Update", "Generate array is in progress");
+        console->getUI()->txtBrowserLog->append("Generate array is in progress");
     }
 
 }
@@ -415,12 +446,14 @@ void MainWindow::on_pButtonSaveDataset_clicked()
 {
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait");
+        console->getUI()->txtBrowserLog->append("Another task is in progress. Please wait");
         return;
     }
 
     if (ui->lEditSaveDir->text() == "")
     {
         QMessageBox::information(this, "Error", "Save Directory is NOT set!");
+        console->getUI()->txtBrowserLog->append("Save Directory is NOT set!");
         return;
     }
     else
@@ -437,9 +470,11 @@ void MainWindow::on_pButtonSaveDataset_clicked()
             bool fileSaveSuccess = utils::saveArray(savefile, arrData, 12);
             if (!fileSaveSuccess) {
                 QMessageBox::information(this, "Error", "Can't save array to file. Please try again.");
+                console->getUI()->txtBrowserLog->append("Can't save array to file. Please try again.");
             }
             else {
                 QMessageBox::information(this, "Success", "File save array successful");
+                console->getUI()->txtBrowserLog->append("File save array successful");
             }
         }
         else {
@@ -447,9 +482,11 @@ void MainWindow::on_pButtonSaveDataset_clicked()
             bool fileSaveSuccess = utils::saveMatrix(savefile, matData, 12);
             if (!fileSaveSuccess) {
                 QMessageBox::information(this, "Error", "Can't save matrix file. Please try again.");
+                console->getUI()->txtBrowserLog->append("Can't save matrix file. Please try again.");
             }
             else {
                 QMessageBox::information(this, "Success", "File save matrix successful");
+                console->getUI()->txtBrowserLog->append("File save matrix successful");
             }
         }
     }
@@ -460,6 +497,7 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
 {
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait");
+        console->getUI()->txtBrowserLog->append("Another task is in progress. Please wait");
         return;
     }
 
@@ -471,6 +509,7 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
 
     if (!filename.contains(".array") && !filename.contains(".matrix")) {
         QMessageBox::information(this, "Error", "Invalid file format. Must be .array or .matrix file");
+        console->getUI()->txtBrowserLog->append("Invalid file format. Must be .array or .matrix file");
         ui->txtBrowser_2->setText("Invalid file format");
         return;
     }
@@ -482,6 +521,7 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
     if ((dataType==ARRAY && filename.contains(".matrix"))
             || (dataType==MATRIX && filename.contains(".array"))) {
         QMessageBox::information(this, "Error", "File has wrong data type");
+        console->getUI()->txtBrowserLog->append("File has wrong data type");
         ui->txtBrowser_2->setText("File has wrong data type");
         return;
     }
@@ -491,6 +531,7 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
     fin = std::ifstream(filename.toStdString().c_str());
     if (!fin.is_open()) {
         QMessageBox::information(this, "Error", "File cannot be opened");
+        console->getUI()->txtBrowserLog->append("File cannot be opened");
         ui->txtBrowser_2->setText("File cannot be opened");
         return;
     }
@@ -520,6 +561,7 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
     }
     catch (...) {
         QMessageBox::information(this, "Error", "File cannot be read or corrupted");
+        console->getUI()->txtBrowserLog->append("File cannot be read or corrupted");
         ui->txtBrowser_2->setText("File cannot be read or corrupted");
         fin.close();
         return;
@@ -533,6 +575,7 @@ void MainWindow::on_pButtonBrowseDir_clicked()
 {
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
+        console->getUI()->txtBrowserLog->append("Another task is in progress. Please wait.");
         return;
     }
 
@@ -554,6 +597,7 @@ void MainWindow::on_pButtonRun_clicked()
 {
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
+        console->getUI()->txtBrowserLog->append("Another task is in progress. Please wait.");
         return;
     }
 
@@ -561,11 +605,13 @@ void MainWindow::on_pButtonRun_clicked()
 
     if (numData <= 0) {
         QMessageBox::information(this, "Error", "Number of data element <= 0");
+        console->getUI()->txtBrowserLog->append("Number of data element <= 0");
         return;
     }
 
     if (!distribution.valid()) {
         QMessageBox::information(this, "Error", "Please create a distribution first");
+        console->getUI()->txtBrowserLog->append("Please create a distribution first");
         return;
     }
     qDebug() << "after distribution";
@@ -575,6 +621,7 @@ void MainWindow::on_pButtonRun_clicked()
     numTest = numTestStr.toDouble(&validNumTest);
     if (!validNumTest || numTest <= 0) {
         QMessageBox::information(this, "Error", "Invalid number of test");
+        console->getUI()->txtBrowserLog->append("Invalid number of test");
         return;
     }
 
@@ -588,6 +635,7 @@ void MainWindow::on_pButtonRun_clicked()
 
     if (testAlgos.empty()) {
         QMessageBox::information(this, "Error", "Please select some algorithms");
+        console->getUI()->txtBrowserLog->append("Please select some algorithms");
         return;
     }
     qDebug() << "after testAlgos";
@@ -604,10 +652,12 @@ void MainWindow::on_pButtonRun_clicked()
     if (dataType==ARRAY) {
         threadRunArrayExperiment();
         QMessageBox::information(this, "Update", "Array experiment is in progress");
+        console->getUI()->txtBrowserLog->append("Array experiment is in progress");
     }
     else {
         threadRunMatrixExperiment();
         QMessageBox::information(this, "Update", "Matrix experiment is in progress");
+        console->getUI()->txtBrowserLog->append("Matrix experiment is in progress");
     }
 }
 
@@ -615,10 +665,12 @@ void MainWindow::on_pButtonSaveResult_clicked()
 {
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Auto-save matrix results to file failed\n");
+        console->getUI()->txtBrowserLog->append("Auto-save matrix results to file failed");
     }
 
     if (results.size() <= 2) {
         QMessageBox::information(this, "Error", "There is no result to save");
+        console->getUI()->txtBrowserLog->append("There is no result to save");
         return;
     }
 
@@ -627,12 +679,21 @@ void MainWindow::on_pButtonSaveResult_clicked()
     QString savefile = "result" + format + ".txt";
 
     try {
-            utils::outputFile(savefile,results);
+            BaseExperiment::staticOutputFile(savefile,results);
         }
         catch (std::exception ex) {
             qDebug() << "Matrix experiment output: " << ex.what() << "\n";
             QMessageBox::information(this, "Error", "Save current results to file failed");
+            console->getUI()->txtBrowserLog->append("Save current results to file failed");
             return;
         }
     QMessageBox::information(this, "Success", "Save current results to file " + savefile + " successful");
+    console->getUI()->txtBrowserLog->append("Save current results to file " + savefile + " successful");
+}
+
+void MainWindow::on_pButtonLogConsole_clicked()
+{
+    console->setModal(false);
+    console->show();
+    console->activateWindow();
 }
