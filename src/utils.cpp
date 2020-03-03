@@ -102,13 +102,14 @@ void utils::outputFile(QString filename, vector<Result> results) {
     int n;
     vector<QString> algoNames;
     vector<Algo> algoTypes;
-    std::map<Algo, bool> mp; // check if an Algo is used
+    std::map<Algo, bool> mp;
 
     mp.clear();
     algoTypes.clear();
     algoNames.clear();
 
-    //----------------  GET LIST OF ALGORITHMS USED
+    qDebug() << "Reached before results.size() \n";
+
     n = results.size();
     for (int i=0; i<n;i++) {
         if (!mp[results[i].algoUsed] && results[i].algoUsed!=GROUND_TRUTH) {
@@ -122,21 +123,29 @@ void utils::outputFile(QString filename, vector<Result> results) {
         }
     }
 
-    //-----------------------   OUTPUT TO FILE
     std::ofstream fo(filename.toStdString().c_str());
-    fo << std::setprecision(std::numeric_limits<float50>::digits10); //
+    qDebug() << "Reached after openining file \n";
+    fo << std::setprecision(std::numeric_limits<float50>::digits10);
+    qDebug() << "Reached after setprecision \n";
 
 
-    fo << algoTypes.size() << "\n";
-    fo << results[0].value << " " << results[1].value << "\n";
+    fo << "Number of Algorithm Type" << ", " << algoTypes.size() << "\n";
+    qDebug() << "Reached after algotypes.size() \n";
+    if (results[0].value == 1){
+        fo << "Using shuffle dataset" << "\n";
+        fo << "Ground Truth" << ", "<< results[1].value << "\n";
+    } else fo << "Using original dataset" << "\n";
 
-    for (unsigned t=0; t<algoTypes.size(); t++) fo << algoNames[t].toStdString() << " ";
+    qDebug() << "Reached after results[0] and 1 \n";
+
+    // qDebug() << "algoTypes.size() = " << algoTypes.size() << " - " << "algoNames.size() = " << algoNames.size() << "\n";
+    qDebug() << "Reached after algosNames print\n";
     fo << "\n";
-
+    qDebug() << "output file before loop\n";
     for (unsigned t=0; t<algoTypes.size(); t++) {
         iFloat mean = 0;
         int nSample = 0;
-
+        fo << algoNames[t].toStdString() << "\n ";
         for (int i=0;i<n;i++) if (results[i].algoUsed==algoTypes[t]) {
             mean = mean + results[i].value;
             nSample++;
@@ -149,10 +158,11 @@ void utils::outputFile(QString filename, vector<Result> results) {
             variance = variance + dX * dX;
         }
         variance = variance / nSample;
-
-        fo << mean << " " << variance << " " << utils::isqrt(variance) << " ";
-        for (int i=0; i<n; i++) if (results[i].algoUsed==algoTypes[t]) fo << results[i].value << " ";
-        fo << "\n";
+        fo << "Mean" << ", " << "Variance" << ", " << "Standard Deviation"<< "\n"; 
+        fo << mean << ", " << variance << ", " << utils::isqrt(variance) << "\n";
+        fo << "Result of " << (n-2)/algoTypes.size() << " experiments" << "\n";
+        for (int i=0; i<n; i++) if (results[i].algoUsed==algoTypes[t]) fo << results[i].value << ", ";
+        fo << "\n" << "\n";
     }
     fo.close();
 }
