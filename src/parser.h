@@ -229,8 +229,9 @@ class Parser
 
         if (operatorStack.size() > 0) return nonsense;
         if (valueStack.size() != 1) return nonsense;
-        valueStack.top().normalize();
-        return valueStack.top();
+        Distribution res = valueStack.top();
+        res.normalize();
+        return res;
     }
 
 

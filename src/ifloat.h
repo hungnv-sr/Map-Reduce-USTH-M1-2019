@@ -148,6 +148,10 @@ public:
         return (*value) == (*v.value);
     }
 
+    bool operator != (const iFloat &v) const {
+        return (*value) != (*v.value);
+    }
+
     //-------------------------------- SCALAR CALCULATION OPERATORS
     /*
     template <class dtype2>
