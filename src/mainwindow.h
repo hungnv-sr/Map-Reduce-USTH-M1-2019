@@ -10,8 +10,7 @@
 #include <QThread>
 #include <parserwrapper.h>
 #include <QSemaphore>
-#include "logconsole.h"
-#include "qcustomplot.h"
+#include <logconsole.h>
 
 using std::vector;
 

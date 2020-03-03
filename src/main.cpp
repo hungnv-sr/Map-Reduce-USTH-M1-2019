@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "logconsole.h"
-#include "figurewindow.h"
 #include <iostream>
 #include <QApplication>
 #include "distribution.h"
@@ -52,9 +51,6 @@ int main(int argc, char *argv[])
 
     MainWindow w;
     w.show();
-
-    FigureWindow f;
-    f.show();
 
     return a.exec();
 }
