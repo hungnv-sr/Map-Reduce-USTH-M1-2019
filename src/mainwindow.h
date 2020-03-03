@@ -10,6 +10,9 @@
 #include <QThread>
 #include <parserwrapper.h>
 #include <QSemaphore>
+#include "logconsole.h"
+#include "qcustomplot.h"
+
 using std::vector;
 
 struct MainWindowException : public std::exception {
@@ -92,6 +95,7 @@ private slots:
     void slotMatrixExperimentFinish(const vector<Result> &res);
 
     void slotParseDistributionFinish(const Distribution &distribution);
+    void on_pButtonLogConsole_clicked();
 
     void slotReceiveAlert(QString alert);
 signals:
@@ -120,6 +124,7 @@ private:
 
 private:
     Ui::MainWindow *ui;
+    LogConsole *console;
 
     QString getDistributionString();
 

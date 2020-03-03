@@ -13,6 +13,10 @@ class LogConsole : public QDialog
 
 public:
     explicit LogConsole(QWidget *parent = nullptr);
+    Ui::LogConsole *getUI()
+    {
+        return ui;
+    }
     ~LogConsole();
 
 private:
