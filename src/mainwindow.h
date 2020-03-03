@@ -93,6 +93,7 @@ private slots:
 
     void slotParseDistributionFinish(const Distribution &distribution);
 
+    void slotReceiveAlert(QString alert);
 signals:
     void signalGenerateArray(int nData);
 
