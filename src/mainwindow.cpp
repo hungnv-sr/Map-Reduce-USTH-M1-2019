@@ -624,7 +624,7 @@ void MainWindow::on_pButtonSaveResult_clicked()
 
     QDateTime now = QDateTime::currentDateTime();
     QString format = now.toString("dd.MMM.yyyy-hhmmss");
-    QString savefile = "result" + format + ".txt";
+    QString savefile = "result" + format + ".csv";
 
     try {
             utils::outputFile(savefile,results);
