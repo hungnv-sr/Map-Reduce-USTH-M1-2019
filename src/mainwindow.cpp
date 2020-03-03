@@ -435,14 +435,19 @@ void MainWindow::on_pButtonGen_clicked()
         QMessageBox::information(this, "Update", "Generate array is in progress");
         console->getUI()->txtBrowserLog->append("Generate array is in progress");
     }
-
 }
 
 void MainWindow::on_pButtonSaveDataset_clicked()
 {
+    qDebug() << "buttonSaveDataset clicked\n";
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait");
         console->getUI()->txtBrowserLog->append("Another task is in progress. Please wait");
+        return;
+    }
+
+    if (arrData.size() == 0 && matData.size() == 0) {
+        QMessageBox::information(this, "Error", "No dataset to save");
         return;
     }
 
@@ -458,10 +463,13 @@ void MainWindow::on_pButtonSaveDataset_clicked()
         QDateTime now = QDateTime::currentDateTime();
         QString format = now.toString("dd.MMM.yyyy-hhmmss");
         QString savefile = ui->lEditSaveDir->text() + format + ".txt";
-        //QFile file(savefile);
-
 
         if (dataType==ARRAY) {
+            if (arrData.size()==0) {
+                QMessageBox::information(this, "Error", "No array dataset to save");
+                return;
+            }
+            qDebug() << arrData.size() << "\n";
             QString savefile = ui->lEditSaveDir->text() + "/" + format + ".array";
             bool fileSaveSuccess = utils::saveArray(savefile, arrData, 12);
             if (!fileSaveSuccess) {
@@ -473,7 +481,11 @@ void MainWindow::on_pButtonSaveDataset_clicked()
                 console->getUI()->txtBrowserLog->append("File save array successful");
             }
         }
-        else {
+        else {            
+            if (matData.size()==0) {
+                QMessageBox::information(this, "Error", "No matrix dataset to save!");
+                return;
+            }
             QString savefile = ui->lEditSaveDir->text() + "/" + format + ".matrix";
             bool fileSaveSuccess = utils::saveMatrix(savefile, matData, 12);
             if (!fileSaveSuccess) {
@@ -670,9 +682,11 @@ void MainWindow::on_pButtonSaveResult_clicked()
         return;
     }
 
+    QString folder = ui->lEditSaveDir->text();
+
     QDateTime now = QDateTime::currentDateTime();
     QString format = now.toString("dd.MMM.yyyy-hhmmss");
-    QString savefile = "result" + format + ".csv";
+    QString savefile = folder + "/result" + format + ".csv";
 
     try {
             utils::outputFile(savefile,results);

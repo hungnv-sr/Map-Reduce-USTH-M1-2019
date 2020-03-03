@@ -5,8 +5,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++11
 CONFIG   += console
 
-INCLUDEPATH += D:\QtProjects\Map-Reduce-USTH-M1-2019\boost_1_66_0
-INCLUDEPATH += D:\QtProjects\Map-Reduce-USTH-M1-2019\eigen-3.3.7
+INCLUDEPATH += C:\Users\lehuy\Documents\Map-Reduce-USTH-M1-2019\boost_1_66_0
+INCLUDEPATH += C:\Users\lehuy\Documents\Map-Reduce-USTH-M1-2019\eigen-3.3.7
 
 
 # The following define makes your compiler emit warnings if you use
@@ -23,7 +23,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     arrayexperiment.cpp \
     arraygenerator.cpp \
-    csvfile.cpp \
     logconsole.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -36,7 +35,6 @@ SOURCES += \
 HEADERS += \
     arrayexperiment.h \
     arraygenerator.h \
-    csvfile.h \
     NormalDistribution.h \
     distribution.h \
     exponentialdistribution.h \
