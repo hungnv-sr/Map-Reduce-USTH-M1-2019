@@ -195,6 +195,8 @@ public:
         return cdf[i];
     }
 
+    // find the first value "res" such that
+    // cdf[res] > cumulative using binary search
     long long inverseSampling(iFloat cumulative) {
         if (cumulative < iFloat(0) || cumulative > iFloat(1))
             throw DistributionException("Inverse sampling error: invalid cumulative value");
@@ -208,6 +210,13 @@ public:
             else l = mid+1;
         }
 
+        // if we cannot find a valid res, there's a 99.99% chance that
+        // it's because sum(pdf) < 1, and res > sum(pdf).
+        // This happens because some distribution function require super high precision (normal, exponential, ...)
+        // and some values underflow and become 0.
+        // We fix this by using iFloat for both PDF and CDF. If the error happens again,
+        // we are sure that sum(pdf) is close to 1, so we just set res = binNumber - 1 (the max value).
+
         //if (res==-1)
         //    throw SamplingException("Inverse sampling failed because sum(cdf) < cumulative <= 1");
         if (res==-1) {
@@ -218,6 +227,8 @@ public:
         return res;
     }
 
+    // sometimes sum(pdf) < 1 due to float underflow.
+    // so we normalize it by dividing each pdf[i] value by sum(pdf)
     void normalize() {
         iFloat sum = 0;
         for (long long i=0; i<binNumber; i++) {
@@ -233,6 +244,8 @@ public:
     }
 
     /*********************************************************/
+    // This checks if a distribution is usable or not
+    // Also it checks for place-holder Distribution(0,0,0).
     bool valid() {
         return binNumber > 1 && upperBound > lowerBound;
     }
