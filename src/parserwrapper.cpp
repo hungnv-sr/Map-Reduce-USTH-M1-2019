@@ -16,6 +16,20 @@ Distribution ParserWrapper::parseDistribution(QString distStr) {
 }
 
 void ParserWrapper::slotParseDistribution(QString dist) {
-    Distribution distribution = parser.string2dist(dist);
-    emit signalParseFinish(distribution);
+    try {
+        Distribution distribution = parser.string2dist(dist);
+        emit signalParseFinish(distribution);
+    }
+    catch (SamplingException samplingException) {
+        emit signalAlert("Distribution requires too high accuracy. Please try another.");
+        emit signalParseFinish(Distribution(0,0,0));
+    }
+    catch (std::underflow_error) {
+        emit signalAlert("Distribution requires too high accuracy. Please try another number.");
+        emit signalParseFinish(Distribution(0,0,0));
+    }
+    catch (std::overflow_error) {
+        emit signalAlert("Distribution requires too high accuracy. Please try another.");
+        emit signalParseFinish(Distribution(0,0,0));
+    }
 }
