@@ -25,6 +25,8 @@ public slots:
 
 signals:
     void signalParseFinish(const Distribution &distribution);
+
+    void signalAlert(QString alert);
 };
 
 #endif // DISTRIBUTIONGENERATOR_H

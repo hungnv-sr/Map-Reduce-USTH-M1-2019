@@ -107,6 +107,10 @@ void MainWindow::slotParseDistributionFinish(const Distribution &parsedDistribut
     resource.release(1);
 }
 
+void MainWindow::slotReceiveAlert(QString alert) {
+    QMessageBox::information(this, "Error", alert);
+}
+
 //-------------------   FUNCTIONS TO START AND RUN NEW THREADS
 bool MainWindow::threadGenerateArray() {
     if (numData <= 0)
