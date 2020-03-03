@@ -56,6 +56,8 @@ public slots:
 
 signals:
     void signalExperimentFinish(vector<Result> res);
+
+    void signalUpdateProgress(int value);
 };
 
 #endif // ARRAYEXPERIMENT_H

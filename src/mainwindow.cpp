@@ -21,6 +21,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lEditMatSize->setVisible(false);
 
     console = new LogConsole();
+    console->setModal(false);
+    console->show();
+    console->activateWindow();
 }
 
 MainWindow::~MainWindow()
@@ -36,7 +39,8 @@ void MainWindow::slotGenerateArrayFinish(const vector<double> &arr) {
     createDataThread.wait();
     QMessageBox::information(this, "Success", "Generate array data successful");
     console->getUI()->txtBrowserLog->append("Generate array data successful");
-    resource.release(1);
+    slotUpdateProgress(100);
+    resource.release(1);    
 }
 
 void MainWindow::slotArrayExperimentFinish(const vector<Result> &res) {
@@ -57,6 +61,7 @@ void MainWindow::slotArrayExperimentFinish(const vector<Result> &res) {
         }
     QMessageBox::information(this, "Success", "Auto-save array results to file successful");
     console->getUI()->txtBrowserLog->append("Auto-save array results to file successful");
+    slotUpdateProgress(100);
     resource.release(1);
 }
 
@@ -67,6 +72,7 @@ void MainWindow::slotGenerateMatrixFinish(const vector<Matrix<double> > &mats) {
     createDataThread.wait();
     QMessageBox::information(this, "Success", "Generate matrix data successful");
     console->getUI()->txtBrowserLog->append("Generate matrix data successful");
+    slotUpdateProgress(100);
     resource.release(1);
 }
 
@@ -88,6 +94,7 @@ void MainWindow::slotMatrixExperimentFinish(const vector<Result> &res) {
         }
     QMessageBox::information(this, "Success", "Auto-save matrix results to file successful");
     console->getUI()->txtBrowserLog->append("Auto-save matrix results to file successful");
+    slotUpdateProgress(100);
     resource.release(1);
 }
 
@@ -104,6 +111,7 @@ void MainWindow::slotParseDistributionFinish(const Distribution &parsedDistribut
         QMessageBox::information(this, "Error", "Distribution expression is invalid");
         console->getUI()->txtBrowserLog->append("Distribution expression is invalid");
     }
+    slotUpdateProgress(100);
     resource.release(1);
 }
 
@@ -129,6 +137,7 @@ bool MainWindow::threadGenerateArray() {
     connect(&createDataThread, &QThread::finished, arrGen, &QObject::deleteLater);
     connect(this, &MainWindow::signalGenerateArray, arrGen, &ArrayGenerator::slotGenerateArray);
     connect(arrGen, &ArrayGenerator::signalGenerateFinish, this, &MainWindow::slotGenerateArrayFinish);
+    connect(arrGen, &ArrayGenerator::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
 
     createDataThread.start();
 
@@ -152,6 +161,7 @@ bool MainWindow::threadRunArrayExperiment() {
     connect(&experimentThread, &QThread::finished, arrExper, &QObject::deleteLater);
     connect(this, &MainWindow::signalArrayExperiment, arrExper, &ArrayExperiment::slotRunArrayExperiment);
     connect(arrExper, &ArrayExperiment::signalExperimentFinish, this, &MainWindow::slotArrayExperimentFinish);
+    connect(arrExper, &ArrayExperiment::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
 
     experimentThread.start();
 
@@ -175,6 +185,7 @@ bool MainWindow::threadGenerateMatrix() {
     connect(&createDataThread, &QThread::finished, matGen, &QObject::deleteLater);
     connect(this, &MainWindow::signalGenerateMatrix, matGen, &MatrixGenerator::slotGenerateMatrix);
     connect(matGen, &MatrixGenerator::signalGenerateFinish, this, &MainWindow::slotGenerateMatrixFinish);
+    connect(matGen, &MatrixGenerator::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
 
     createDataThread.start();
 
@@ -200,6 +211,7 @@ bool MainWindow::threadRunMatrixExperiment() {
     connect(&experimentThread, &QThread::finished, matExper, &QObject::deleteLater);
     connect(this, &MainWindow::signalMatrixExperiment, matExper, &MatrixExperiment::slotRunMatrixExperiment);
     connect(matExper, &MatrixExperiment::signalExperimentFinish, this, &MainWindow::slotMatrixExperimentFinish);
+    connect(matExper, &MatrixExperiment::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
 
     experimentThread.start();
 

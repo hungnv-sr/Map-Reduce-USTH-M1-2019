@@ -21,7 +21,10 @@ void MatrixGenerator::slotGenerateMatrix(int nData, int matSize) {
     vector<Matrix<double> > mats;
     mats.clear();
 
-    for (int i=0; i<nData; i++) mats.push_back(randomMatrix(matSize, matSize));
+    for (int i=0; i<nData; i++) {
+        mats.push_back(randomMatrix(matSize, matSize));
+        emit signalUpdateProgress(i*100/nData);
+    }
 
     emit signalGenerateFinish(mats);
 }

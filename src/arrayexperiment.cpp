@@ -107,6 +107,7 @@ vector<Result> ArrayExperiment::experiment(Op op, unsigned int nTest, vector<Alg
         else {
             arrGen.generateArray(inputs.size(), inputs);
         }
+        emit signalUpdateProgress(t*100/nTest);
     }
 
     return res;
