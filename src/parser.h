@@ -25,7 +25,6 @@ public:
 
 class Parser
 {
-
     int binNumber;
     double lowerBound, upperBound;
 
@@ -282,6 +281,8 @@ public:
         str = "U(5,4) * N(1,2)";
         qDebug() << parser.parseExpression(str).valid() << "\n";
     }
+
+
 };
 
 #endif // PARSER_H

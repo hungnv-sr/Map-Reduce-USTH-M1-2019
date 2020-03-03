@@ -92,6 +92,7 @@ vector<Result> MatrixExperiment::experiment(Op op, unsigned nTest, vector<Algo> 
         else {
             matrixGen.generateMatrix(inputMats.size(), inputMats[0].getHeight(), inputMats);
         }
+        emit signalUpdateProgress(t*100/nTest);
     }
 
     return res;

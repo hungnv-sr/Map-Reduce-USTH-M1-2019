@@ -40,6 +40,8 @@ public slots:
 
 signals:
     void signalGenerateFinish(const vector<Matrix<double> > &mats);
+
+    void signalUpdateProgress(int value);
 };
 
 #endif // MATRIXGENERATOR_H

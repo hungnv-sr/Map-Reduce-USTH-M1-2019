@@ -38,6 +38,7 @@ public slots:
 signals:
     void signalGenerateFinish(const vector<double>& arr);
 
+    void signalUpdateProgress(int value);
 };
 
 #endif // ARRAYDATAGENERATOR_H
