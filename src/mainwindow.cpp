@@ -111,6 +111,10 @@ void MainWindow::slotReceiveAlert(QString alert) {
     QMessageBox::information(this, "Error", alert);
 }
 
+void MainWindow::slotUpdateProgress(int value) {
+    console->getUI()->progBar->setValue(value);
+}
+
 //-------------------   FUNCTIONS TO START AND RUN NEW THREADS
 bool MainWindow::threadGenerateArray() {
     if (numData <= 0)
@@ -469,7 +473,8 @@ void MainWindow::on_pButtonSaveDataset_clicked()
                 QMessageBox::information(this, "Error", "No array dataset to save");
                 return;
             }
-            qDebug() << arrData.size() << "\n";
+            console->getUI()->txtBrowserLog->append("Start saving array dataset.");
+
             QString savefile = ui->lEditSaveDir->text() + "/" + format + ".array";
             bool fileSaveSuccess = utils::saveArray(savefile, arrData, 12);
             if (!fileSaveSuccess) {
@@ -486,6 +491,8 @@ void MainWindow::on_pButtonSaveDataset_clicked()
                 QMessageBox::information(this, "Error", "No matrix dataset to save!");
                 return;
             }
+            console->getUI()->txtBrowserLog->append("Start saving matrix dataset.");
+
             QString savefile = ui->lEditSaveDir->text() + "/" + format + ".matrix";
             bool fileSaveSuccess = utils::saveMatrix(savefile, matData, 12);
             if (!fileSaveSuccess) {
@@ -547,6 +554,7 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
     ui->txtBrowser_2->setText("Importing file...");
     try {
         if (dataType==ARRAY) {
+            console->getUI()->txtBrowserLog->append("Start loading array dataset.");
             fin >> numData;
             arrData.clear();
             for (unsigned i=0; i<numData; i++) {
@@ -557,6 +565,7 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
             fin.close();
         }
         else if (dataType==MATRIX) {
+            console->getUI()->txtBrowserLog->append("Start loading matrix dataset.");
             fin >> numData >> matSize >> matSize;
             matData.clear();
             Matrix<double> currentMat(matSize, matSize);
@@ -689,6 +698,7 @@ void MainWindow::on_pButtonSaveResult_clicked()
     QString savefile = folder + "/result" + format + ".csv";
 
     try {
+            console->getUI()->txtBrowserLog->append("Start saving result.");
             utils::outputFile(savefile,results);
         }
         catch (std::exception ex) {
