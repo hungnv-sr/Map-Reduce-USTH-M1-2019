@@ -5,8 +5,6 @@
 #include <algorithm>
 #include <ifloat.h>
 
-// TODO: this is not finished so please don't read.
-// I skipped this because I have to do the other part first for the program to run
 struct DistributionException : public std::exception {
 private:
     QString msg;
@@ -20,6 +18,8 @@ public:
     }
 };
 
+// Sampling Exception is reserved for cases when the probability value
+// underflows.
 struct SamplingException : public std::exception {
 private:
     QString msg;
@@ -33,19 +33,23 @@ public:
     }
 };
 
+// We use inverse transform sampling:
+// https://stephens999.github.io/fiveMinuteStats/inverse_transform_sampling.html
 class Distribution
 {
 protected:
-    long long binNumber;   
-    iFloat lowerBound, upperBound;
-    iFloat* pdf;
-    iFloat* cdf;
+    // Note: we use pointer for cdf/pdf because they are very large array.
+    long long binNumber;            // number of rectangles to perform numerical integration
+    iFloat lowerBound, upperBound;  // Measurement range. For example, we can measure U(-5,5) in the range(-100,100)
+    iFloat* pdf;                    // Probability MASS function. Because we converted continuous functions to an array
+    iFloat* cdf;                    // Discrete cumulative mass function
 
     void cleanup() {
         delete[] pdf;
         delete[] cdf;
     }
 
+    // the = operator    must perform cleanup() then copy
     void copy(const Distribution& b) {
         binNumber = b.binNumber;
         lowerBound = b.lowerBound;
@@ -55,25 +59,29 @@ protected:
         for (unsigned i=0;i<binNumber;i++) {pdf[i] = b.pdf[i]; cdf[i] = b.cdf[i];}
     }
 
-    // solve cases where pdf[i] < 0. Allow the usage of operator *, -, /    
 
 public:
+    //----------    CONSTRUCTOR, COPY CONSTRUCTOR, DESTRUCTOR, ASSIGNMENT OPERATOR
+    //----------    These are needed to make the class canonical
+
+    // place-holder constructor
     Distribution() {
         binNumber = 0;
         lowerBound = 0;
         upperBound = 0;
     }
 
+    // binNumber is the number of rectangles, so it must be > 0
+    // But we make it > 1 because 1 rectangle doesn't make sense for integral
     Distribution(long long newBinNumber, iFloat newLowerBound, iFloat newUpperBound) {
         binNumber = newBinNumber;
         lowerBound = newLowerBound;
         upperBound = newUpperBound;
 
-        if (binNumber==0) binNumber = 1; // place-holder distribution variable
+        if (binNumber==0) binNumber = 1; // Distribution(0,0,0) is place-holder distribution variable
         else {
             if (binNumber < 0)
                 throw DistributionException("Constructor: bin number < 0");
-
         }
 
         try {
@@ -81,8 +89,9 @@ public:
             cdf = new iFloat[binNumber];
             for (int i=0;i<binNumber;i++) {pdf[i] = 0; cdf[i] = 0;}
         }
-        catch (std::exception const &ex) {
-            qDebug() << ex.what() << "\n";
+        catch (std::bad_alloc ex) {
+            qDebug() << " Distribution constructor bad_alloc " << ex.what() << "\n";
+            throw (ex);
         }
     }     
 
@@ -110,10 +119,13 @@ public:
     }
 
     /*********************************************************/
+    //--------------    MATH OPERATORS
+    // reference operator [] to get the variable (not the value)
     iFloat& operator[](int i) {
         return pdf[i];
     }
 
+    // const operator [] to read value of const objects
     iFloat operator[](int i) const {
         return pdf[i];
     }
@@ -121,7 +133,7 @@ public:
     Distribution operator + (const Distribution& b) const  {
         if (binNumber != b.binNumber) {
             qDebug() << "Operator + : Distribution must have same histogram size";
-            throw DistributionException("Operator + error: different group sizes");
+            throw DistributionException("Operator + error: different bin number sizes");
         }
         Distribution res(binNumber, lowerBound, upperBound);
         for (int i=0;i<binNumber;i++) res[i] = pdf[i] + b[i];
@@ -132,7 +144,7 @@ public:
     Distribution operator - (const Distribution& b) const {
         if (binNumber != b.binNumber) {
             qDebug() << "Operator - : Distribution must have same histogram size";
-            throw DistributionException("Operator - error: different group sizes");
+            throw DistributionException("Operator - error: different bin number sizes");
         }
         Distribution res(binNumber, lowerBound, upperBound);
         for (int i=0;i<binNumber;i++) res[i] = pdf[i] - b[i];
@@ -143,7 +155,7 @@ public:
     Distribution operator * (const Distribution& b) const {
         if (binNumber != b.binNumber) {
             qDebug() << "Operator * : Distribution must have same histogram size";
-            throw DistributionException("Operator * error: different group sizes");
+            throw DistributionException("Operator * error: different bin number sizes");
         }
         Distribution res(binNumber, lowerBound, upperBound);
         for (int i=0;i<binNumber;i++) res[i] = pdf[i] * b[i];
@@ -154,7 +166,7 @@ public:
     Distribution operator / (const Distribution& b) const {
         if (binNumber != b.binNumber) {
             qDebug() << "Operator / : Distribution must have same histogram size";
-            throw DistributionException("Operator * error: different group sizes");
+            throw DistributionException("Operator * error: different bin number sizes");
         }
         Distribution res(binNumber, lowerBound, upperBound);
         for (int i=0;i<binNumber;i++) res[i] = pdf[i] / b[i];
