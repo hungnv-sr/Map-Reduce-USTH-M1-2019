@@ -1,10 +1,9 @@
 #ifndef ARRAYEXPERIMENT_H
 #define ARRAYEXPERIMENT_H
 
-#include <baseexperiment.h>
+#include <utilityenum.h>
 #include <numerical.h>
 #include <vector>
-#include <matrix.h>
 #include <ifloat.h>
 #include <randomgenerator.h>
 #include <algorithm>

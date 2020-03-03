@@ -36,8 +36,6 @@ SOURCES += \
 HEADERS += \
     arrayexperiment.h \
     arraygenerator.h \
-    basedatatype.h \
-    baseexperiment.h \
     csvfile.h \
     NormalDistribution.h \
     distribution.h \
@@ -53,6 +51,7 @@ HEADERS += \
     parserwrapper.h \
     randomgenerator.h \
     uniformdistribution.h \
+    utilityenum.h \
     utils.h \
 
 FORMS += \

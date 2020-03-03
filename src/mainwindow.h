@@ -92,6 +92,7 @@ private slots:
     void slotMatrixExperimentFinish(const vector<Result> &res);
 
     void slotParseDistributionFinish(const Distribution &distribution);
+
 signals:
     void signalGenerateArray(int nData);
 

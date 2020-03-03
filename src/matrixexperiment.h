@@ -2,7 +2,7 @@
 #ifndef MATRIXEXPERIMENT_H
 #define MATRIXEXPERIMENT_H
 
-#include <baseexperiment.h>
+#include <utilityenum.h>
 #include <vector>
 #include <matrix.h>
 #include <ifloat.h>

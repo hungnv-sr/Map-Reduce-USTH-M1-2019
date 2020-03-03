@@ -1,9 +1,9 @@
 #ifndef NUMERIC_H
 #define NUMERIC_H
 
-#include <basedatatype.h>
+#include <utilityenum.h>
 
-class Numerical : public BaseDataType
+class Numerical
 {
 protected:
     Numerical() {} ;

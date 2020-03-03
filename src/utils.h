@@ -46,6 +46,9 @@ public:
 
     static bool saveMatrix(QString filename, const vector<Matrix<double> > &data, unsigned precision);
 
+
+    //-----------------
+    static void outputFile(QString filename, vector<Result> results);
 };
 
 #endif // UTILS_H

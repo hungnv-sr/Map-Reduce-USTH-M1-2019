@@ -96,3 +96,63 @@ bool utils::saveMatrix(QString filename, const vector<Matrix<double> > &data, un
 
     return 1;
 }
+
+
+void utils::outputFile(QString filename, vector<Result> results) {
+    int n;
+    vector<QString> algoNames;
+    vector<Algo> algoTypes;
+    std::map<Algo, bool> mp; // check if an Algo is used
+
+    mp.clear();
+    algoTypes.clear();
+    algoNames.clear();
+
+    //----------------  GET LIST OF ALGORITHMS USED
+    n = results.size();
+    for (int i=0; i<n;i++) {
+        if (!mp[results[i].algoUsed] && results[i].algoUsed!=GROUND_TRUTH) {
+            mp[results[i].algoUsed] = 1;
+
+            algoTypes.push_back(results[i].algoUsed);
+            if (results[i].algoUsed==LINEAR) algoNames.push_back("LINEAR");
+            else if (results[i].algoUsed==SPLIT_MERGE) algoNames.push_back("SPLIT_MERGE");
+            else if (results[i].algoUsed==SORT) algoNames.push_back("SORT_LINEAR");
+            else if (results[i].algoUsed==SORT_APPEND) algoNames.push_back("SORT_APPEND");
+        }
+    }
+
+    //-----------------------   OUTPUT TO FILE
+    std::ofstream fo(filename.toStdString().c_str());
+    fo << std::setprecision(std::numeric_limits<float50>::digits10); //
+
+
+    fo << algoTypes.size() << "\n";
+    fo << results[0].value << " " << results[1].value << "\n";
+
+    for (unsigned t=0; t<algoTypes.size(); t++) fo << algoNames[t].toStdString() << " ";
+    fo << "\n";
+
+    for (unsigned t=0; t<algoTypes.size(); t++) {
+        iFloat mean = 0;
+        int nSample = 0;
+
+        for (int i=0;i<n;i++) if (results[i].algoUsed==algoTypes[t]) {
+            mean = mean + results[i].value;
+            nSample++;
+        }
+        mean = mean/nSample;
+
+        iFloat variance = 0;
+        for (int i=0;i<n;i++) if (results[i].algoUsed==algoTypes[t]) {
+            iFloat dX = (results[i].value - mean);
+            variance = variance + dX * dX;
+        }
+        variance = variance / nSample;
+
+        fo << mean << " " << variance << " " << utils::isqrt(variance) << " ";
+        for (int i=0; i<n; i++) if (results[i].algoUsed==algoTypes[t]) fo << results[i].value << " ";
+        fo << "\n";
+    }
+    fo.close();
+}
