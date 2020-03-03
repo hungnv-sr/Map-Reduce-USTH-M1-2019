@@ -107,10 +107,6 @@ void MainWindow::slotParseDistributionFinish(const Distribution &parsedDistribut
     resource.release(1);
 }
 
-void MainWindow::slotReceiveAlert(QString alert) {
-    QMessageBox::information(this, "Error", alert);
-}
-
 //-------------------   FUNCTIONS TO START AND RUN NEW THREADS
 bool MainWindow::threadGenerateArray() {
     if (numData <= 0)
@@ -233,23 +229,19 @@ void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
     int count = ui->cBoxOperation->count();
 
     qDebug() << "cBox data type count " << count << "\n";
-    if (count == 2)
+
+    if (index == 0)
     {
-        if (index == 0)
-        {
-            ui->lblMatSize->setVisible(true);
-            ui->lEditMatSize->setVisible(true);
-        }
+        if (count > 2) ui->cBoxOperation->removeItem(2);
+        ui->lblMatSize->setVisible(false);
+        ui->lEditMatSize->setVisible(false);
     }
-    else
+    if (index == 1)
     {
-        if (index == 1)
-        {
-            ui->lEditMatSize->clear();
-            //ui->cBoxOperation->insertItem(2, "Element-wise multiplication");
-            ui->lblMatSize->setVisible(false);
-            ui->lEditMatSize->setVisible(false);
-        }
+        ui->lEditMatSize->clear();
+        if (count < 3) ui->cBoxOperation->insertItem(2, "Matmul");
+        ui->lblMatSize->setVisible(true);
+        ui->lEditMatSize->setVisible(true);
     }
 }
 
@@ -696,4 +688,9 @@ void MainWindow::on_pButtonLogConsole_clicked()
     console->setModal(false);
     console->show();
     console->activateWindow();
+}
+
+void MainWindow::on_pButtonTestProgBar_clicked()
+{
+    console->getUI()->progBar->setValue(24);
 }
