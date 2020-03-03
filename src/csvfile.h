@@ -8,7 +8,7 @@
 #include <vector>
 #include <ifloat.h>
 #include <randomgenerator.h>
-#include <baseexperiment.h>
+#include <utilityenum.h>
 
 
 class csvfile;

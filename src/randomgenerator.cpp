@@ -15,6 +15,6 @@ double RandomGenerator::rand() {
 
     iFloat U = dist01(generator);
     long long bin = distribution.inverseSampling(U);
-    double binSize = distribution.getBinSize();
+    double binSize = double(distribution.getBinSize());
     return binSize * bin + dist01(generator)*binSize;
 }

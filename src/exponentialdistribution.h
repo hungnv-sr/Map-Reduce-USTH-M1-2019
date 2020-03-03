@@ -2,6 +2,7 @@
 #define EXPONENTIALDISTRIBUTION_H
 
 #include "distribution.h"
+#include <utils.h>
 #include <fstream>
 
 // TODO: this is not finished. I skipped this because I have to do the other part first for the program to run
@@ -16,15 +17,16 @@ public:
         if (lambda <= 0)
             throw DistributionException("Exponential Distribution: lambda <= 0");
 
-
-        double binSize = (upperBound - lowerBound) / binNumber;
+        iFloat binSize = (upperBound - lowerBound) / binNumber;
+        iFloat leftX = lowerBound, leftPdf = utils::expoPdf(lambda, leftX);;
+        iFloat rightX = lowerBound + binSize, rightPdf = utils::expoPdf(lambda, rightX);;
 
         for (long long i=0; i<binNumber; i++) {
-            double leftX = lowerBound + i*binSize;
-            double rightX = leftX + binSize;
-
             if (leftX < 0) pdf[i] = 0;
-            else pdf[i] = (utils::expoPdf(lambda, leftX) + utils::expoPdf(lambda, rightX)) / 2;
+            else pdf[i] = (leftPdf + rightPdf) / 2;
+            leftPdf = rightPdf;
+            rightX = rightX + binSize;
+            rightPdf = utils::expoPdf(lambda, rightX);
 
             if (i==0) cdf[i] = pdf[i];
             else cdf[i] = cdf[i-1] + pdf[i];
@@ -56,7 +58,7 @@ public:
             lambda = 0.0001 + utils::rand01();
 
             ExponentialDistribution E(binNumber, lowerBound, upperBound, lambda);
-            double binSize = E.getBinSize();
+            iFloat binSize = E.getBinSize();
 
             /*--------------------------------*/
             fo << std::fixed << binNumber << " " << lowerBound << " " << upperBound << " " << lambda << " " << lambda << "\n";
@@ -77,3 +79,4 @@ public:
 };
 
 #endif // EXPONENTIALDISTRIBUTION_H
+

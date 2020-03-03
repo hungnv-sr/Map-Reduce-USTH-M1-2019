@@ -2,10 +2,12 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include <basedatatype.h>
+#include <utilityenum.h>
 #include <ifloat.h>
 #include <QDebug>
 
+// Standard std::exception subclass
+// that implements string constructor
 struct MatrixException : public std::exception {
 private:
     QString msg;
@@ -22,7 +24,7 @@ public:
 
 //--------------------------------------------------------------------
 template <class dtype>
-class Matrix : public BaseDataType
+class Matrix
 {
 private:
     unsigned height, width;
@@ -265,7 +267,6 @@ Matrix<dtype> operator * (const dtype2& v, const Matrix<dtype>& source) {
 }
 
 //-------------------------------   GENERIC MATRIX CALCULATION FUNCTION
-
 
 template <class dtype>
 inline Matrix<dtype> matOperate(const Matrix<dtype> &mat1, const Matrix<dtype> &mat2, Op op) {

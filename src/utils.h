@@ -24,14 +24,18 @@ public:
 
     static double sqr(double x);
 
+    static iFloat isqr(iFloat x);
+
     static double powerf(double x,int n);
 
     static iFloat isqrt(const iFloat& x);
 
-    //*************
-    static double gaussPdf(double mean, double variance, double x);
+    static iFloat iexp(const iFloat &x);
 
-    static double expoPdf(double lambda, double x);
+    //*************
+    static iFloat gaussPdf(iFloat mean, iFloat variance, iFloat x);
+
+    static iFloat expoPdf(iFloat lambda, iFloat x);
 
 
     //*************
@@ -42,6 +46,9 @@ public:
 
     static bool saveMatrix(QString filename, const vector<Matrix<double> > &data, unsigned precision);
 
+
+    //-----------------
+    static void outputFile(QString filename, vector<Result> results);
 };
 
 #endif // UTILS_H
