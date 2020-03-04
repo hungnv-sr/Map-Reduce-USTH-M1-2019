@@ -474,7 +474,7 @@ void MainWindow::on_pButtonSaveDataset_clicked()
         return;
     }
 
-    if (ui->lEditSaveDir_2->text() == "")
+    if (ui->lEditSaveDir->text() == "")
     {
         QMessageBox::information(this, "Error", "Save Directory is NOT set!");
         console->getUI()->txtBrowserLog->append("Save Directory is NOT set!");
