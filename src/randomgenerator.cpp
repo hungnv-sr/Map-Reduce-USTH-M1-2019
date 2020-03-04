@@ -6,7 +6,7 @@ using std::uniform_real_distribution;
 
 RandomGenerator::RandomGenerator(Distribution newDistribution) : distribution(newDistribution), generator(randomDevice()), dist01(0,1)
 {    
-
+    binSize = double(distribution.getBinSize());
 }
 
 double RandomGenerator::rand() {
@@ -17,6 +17,5 @@ double RandomGenerator::rand() {
     // we generate y first then find x
     iFloat U = dist01(generator);
     long long bin = distribution.inverseSampling(U);
-    double binSize = double(distribution.getBinSize());
     return binSize * bin + dist01(generator)*binSize;
 }

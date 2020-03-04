@@ -20,6 +20,8 @@ class utils
 private:
     utils();
 public:
+    static double str2double(QString x, bool &valid);
+
     static bool floatEqual(double a, double b, double error);
 
     static double sqr(double x);
@@ -37,6 +39,9 @@ public:
 
     static iFloat expoPdf(iFloat lambda, iFloat x);
 
+    static bool isnan(iFloat x);
+
+    static bool isinf(iFloat x);
 
     //*************
     static double rand01();

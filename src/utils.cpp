@@ -1,8 +1,19 @@
 #include "utils.h"
+using boost::math::isinf;
+using boost::math::isnan;
 
 utils::utils()
 {
 
+}
+
+// we don't allow inputs that are too large
+double utils::str2double(QString numberStr, bool &valid) {
+    if (numberStr.length() > 15) {
+        valid = 0;
+        return 0;
+    }
+    return numberStr.toDouble(&valid);
 }
 
 bool utils::floatEqual(double a, double b, double error) {
@@ -39,9 +50,18 @@ iFloat utils::gaussPdf(iFloat mean, iFloat variance, iFloat x) {
     return 1/(stddev * sqrt2pi) * iexp(-0.5*isqr((x-mean)/stddev));
 }
 
+
 iFloat utils::expoPdf(iFloat lambda, iFloat x) {
     if (x < 0) return 0;
     return lambda * iexp(-lambda*x);
+}
+
+bool utils::isnan(iFloat x) {
+    return boost::math::isnan(x.getValue());
+}
+
+bool utils::isinf(iFloat x) {
+    return boost::math::isinf(x.getValue());
 }
 
 double utils::rand01() {
