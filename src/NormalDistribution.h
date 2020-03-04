@@ -3,9 +3,7 @@
 
 #include "distribution.h"
 #include <cmath>
-#include <fstream>
 
-// TODO: this is not finished. I skipped this because I have to do the other part first for the program to run
 class NormalDistribution : public Distribution
 {
 public:
@@ -19,8 +17,6 @@ public:
         if (variance <= 0)
             throw DistributionException("Normal Distribution: Variance <= 0");
 
-
-
         /*
         for (long long i=0; i<binNumber; i++) {
             iFloat leftX = lowerBound + i*binSize;
@@ -31,7 +27,7 @@ public:
             else cdf[i] = cdf[i-1] + pdf[i];
         }*/
 
-        // optimized code
+        // optimized code.
         iFloat binSize = (upperBound - lowerBound) / binNumber;
         iFloat leftX = lowerBound, leftPdf = utils::gaussPdf(mean, variance, leftX);
         iFloat rightX = lowerBound + binSize, rightPdf = utils::gaussPdf(mean, variance, rightX);

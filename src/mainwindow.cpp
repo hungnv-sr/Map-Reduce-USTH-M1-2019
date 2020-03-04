@@ -12,7 +12,6 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)    
     , resource(1)
-    , distribution(0,0,0)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -32,6 +31,7 @@ MainWindow::~MainWindow()
 }
 
 //-------------------   THREAD RESULTS HANDLER
+//https://doc.qt.io/qt-5/qthread.html
 void MainWindow::slotGenerateArrayFinish(const vector<double> &arr) {
     numData = arr.size();
     arrData = arr;
@@ -124,6 +124,7 @@ void MainWindow::slotUpdateProgress(int value) {
 }
 
 //-------------------   FUNCTIONS TO START AND RUN NEW THREADS
+// https://doc.qt.io/qt-5/qthread.html
 bool MainWindow::threadGenerateArray() {
     slotUpdateProgress(0);
     if (numData <= 0)
@@ -350,7 +351,7 @@ vector<double> MainWindow::getDistributionParams() {
     double lowerBound = lowerBoundStr.toDouble(&valid2);
     double upperBound = upperBoundStr.toDouble(&valid3);
 
-    if (!valid1 || !valid2 || !valid3) return res;
+    if (!valid1 || !valid2 || !valid3) return res; // return empty vector
 
     res.push_back(binNumber);
     res.push_back(lowerBound);

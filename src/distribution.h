@@ -1,9 +1,11 @@
 #ifndef DISTRIBUTION_H
 #define DISTRIBUTION_H
 #include <QDebug>
-#include "utils.h"
-#include <algorithm>
 #include <ifloat.h>
+#include <fstream>
+#include <utils.h>
+#include <vector>
+using std::vector;
 
 struct DistributionException : public std::exception {
 private:
@@ -59,18 +61,6 @@ protected:
         for (unsigned i=0;i<binNumber;i++) {pdf[i] = b.pdf[i]; cdf[i] = b.cdf[i];}
     }
 
-
-public:
-    //----------    CONSTRUCTOR, COPY CONSTRUCTOR, DESTRUCTOR, ASSIGNMENT OPERATOR
-    //----------    These are needed to make the class canonical
-
-    // place-holder constructor
-    Distribution() {
-        binNumber = 0;
-        lowerBound = 0;
-        upperBound = 0;
-    }
-
     // binNumber is the number of rectangles, so it must be > 0
     // But we make it > 1 because 1 rectangle doesn't make sense for integral
     Distribution(long long newBinNumber, iFloat newLowerBound, iFloat newUpperBound) {
@@ -78,7 +68,8 @@ public:
         lowerBound = newLowerBound;
         upperBound = newUpperBound;
 
-        if (binNumber==0) binNumber = 1; // Distribution(0,0,0) is place-holder distribution variable
+        // UPDATE: now Distribution() is place-holder. this constructor is only used by children classes
+        if (binNumber==0) binNumber = 1; // Distribution(0,0,0) is place-holder distribution variable.
         else {
             if (binNumber < 0)
                 throw DistributionException("Constructor: bin number < 0");
@@ -87,13 +78,26 @@ public:
         try {
             pdf = new iFloat[binNumber];
             cdf = new iFloat[binNumber];
-            for (int i=0;i<binNumber;i++) {pdf[i] = 0; cdf[i] = 0;}
+            //for (int i=0;i<binNumber;i++) {pdf[i] = 0; cdf[i] = 0;} // sub class will assign value to pdf/cdf
         }
         catch (std::bad_alloc ex) {
             qDebug() << " Distribution constructor bad_alloc " << ex.what() << "\n";
             throw (ex);
         }
-    }     
+    }
+
+public:
+    //----------    CONSTRUCTOR, COPY CONSTRUCTOR, DESTRUCTOR, ASSIGNMENT OPERATOR
+    //----------    These are needed to make the class canonical
+
+    // place-holder empty constructor. This is needed to make the class compatible with QObject/Qt function
+    Distribution() {
+        binNumber = 0;
+        lowerBound = 0;
+        upperBound = 0;
+    }
+
+
 
     Distribution(const Distribution& b) {
         copy(b);
@@ -120,12 +124,10 @@ public:
 
     /*********************************************************/
     //--------------    MATH OPERATORS
-    // reference operator [] to get the variable (not the value)
     iFloat& operator[](int i) {
         return pdf[i];
     }
 
-    // const operator [] to read value of const objects
     iFloat operator[](int i) const {
         return pdf[i];
     }
@@ -228,7 +230,7 @@ public:
     }
 
     // sometimes sum(pdf) < 1 due to float underflow.
-    // so we normalize it by dividing each pdf[i] value by sum(pdf)
+    // so we normalize it
     void normalize() {
         iFloat sum = 0;
         for (long long i=0; i<binNumber; i++) {
@@ -245,7 +247,7 @@ public:
 
     /*********************************************************/
     // This checks if a distribution is usable or not
-    // Also it checks for place-holder Distribution(0,0,0).
+    // Also it checks for place-holder Distribution().
     bool valid() {
         return binNumber > 1 && upperBound > lowerBound;
     }

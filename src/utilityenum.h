@@ -2,10 +2,6 @@
 #define BASEEXPERIMENT_H
 
 #include <ifloat.h>
-#include <QString>
-#include <vector>
-#include <fstream>
-#include <map>
 using std::vector;
 
 enum Op{ADD, SUB, MUL, DIV, MATMUL};

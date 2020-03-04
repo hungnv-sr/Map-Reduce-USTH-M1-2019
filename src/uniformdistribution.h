@@ -1,14 +1,14 @@
 #ifndef UNIFORMDISTRIBUTION_H
 #define UNIFORMDISTRIBUTION_H
 #include "distribution.h"
-#include <fstream>
 
 
 // U(a,b): uniform distribution from a->b
+// Condition: a >= lowerBound, b <= upperBound (a,b in measurement range)
 class UniformDistribution : public Distribution
 {
 public:
-    UniformDistribution(long long newBinNumber, double newLowerBound, double newUpperBound, double a, double b) : Distribution(newBinNumber, newLowerBound, newUpperBound) {
+    UniformDistribution(long long newBinNumber, iFloat newLowerBound, iFloat newUpperBound, iFloat a, iFloat b) : Distribution(newBinNumber, newLowerBound, newUpperBound) {
         if (newBinNumber <= 1)
             throw DistributionException("Uniform Distribution: bin Number <= 1");
         if (newUpperBound <= newLowerBound)

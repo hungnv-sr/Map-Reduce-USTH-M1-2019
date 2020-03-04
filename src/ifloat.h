@@ -12,7 +12,6 @@ using boost::multiprecision::cpp_dec_float_50;
 using boost::numeric_cast;
 using std::cout;
 
-//typedef cpp_dec_float_50 float30;
 typedef number<cpp_dec_float<50> > float50;
 
 struct iFloatException : public std::exception {
@@ -144,6 +143,14 @@ public:
 
     bool operator != (const iFloat &v) const {
         return (*value) != (*v.value);
+    }
+
+    bool operator >= (const iFloat& v) const {
+        return (*value) >= (*v.value);
+    }
+
+    bool operator <= (const iFloat& v) const {
+        return (*value) <= (*v.value);
     }
 
     //-------------------------------- SCALAR CALCULATION OPERATORS

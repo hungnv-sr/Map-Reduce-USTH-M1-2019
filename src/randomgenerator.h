@@ -20,7 +20,6 @@ public:
 };
 
 
-// TODO: this random generator is temporary only.
 class RandomGenerator
 {
 private:
