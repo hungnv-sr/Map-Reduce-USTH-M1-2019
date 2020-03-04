@@ -474,7 +474,7 @@ void MainWindow::on_pButtonSaveDataset_clicked()
         return;
     }
 
-    if (ui->lEditSaveDir->text() == "")
+    if (ui->lEditSaveDir_2->text() == "")
     {
         QMessageBox::information(this, "Error", "Save Directory is NOT set!");
         console->getUI()->txtBrowserLog->append("Save Directory is NOT set!");
@@ -624,6 +624,23 @@ void MainWindow::on_pButtonBrowseDir_clicked()
     ui->lEditSaveDir->setText(folderDir);
 }
 
+void MainWindow::on_pButtonBrowseSave_clicked()
+{
+    if (!resource.available()) {
+        QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
+        console->getUI()->txtBrowserLog->append("Another task is in progress. Please wait.");
+        return;
+    }
+
+    QString folderDir = QFileDialog::getExistingDirectory(
+                this,
+                tr("Open Directory"),
+                qApp->applicationDirPath(),
+                QFileDialog::ShowDirsOnly);
+
+    ui->lEditSaveDir_2->setText(folderDir);
+}
+
 void MainWindow::on_gBoxAlgorithm_clicked()
 {
 
@@ -710,7 +727,7 @@ void MainWindow::on_pButtonSaveResult_clicked()
         return;
     }
 
-    QString folder = ui->lEditSaveDir->text();
+    QString folder = ui->lEditSaveDir_2->text();
 
     QDateTime now = QDateTime::currentDateTime();
     QString format = now.toString("dd.MMM.yyyy-hhmmss");

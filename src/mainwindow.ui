@@ -30,7 +30,7 @@
           <number>5</number>
          </property>
          <item row="0" column="0">
-          <layout class="QVBoxLayout" name="vLayoutInputComponents" stretch="0,1,0,0,0,0,0,0,0,0">
+          <layout class="QVBoxLayout" name="vLayoutInputComponents" stretch="0,1,0,0,0,0,0,0,0,0,0">
            <property name="spacing">
             <number>5</number>
            </property>
@@ -60,6 +60,40 @@
              <property name="bottomMargin">
               <number>5</number>
              </property>
+             <item>
+              <widget class="QPushButton" name="pButtonLogConsole">
+               <property name="minimumSize">
+                <size>
+                 <width>250</width>
+                 <height>23</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>250</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <italic>false</italic>
+                </font>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::RightToLeft</enum>
+               </property>
+               <property name="text">
+                <string>Turn ON/OFF Log Console</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="sepHLine_13">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
              <item>
               <widget class="QLabel" name="lblDistribution">
                <property name="font">
@@ -1046,13 +1080,6 @@
             </widget>
            </item>
            <item>
-            <widget class="Line" name="sepHLine_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
             <layout class="QGridLayout" name="gLayoutInput_1" columnstretch="0,0,0,0">
              <property name="leftMargin">
               <number>10</number>
@@ -1214,34 +1241,14 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="2" colspan="2">
-              <widget class="QPushButton" name="pButtonLogConsole">
-               <property name="minimumSize">
-                <size>
-                 <width>250</width>
-                 <height>23</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>250</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <italic>false</italic>
-                </font>
-               </property>
-               <property name="layoutDirection">
-                <enum>Qt::LeftToRight</enum>
-               </property>
-               <property name="text">
-                <string>Turn ON/OFF Log Console</string>
-               </property>
-              </widget>
-             </item>
             </layout>
+           </item>
+           <item>
+            <widget class="Line" name="sepHLine_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
            </item>
            <item>
             <layout class="QVBoxLayout" name="vLayoutInput3">
@@ -1275,10 +1282,16 @@
              </item>
              <item>
               <widget class="QTabWidget" name="tabCalcDataset">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>225</height>
+                 <height>113</height>
                 </size>
                </property>
                <property name="accessibleName">
@@ -1333,6 +1346,12 @@
                    </item>
                    <item>
                     <widget class="QGroupBox" name="gBoxSaveDataset">
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>50</height>
+                      </size>
+                     </property>
                      <property name="font">
                       <font>
                        <weight>75</weight>
@@ -1361,6 +1380,9 @@
                       </item>
                       <item row="0" column="1">
                        <widget class="QLineEdit" name="lEditSaveDir">
+                        <property name="enabled">
+                         <bool>false</bool>
+                        </property>
                         <property name="minimumSize">
                          <size>
                           <width>50</width>
@@ -1837,31 +1859,120 @@
             </layout>
            </item>
            <item>
-            <widget class="QPushButton" name="pButtonSaveResult">
-             <property name="minimumSize">
-              <size>
-               <width>150</width>
-               <height>23</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>150</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <italic>false</italic>
-              </font>
-             </property>
-             <property name="layoutDirection">
-              <enum>Qt::LeftToRight</enum>
-             </property>
-             <property name="text">
-              <string>Save Experiment result</string>
+            <widget class="Line" name="sepHLine_7">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="hLayoutInput_3_Page_2" stretch="6">
+             <property name="spacing">
+              <number>20</number>
+             </property>
+             <property name="leftMargin">
+              <number>10</number>
+             </property>
+             <property name="topMargin">
+              <number>5</number>
+             </property>
+             <property name="rightMargin">
+              <number>10</number>
+             </property>
+             <property name="bottomMargin">
+              <number>5</number>
+             </property>
+             <item>
+              <widget class="QGroupBox" name="gBoxSaveDataset_2">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>60</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="title">
+                <string>Save file result</string>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_5">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item row="0" column="1">
+                 <widget class="QLineEdit" name="lEditSaveDir_2">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>23</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>250</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <italic>true</italic>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QPushButton" name="pButtonSaveResult">
+                  <property name="minimumSize">
+                   <size>
+                    <width>150</width>
+                    <height>23</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>150</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <italic>false</italic>
+                   </font>
+                  </property>
+                  <property name="layoutDirection">
+                   <enum>Qt::LeftToRight</enum>
+                  </property>
+                  <property name="text">
+                   <string>Save Experiment result</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QPushButton" name="pButtonBrowseSave">
+                  <property name="maximumSize">
+                   <size>
+                    <width>75</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>Browse</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </item>
@@ -1878,8 +1989,8 @@
          <string>Output</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="1" column="0">
-          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
+         <item row="2" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0">
            <property name="spacing">
             <number>5</number>
            </property>
@@ -1896,10 +2007,17 @@
             <number>5</number>
            </property>
            <item>
-            <widget class="QTextBrowser" name="outputText"/>
-           </item>
-           <item>
-            <widget class="QGraphicsView" name="gViewDisplay"/>
+            <widget class="QTextBrowser" name="outputText">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>140</height>
+              </size>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
