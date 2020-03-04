@@ -384,7 +384,7 @@ void MainWindow::on_pButtonCreateDistribution_clicked()
     binNumber = distributionParams[0];
     lowerBound = distributionParams[1];
     upperBound = distributionParams[2];
-
+qDebug() << " Reached here\n";
     if (!threadParseDistribution()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait and try again");
         console->getUI()->txtBrowserLog->append("Another task is in progress. Please wait and try again");
@@ -481,7 +481,7 @@ void MainWindow::on_pButtonSaveDataset_clicked()
         return;
     }
     else
-    {
+    {        
         // Save to Dir
         QDateTime now = QDateTime::currentDateTime();
         QString format = now.toString("dd.MMM.yyyy-hhmmss");

@@ -54,7 +54,7 @@ double utils::rand01() {
 bool utils::saveArray(QString filename, const vector<double> &data, unsigned precision) {
     if (data.size()==0) return 0;
     std::ofstream fo;
-    try {        
+    try {
         std::setprecision(precision);
 
         fo = std::ofstream(filename.toStdString().c_str());
