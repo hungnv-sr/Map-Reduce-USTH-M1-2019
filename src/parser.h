@@ -7,7 +7,6 @@
 #include <exponentialdistribution.h>
 #include <stack>
 #include <ifloat.h>
-#include <parser.h>
 using std::stack;
 
 struct ParserException : public std::exception {
@@ -31,6 +30,9 @@ class Parser : public QObject
     long long binNumber;
     double lowerBound, upperBound;
 
+    //------------------        BASIC STRING TEST
+    // The first section is to test the basic validity of the string,
+    // such as if the string contains invalid character, or have invalid parentheses
     bool isNumber(QChar c) {
         return c>='0' && c<='9';
     }
@@ -79,7 +81,10 @@ class Parser : public QObject
         return true;
     }
 
-    //---------------
+
+    //------------------------
+    // We use shunting yard algorithm
+    // https://www.geeksforgeeks.org/expression-evaluation/
     int precedence(QChar op) {
         if (op=='+' || op=='-') return 1;
         if (op=='*' || op=='/') return 2;
@@ -118,6 +123,9 @@ class Parser : public QObject
     //---------------------------------------
     // parseExpression(str): parse expression using shunting yard
 
+    // parseDist: get the distribution  starting at int pos of string s,
+    // returns the distribution and the position of the ')' of the distribution
+    // For example, if s = U(1,2)+N(123,456)+E(5), int pos is at letter N, returnPos will be at the ')' after the '456'
     Distribution parseDist(const QString& s, int pos, int& returnPos) {
         std::vector<double> params;
         int i, j, n;
@@ -127,10 +135,10 @@ class Parser : public QObject
         if (s[pos+1]!='(') return nonsense;
         if (pos+2 >= n) return nonsense;
 
-        i = pos+2;
+        i = pos+2; // starting at the first number of the first parameter
         while (i < n) {
             j = i;
-            while (j<n && (s[j]!=',' && s[j]!=')')) {
+            while (j<n && (s[j]!=',' && s[j]!=')')) {   // keep parsing the number until ',' or ')' is reached
                 if (s[j]=='(') return nonsense;
                 j++;
             }
@@ -147,8 +155,7 @@ class Parser : public QObject
         return createDistribution(s[pos], params);
     }
 
-    // get 2 operands from stack and apply operator
-
+    // stackApplyOp: get 2 operands from stack and apply operator
     bool stackApplyOp(QChar op, stack<Distribution>& valueStack) {
         if (valueStack.size() < 2) return false; // fail
         Distribution valueRight = valueStack.top();
@@ -160,6 +167,8 @@ class Parser : public QObject
         return true; // success
     }
 
+    // We use shunting yard algorithm
+    // https://www.geeksforgeeks.org/expression-evaluation/
     Distribution parseExpression(QString s) {
         int i, n;
         Distribution nonsense;
@@ -175,15 +184,13 @@ class Parser : public QObject
         i = 0;
         while (i<n) {
             if (isNumber(s[i])) {
-                return nonsense; // stand-alone number is wrong.
+                return nonsense; // we don't allow stand-alone number yet
             }
 
-            // is an operand
+            // a distribution is an operand
             if (isDist(s[i])) {
                 Distribution dist = parseDist(s, i, i);
-                if (!dist.valid()) {
-                    return nonsense;
-                }
+                if (!dist.valid()) return nonsense;
                 valueStack.push(dist);
             }
             else
@@ -202,7 +209,7 @@ class Parser : public QObject
                 if (operatorStack.top()!='(') {
                     return nonsense;
                 }
-                operatorStack.pop(); // pop the '(' out
+                operatorStack.pop(); // finally, pop the '(' out
             }
             else
             if (isOperator(s[i])) {
