@@ -347,9 +347,9 @@ vector<double> MainWindow::getDistributionParams() {
     QString upperBoundStr = ui->lEditUpperBound->text();
 
     bool valid1, valid2, valid3;
-    long long binNumber = (long long)(binNumberStr.toDouble(&valid1));
-    double lowerBound = lowerBoundStr.toDouble(&valid2);
-    double upperBound = upperBoundStr.toDouble(&valid3);
+    long long binNumber = utils::str2double(binNumberStr, valid1);// (binNumberStr.toDouble(&valid1));
+    double lowerBound = utils::str2double(lowerBoundStr, valid2); //lowerBoundStr.toDouble(&valid2);
+    double upperBound = utils::str2double(upperBoundStr, valid3);//upperBoundStr.toDouble(&valid3);
 
     if (!valid1 || !valid2 || !valid3) return res; // return empty vector
 
@@ -408,7 +408,7 @@ void MainWindow::on_pButtonGen_clicked()
 
     QString numDataStr = ui->lEditNumData->text();
     bool validNumData = false;
-    numData = numDataStr.toDouble(&validNumData);
+    numData = utils::str2double(numDataStr, validNumData); //numDataStr.toDouble(&validNumData);
     if (!validNumData || numData <= 0) {
         QMessageBox::information(this, "Error", "Invalid number of data element");
         console->getUI()->txtBrowserLog->append("Invalid number of data element");
@@ -425,7 +425,7 @@ void MainWindow::on_pButtonGen_clicked()
     if (dataTypeStr=="Matrix") {
         QString matSizeStr = ui->lEditMatSize->text();
         bool validMatSize;
-        matSize = matSizeStr.toDouble(&validMatSize);
+        matSize = utils::str2double(matSizeStr, validMatSize); //matSizeStr.toDouble(&validMatSize);
         if (!validMatSize || matSize <= 0) {
             QMessageBox::information(this, "Error", "Invalid matrix size");
             console->getUI()->txtBrowserLog->append("Invalid matrix size");
@@ -671,7 +671,7 @@ void MainWindow::on_pButtonRun_clicked()
 
     QString numTestStr = ui->lEditNumTest->text();
     bool validNumTest;
-    numTest = numTestStr.toDouble(&validNumTest);
+    numTest = utils::str2double(numTestStr, validNumTest); //numTestStr.toDouble(&validNumTest);
     if (!validNumTest || numTest <= 0) {
         QMessageBox::information(this, "Error", "Invalid number of test");
         console->getUI()->txtBrowserLog->append("Invalid number of test");
