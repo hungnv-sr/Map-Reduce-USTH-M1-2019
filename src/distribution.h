@@ -95,6 +95,8 @@ public:
         binNumber = 0;
         lowerBound = 0;
         upperBound = 0;
+        pdf = new iFloat[1]; // we need to initialize place-holder pdf/cdf
+        cdf = new iFloat[1]; // so that destructor does not cause crash
     }
 
 
