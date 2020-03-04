@@ -7,6 +7,7 @@
 #include <exponentialdistribution.h>
 #include <stack>
 #include <ifloat.h>
+#include <utils.h>
 using std::stack;
 
 struct ParserException : public std::exception {
@@ -145,8 +146,14 @@ class Parser : public QObject
             if (j==n) return nonsense; // can't find , or )
             if (j==i) return nonsense; // invalid input cases such as: ,, ; ,) ; () ; (,
 
-            QString number = s.mid(i, j-i); // get substring from i->j-1
-            params.push_back(number.toDouble());
+            QString numberStr = s.mid(i, j-i); // get substring from i->j-1
+            bool valid = 0;
+            double number = utils::str2double(numberStr, valid);
+
+            // if we cannot convert the string to double (or if the number is too large), then return
+            if (!valid) return nonsense;
+
+            params.push_back(number);
             i = j+1;
             if (s[j]==')') break;
         }
@@ -292,7 +299,7 @@ public slots:
             emit signalAlert("Distribution requires too high accuracy. Please try another.");
             emit signalParseFinish(Distribution());
         }
-        catch (std::underflow_error) {
+        catch (std::underflow_error) {            
             emit signalAlert("Distribution requires too high accuracy. Please try another number.");
             emit signalParseFinish(Distribution());
         }

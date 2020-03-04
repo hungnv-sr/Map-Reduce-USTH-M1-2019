@@ -22,6 +22,7 @@ public:
         for (long long i=0; i<binNumber; i++) {
             if (leftX < 0) pdf[i] = 0;
             else pdf[i] = (leftPdf + rightPdf) / 2;
+            leftX = leftX + binSize; // before, we forgot to add this line, so there's a bug
             leftPdf = rightPdf;
             rightX = rightX + binSize;
             rightPdf = utils::expoPdf(lambda, rightX);
