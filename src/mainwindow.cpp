@@ -624,7 +624,7 @@ void MainWindow::on_pButtonBrowseDir_clicked()
     ui->lEditSaveDir->setText(folderDir);
 }
 
-void MainWindow::on_pButtonBrowseSave_clicked()
+void MainWindow::on_pButtonBrowseSaveResult_clicked()
 {
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
@@ -638,7 +638,7 @@ void MainWindow::on_pButtonBrowseSave_clicked()
                 qApp->applicationDirPath(),
                 QFileDialog::ShowDirsOnly);
 
-    ui->lEditSaveDir_2->setText(folderDir);
+    ui->lEditSaveResult->setText(folderDir);
 }
 
 void MainWindow::on_gBoxAlgorithm_clicked()
@@ -727,7 +727,7 @@ void MainWindow::on_pButtonSaveResult_clicked()
         return;
     }
 
-    QString folder = ui->lEditSaveDir_2->text();
+    QString folder = ui->lEditSaveResult->text();
 
     QDateTime now = QDateTime::currentDateTime();
     QString format = now.toString("dd.MMM.yyyy-hhmmss");

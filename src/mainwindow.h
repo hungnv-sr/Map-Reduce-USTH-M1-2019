@@ -75,7 +75,7 @@ private slots:
 
     void on_pButtonBrowseDir_clicked();
 
-    void on_pButtonBrowseSave_clicked();
+    void on_pButtonBrowseSaveResult_clicked();
 
     void on_gBoxAlgorithm_clicked();
 
