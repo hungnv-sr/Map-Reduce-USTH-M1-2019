@@ -87,6 +87,8 @@ private slots:
 
     void on_pButtonSaveResult_clicked();
 
+    void on_pButtonLogConsole_clicked();
+
     //-----------------------   SIGNAL AND SLOTS FOR THREADS
 private slots:
     void slotGenerateArrayFinish(const vector<double>& arr);
@@ -98,8 +100,6 @@ private slots:
     void slotMatrixExperimentFinish(const vector<Result> &res);
 
     void slotParseDistributionFinish(const Distribution &distribution);
-
-    void on_pButtonLogConsole_clicked();
 
     void slotReceiveAlert(QString alert);
 
@@ -127,7 +127,7 @@ private:
 
     bool threadParseDistribution();
 
-
+    void outputResult();
 private:
     Ui::MainWindow *ui;
     LogConsole *console;

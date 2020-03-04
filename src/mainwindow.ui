@@ -1904,7 +1904,7 @@
                  <number>0</number>
                 </property>
                 <item row="0" column="1">
-                 <widget class="QLineEdit" name="lEditSaveDir_2">
+                 <widget class="QLineEdit" name="lEditSaveResult">
                   <property name="enabled">
                    <bool>false</bool>
                   </property>
@@ -1957,7 +1957,7 @@
                  </widget>
                 </item>
                 <item row="0" column="2">
-                 <widget class="QPushButton" name="pButtonBrowseSave">
+                 <widget class="QPushButton" name="pButtonBrowseSaveResult">
                   <property name="maximumSize">
                    <size>
                     <width>75</width>
@@ -2034,7 +2034,7 @@
      <x>0</x>
      <y>0</y>
      <width>790</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
