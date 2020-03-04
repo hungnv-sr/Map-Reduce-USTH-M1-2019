@@ -146,6 +146,14 @@ public:
         return (*value) != (*v.value);
     }
 
+    bool operator >= (const iFloat& v) const {
+        return (*value) >= (*v.value);
+    }
+
+    bool operator <= (const iFloat& v) const {
+        return (*value) <= (*v.value);
+    }
+
     //-------------------------------- SCALAR CALCULATION OPERATORS
     float50 getValue() const {
         return *value;
