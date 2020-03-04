@@ -96,7 +96,7 @@ class Parser : public QObject
 
     //-------------------------------------------------
     Distribution createDistribution(QChar distType, std::vector<double> params) {
-        Distribution nonsense(0,0,0);
+        Distribution nonsense;
         if (distType=='U') {
             if (!UniformDistribution::validParams(binNumber, lowerBound, upperBound, params)) return nonsense;
             return UniformDistribution(binNumber, lowerBound, upperBound, params[0], params[1]);
@@ -121,7 +121,7 @@ class Parser : public QObject
     Distribution parseDist(const QString& s, int pos, int& returnPos) {
         std::vector<double> params;
         int i, j, n;
-        Distribution nonsense(0,0,0);
+        Distribution nonsense;
 
         n = s.length();
         if (s[pos+1]!='(') return nonsense;
@@ -162,8 +162,7 @@ class Parser : public QObject
 
     Distribution parseExpression(QString s) {
         int i, n;
-        Distribution nonsense(0,0,0);
-        Distribution result(binNumber, lowerBound, upperBound);
+        Distribution nonsense;
         stack<Distribution> valueStack;
         stack<QChar> operatorStack;
 
@@ -284,19 +283,19 @@ public slots:
         }
         catch (SamplingException samplingException) {
             emit signalAlert("Distribution requires too high accuracy. Please try another.");
-            emit signalParseFinish(Distribution(0,0,0));
+            emit signalParseFinish(Distribution());
         }
         catch (std::underflow_error) {
             emit signalAlert("Distribution requires too high accuracy. Please try another number.");
-            emit signalParseFinish(Distribution(0,0,0));
+            emit signalParseFinish(Distribution());
         }
         catch (std::overflow_error) {
             emit signalAlert("Distribution requires too high accuracy. Please try another.");
-            emit signalParseFinish(Distribution(0,0,0));
+            emit signalParseFinish(Distribution());
         }
         catch (std::bad_alloc) {
             emit signalAlert("Distrubtion require too much memory, not enough RAM. Please buy more RAM.");
-            emit signalParseFinish(Distribution(0,0,0));
+            emit signalParseFinish(Distribution());
         }
     }
 

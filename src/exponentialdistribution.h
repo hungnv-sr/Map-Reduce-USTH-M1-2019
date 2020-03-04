@@ -2,8 +2,6 @@
 #define EXPONENTIALDISTRIBUTION_H
 
 #include "distribution.h"
-#include <utils.h>
-#include <fstream>
 
 // TODO: this is not finished. I skipped this because I have to do the other part first for the program to run
 class ExponentialDistribution : public Distribution

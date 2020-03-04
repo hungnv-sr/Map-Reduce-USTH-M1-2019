@@ -12,7 +12,6 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)    
     , resource(1)
-    , distribution(0,0,0)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
