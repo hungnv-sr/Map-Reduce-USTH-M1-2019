@@ -53,6 +53,8 @@ public:
 
 
     //-----------------
+    static QString algo2String(Algo algo);
+
     static void outputFile(QString filename, vector<Result> results);
 };
 

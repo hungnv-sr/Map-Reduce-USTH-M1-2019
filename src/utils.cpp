@@ -121,6 +121,15 @@ bool utils::saveMatrix(QString filename, const vector<Matrix<double> > &data, un
 }
 
 
+//---
+QString utils::algo2String(Algo algo) {
+    if (algo==LINEAR) return "LINEAR";
+    else if (algo==SPLIT_MERGE) return "SPLIT_MERGE";
+    else if (algo==SORT) return "SORT_LINEAR";
+    else if (algo==SORT_APPEND) return "SORT_APPEND";
+    return "";
+}
+
 void utils::outputFile(QString filename, vector<Result> results) {
     int n;
     vector<QString> algoNames;

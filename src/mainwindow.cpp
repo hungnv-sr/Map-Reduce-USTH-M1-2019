@@ -62,6 +62,7 @@ void MainWindow::slotArrayExperimentFinish(const vector<Result> &res) {
     QMessageBox::information(this, "Success", "Auto-save array results to file successful");
     console->getUI()->txtBrowserLog->append("Auto-save array results to file successful");
     slotUpdateProgress(100);
+    outputResult();
     resource.release(1);
 }
 
@@ -69,7 +70,7 @@ void MainWindow::slotGenerateMatrixFinish(const vector<Matrix<double> > &mats) {
     numData = mats.size();
     matData = mats;
     createDataThread.quit();
-    createDataThread.wait();
+    createDataThread.wait();    
     QMessageBox::information(this, "Success", "Generate matrix data successful");
     console->getUI()->txtBrowserLog->append("Generate matrix data successful");
     slotUpdateProgress(100);
@@ -95,6 +96,7 @@ void MainWindow::slotMatrixExperimentFinish(const vector<Result> &res) {
     QMessageBox::information(this, "Success", "Auto-save matrix results to file successful");
     console->getUI()->txtBrowserLog->append("Auto-save matrix results to file successful");
     slotUpdateProgress(100);
+    outputResult();
     resource.release(1);
 }
 
@@ -746,6 +748,59 @@ void MainWindow::on_pButtonSaveResult_clicked()
     QMessageBox::information(this, "Success", "Save current results to file " + savefile + " successful");
     console->getUI()->txtBrowserLog->append("Save current results to file " + savefile + " successful");
 }
+
+void MainWindow::outputResult()
+{
+    qDebug() << "outputting result\n";
+    if (results.size() <= 0)
+        throw MainWindowException("outputResult: no result to output");
+
+    QString outputStr = "3 numbers are: mean, variance, standard deviation\n";
+
+    vector<QString> algoNames;
+    vector<Algo> algoTypes;
+    std::map<Algo, bool> mp;
+
+    int n = results.size();
+    for (int i=0; i<n;i++) {
+        if (!mp[results[i].algoUsed] && results[i].algoUsed!=GROUND_TRUTH) {
+            mp[results[i].algoUsed] = 1;
+
+            algoTypes.push_back(results[i].algoUsed);
+            algoNames.push_back(utils::algo2String(results[i].algoUsed));
+        }
+    }
+
+    for (unsigned t=0; t<algoTypes.size(); t++) {
+        iFloat mean = 0;
+        int nSample = 0;
+
+        outputStr = outputStr + utils::algo2String(algoTypes[t]) + " ";
+        for (unsigned i=0; i<results.size(); i++)
+            if (results[i].algoUsed==algoTypes[t]) {
+                mean = mean + results[i].value;
+                nSample++;
+            }
+        mean = mean / nSample;
+
+        iFloat variance = 0;
+        for (unsigned i=0; i<results.size(); i++)
+            if (results[i].algoUsed==algoTypes[t]) {
+                iFloat dX = (results[i].value - mean);
+                variance = variance + dX*dX;
+            }
+        variance = variance / nSample;
+
+        iFloat std = utils::isqrt(variance);
+
+        outputStr = outputStr + mean.toString() + " " + variance.toString() + " " + std.toString();
+        outputStr += "\n";
+    }
+
+    ui->outputText->setText(outputStr);
+}
+
+
 
 void MainWindow::on_pButtonLogConsole_clicked()
 {
