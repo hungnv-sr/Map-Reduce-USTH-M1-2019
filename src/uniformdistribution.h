@@ -1,16 +1,14 @@
 #ifndef UNIFORMDISTRIBUTION_H
 #define UNIFORMDISTRIBUTION_H
 #include "distribution.h"
-#include <fstream>
 
 
-// TODO: this is not finished. I skipped this because I have to do the other part first for the program to run
 // U(a,b): uniform distribution from a->b
+// Condition: a >= lowerBound, b <= upperBound (a,b in measurement range)
 class UniformDistribution : public Distribution
 {
-
 public:
-    UniformDistribution(long long newBinNumber, double newLowerBound, double newUpperBound, double a, double b) : Distribution(newBinNumber, newLowerBound, newUpperBound) {
+    UniformDistribution(long long newBinNumber, iFloat newLowerBound, iFloat newUpperBound, iFloat a, iFloat b) : Distribution(newBinNumber, newLowerBound, newUpperBound) {
         if (newBinNumber <= 1)
             throw DistributionException("Uniform Distribution: bin Number <= 1");
         if (newUpperBound <= newLowerBound)
@@ -21,15 +19,16 @@ public:
             throw DistributionException("Uniform Distribution: a < newLowerBound || b > newUpperBound");
 
 
-        double binSize = (upperBound - lowerBound) / binNumber;
-        double p = binSize/(b-a);
-
-        for (long long i=0; i<binNumber; i++) {
-            double x = lowerBound + i*binSize;
+        iFloat binSize = (upperBound - lowerBound) / binNumber;
+        iFloat p = binSize/(b-a);
+        iFloat x = lowerBound;
+        for (long long i=0; i<binNumber; i++) {            
             if (x<a || x>b) pdf[i] = 0;
             else pdf[i] = p;
+            x = x + binSize;
 
-            if (i>0) cdf[i] = cdf[i-1] + pdf[i];
+            if (i==0) cdf[i] = pdf[i];
+            else cdf[i] = cdf[i-1] + pdf[i];
         }
 
         normalize();
@@ -64,7 +63,7 @@ public:
             b = lowerBound + b*(upperBound - lowerBound);
 
             UniformDistribution u(binNumber, lowerBound, upperBound, a, b);
-            double binSize = u.getBinSize();
+            iFloat binSize = u.getBinSize();
 
             /*--------------------------------*/
             fo << std::fixed << binNumber << " " << lowerBound << " " << upperBound << " " << a << " " << b << "\n";

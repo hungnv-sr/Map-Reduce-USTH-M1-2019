@@ -1,7 +1,6 @@
 #include "arrayexperiment.h"
 
-ArrayExperiment::ArrayExperiment()
-{
+ArrayExperiment::ArrayExperiment(vector<double> newInputs, Distribution newDistribution) : inputs(newInputs), distribution(newDistribution) {
 
 }
 
@@ -19,7 +18,7 @@ iFloat ArrayExperiment::linearTest(const vector<double> &inputs, Op op) {
 
 
 //----------------------------------------------    SPLIT/MERGE ALGORITHM
-double splitMerge(const vector<double> &inputs, Op op, int l, int r) {
+double ArrayExperiment::splitMerge(const vector<double> &inputs, Op op, int l, int r) {
     if (l>r)
         throw ArrayExperimentException("SplitMerge error: l can't be > r for valid inputs");
 
@@ -49,22 +48,30 @@ iFloat ArrayExperiment::sortTest(vector<double> inputs, Op op) {
     return res;
 }
 
+// first, sort the array. Then repeat N-1 times:
+// 1. get 2 smallest number, sum them and remove them from array.
+// 2. Push the sum back into the array
+// 3. repeat
 iFloat ArrayExperiment::sortAppendTest(vector<double> inputs, Op op) {
     if (inputs.size()==0)
         throw ArrayExperimentException("Sort test error: input vector is empty");
 
-    std::priority_queue<double, vector<double>, std::greater<double> > minHeap;
-    for (unsigned i=0; i<inputs.size(); i++) minHeap.push(inputs[i]);
+    // we have to use pointer because input size can be very large, which might cause stack overflow
+    std::priority_queue<double, vector<double>, std::greater<double> > *minHeap = new std::priority_queue<double, vector<double>, std::greater<double> >;
+    for (unsigned i=0; i<inputs.size(); i++) minHeap->push(inputs[i]);
 
     for (unsigned i=1; i<inputs.size(); i++) {
-        double a = minHeap.top();
-        minHeap.pop();
-        double b = minHeap.top();
-        minHeap.pop();
-        minHeap.push(numOperate(a, b, op));
+        double a = minHeap->top();
+        minHeap->pop();
+        double b = minHeap->top();
+        minHeap->pop();
+        minHeap->push(numOperate(a, b, op));
     }
 
-    return minHeap.top();
+    double res = minHeap->top();
+    delete minHeap;
+
+    return res;
 }
 
 
@@ -78,7 +85,7 @@ iFloat ArrayExperiment::groundTruth(const vector<double> &inputs, Op op) {
     return res;
 }
 
-vector<Result> ArrayExperiment::experiment(vector<double> inputs, Op op, unsigned int nTest, vector<Algo> testAlgos, bool shuffle=true, Distribution distribution=Distribution(0,0,0)) {
+vector<Result> ArrayExperiment::experiment(Op op, unsigned int nTest, vector<Algo> testAlgos, bool shuffle=true) {
     ArrayGenerator arrGen(distribution);
     vector<Result> res;
     res.clear();
@@ -106,10 +113,16 @@ vector<Result> ArrayExperiment::experiment(vector<double> inputs, Op op, unsigne
         qDebug() << "after running algorithms\n";
         if (shuffle) std::random_shuffle(inputs.begin(), inputs.end());
         else {
-            std::random_shuffle(inputs.begin(), inputs.end());
             arrGen.generateArray(inputs.size(), inputs);
         }
+        emit signalUpdateProgress(t*100/nTest);
     }
 
     return res;
+}
+
+//--------------------------------------------  SIGNALS AND SLOTS FOR THREAD FUNCTIONS
+void ArrayExperiment::slotRunArrayExperiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle) {
+    vector<Result> res = experiment(op, nTest, testAlgos, shuffle);
+    emit signalExperimentFinish(res);
 }

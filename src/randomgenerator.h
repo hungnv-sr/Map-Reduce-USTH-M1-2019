@@ -20,7 +20,6 @@ public:
 };
 
 
-// TODO: this random generator is temporary only.
 class RandomGenerator
 {
 private:
@@ -28,6 +27,10 @@ private:
     std::random_device randomDevice;
     std::mt19937 generator;
     std::uniform_real_distribution<double> dist01;
+
+    // since the distribution doesn't change, we don't want to calculate the
+    // bin size each time we run the random generator
+    double binSize;
 
 public:
     RandomGenerator(Distribution newDistribution);

@@ -12,7 +12,6 @@ using boost::multiprecision::cpp_dec_float_50;
 using boost::numeric_cast;
 using std::cout;
 
-//typedef cpp_dec_float_50 float30;
 typedef number<cpp_dec_float<50> > float50;
 
 struct iFloatException : public std::exception {
@@ -36,8 +35,8 @@ public:
 //----------------------------------------------------------------------------------------------------------------------------------
 
 
-// iFloat is the wrapper class for Boost C++ class cpp_dec_float_50 (float30), which is float that has 50 decimal places precision
-// We need a wrapper class because float30 can use a lot of memory. In a function, it will cause stack overflow very quickly.
+// iFloat is the wrapper class for Boost C++ class cpp_dec_float_50 (float50), which is float that has 50 decimal places precision
+// We need a wrapper class because float50 can use a lot of memory. In a function, it will cause stack overflow very quickly.
 // Using a wrapper class, the memory is on the heap instead, so there's no problem.
 
 // Usage:
@@ -95,13 +94,7 @@ public:
 
 
     //--------------------------------- CAST OPERATORS
-    /*
-    operator int() const {return (*value).convert_to<int>();}
-
-    operator long long() const {return (*value).convert_to<long long>();}
-
-    operator float() const {return (*value).convert_to<float>();}
-    */
+    // Converting to double cause loss of information. So make it explicit
     explicit operator double() const {return (*value).convert_to<double>();}
 
 
@@ -148,30 +141,25 @@ public:
         return (*value) == (*v.value);
     }
 
-    //-------------------------------- SCALAR CALCULATION OPERATORS
-    template <class dtype2>
-    iFloat operator + (const dtype2& v) const {        
-        return (*this) + iFloat(v);
+    bool operator != (const iFloat &v) const {
+        return (*value) != (*v.value);
     }
 
-    template <class dtype2>
-    iFloat operator - (const dtype2& v) const {
-        return (*this) - iFloat(v);
+    bool operator >= (const iFloat& v) const {
+        return (*value) >= (*v.value);
     }
 
-    template <class dtype2>
-    iFloat operator * (const dtype2& v) const {
-        return (*this) * iFloat(v);
-    }
-
-    template <class dtype2>
-    iFloat operator / (const dtype2& v) const {
-        return (*this) / iFloat(v);
+    bool operator <= (const iFloat& v) const {
+        return (*value) <= (*v.value);
     }
 
     //-------------------------------- SCALAR CALCULATION OPERATORS
     float50 getValue() const {
         return *value;
+    }
+
+    QString toString() {
+        return QString::fromStdString(value->str());
     }
 
     friend std::ostream & operator << (std::ostream &out, const iFloat &c);

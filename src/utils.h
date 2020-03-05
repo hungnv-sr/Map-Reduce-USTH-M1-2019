@@ -11,6 +11,7 @@
 #include <vector>
 #include <QDebug>
 #include <ifloat.h>
+#include <matrix.h>
 using std::vector;
 const double pi = M_PI;
 
@@ -19,20 +20,28 @@ class utils
 private:
     utils();
 public:
+    static double str2double(QString x, bool &valid);
+
     static bool floatEqual(double a, double b, double error);
 
     static double sqr(double x);
+
+    static iFloat isqr(iFloat x);
 
     static double powerf(double x,int n);
 
     static iFloat isqrt(const iFloat& x);
 
+    static iFloat iexp(const iFloat &x);
+
     //*************
-    static double gaussPdf(double mean, double variance, double x);
+    static iFloat gaussPdf(iFloat mean, iFloat variance, iFloat x);
 
-    static double expoPdf(double lambda, double x);
+    static iFloat expoPdf(iFloat lambda, iFloat x);
 
+    static bool isnan(iFloat x);
 
+    static bool isinf(iFloat x);
 
     //*************
     static double rand01();
@@ -40,6 +49,13 @@ public:
     //**************
     static bool saveArray(QString filename, const vector<double> &data, unsigned precision);
 
+    static bool saveMatrix(QString filename, const vector<Matrix<double> > &data, unsigned precision);
+
+
+    //-----------------
+    static QString algo2String(Algo algo);
+
+    static void outputFile(QString filename, vector<Result> results);
 };
 
 #endif // UTILS_H

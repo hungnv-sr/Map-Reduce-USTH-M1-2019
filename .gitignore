@@ -1,8 +1,6 @@
-<<<<<<< HEAD
 *.pro.user.*
+*.pro.user
 build-*
 .vscode/
-=======
-/build-
-build-GroupProject-Desktop_Qt_5_14_1_MinGW_64_bit-Debug/
->>>>>>> develop
+boost_1_66_0*
+eigen-3.3.7*

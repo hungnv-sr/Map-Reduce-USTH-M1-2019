@@ -1,12 +1,13 @@
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef DISTRIBUTIONGENERATOR_H
+#define DISTRIBUTIONGENERATOR_H
 
 #include <distribution.h>
 #include <NormalDistribution.h>
 #include <uniformdistribution.h>
 #include <exponentialdistribution.h>
 #include <stack>
-#include <map>
+#include <ifloat.h>
+#include <utils.h>
 using std::stack;
 
 struct ParserException : public std::exception {
@@ -23,12 +24,16 @@ public:
 };
 
 
-class Parser
+class Parser : public QObject
 {
+    Q_OBJECT
 
-    int binNumber;
+    long long binNumber;
     double lowerBound, upperBound;
 
+    //------------------        BASIC STRING TEST
+    // The first section is to test the basic validity of the string,
+    // such as if the string contains invalid character, or have invalid parentheses
     bool isNumber(QChar c) {
         return c>='0' && c<='9';
     }
@@ -39,6 +44,7 @@ class Parser
 
     bool isDist(QChar c) {
         if (c=='U' || c=='E' || c=='N' || c=='G') return true;
+        return false;
     }
 
     bool isOperator(QChar c) {
@@ -50,7 +56,7 @@ class Parser
         if (isParen(c)) return true;
         if (isDist(c)) return true;
         if (isOperator(c)) return true;
-        if (c==',' || c=='.') return true;        
+        if (c==',' || c=='.') return true;
         return false;
     }
 
@@ -76,7 +82,10 @@ class Parser
         return true;
     }
 
-    //---------------
+
+    //------------------------
+    // We use shunting yard algorithm
+    // https://www.geeksforgeeks.org/expression-evaluation/
     int precedence(QChar op) {
         if (op=='+' || op=='-') return 1;
         if (op=='*' || op=='/') return 2;
@@ -93,7 +102,7 @@ class Parser
 
     //-------------------------------------------------
     Distribution createDistribution(QChar distType, std::vector<double> params) {
-        Distribution nonsense(0,0,0);
+        Distribution nonsense;
         if (distType=='U') {
             if (!UniformDistribution::validParams(binNumber, lowerBound, upperBound, params)) return nonsense;
             return UniformDistribution(binNumber, lowerBound, upperBound, params[0], params[1]);
@@ -115,27 +124,36 @@ class Parser
     //---------------------------------------
     // parseExpression(str): parse expression using shunting yard
 
+    // parseDist: get the distribution  starting at int pos of string s,
+    // returns the distribution and the position of the ')' of the distribution
+    // For example, if s = U(1,2)+N(123,456)+E(5), int pos is at letter N, returnPos will be at the ')' after the '456'
     Distribution parseDist(const QString& s, int pos, int& returnPos) {
         std::vector<double> params;
         int i, j, n;
-        Distribution nonsense(0,0,0);
+        Distribution nonsense;
 
         n = s.length();
         if (s[pos+1]!='(') return nonsense;
         if (pos+2 >= n) return nonsense;
 
-        i = pos+2;
+        i = pos+2; // starting at the first number of the first parameter
         while (i < n) {
             j = i;
-            while (j<n && (s[j]!=',' && s[j]!=')')) {
+            while (j<n && (s[j]!=',' && s[j]!=')')) {   // keep parsing the number until ',' or ')' is reached
                 if (s[j]=='(') return nonsense;
                 j++;
             }
             if (j==n) return nonsense; // can't find , or )
             if (j==i) return nonsense; // invalid input cases such as: ,, ; ,) ; () ; (,
 
-            QString number = s.mid(i, j-i); // get substring from i->j-1
-            params.push_back(number.toDouble());
+            QString numberStr = s.mid(i, j-i); // get substring from i->j-1
+            bool valid = 0;
+            double number = utils::str2double(numberStr, valid);
+
+            // if we cannot convert the string to double (or if the number is too large), then return
+            if (!valid) return nonsense;
+
+            params.push_back(number);
             i = j+1;
             if (s[j]==')') break;
         }
@@ -144,8 +162,7 @@ class Parser
         return createDistribution(s[pos], params);
     }
 
-    // get 2 operands from stack and apply operator
-
+    // stackApplyOp: get 2 operands from stack and apply operator
     bool stackApplyOp(QChar op, stack<Distribution>& valueStack) {
         if (valueStack.size() < 2) return false; // fail
         Distribution valueRight = valueStack.top();
@@ -157,10 +174,11 @@ class Parser
         return true; // success
     }
 
+    // We use shunting yard algorithm
+    // https://www.geeksforgeeks.org/expression-evaluation/
     Distribution parseExpression(QString s) {
         int i, n;
-        Distribution nonsense(0,0,0);
-        Distribution result(binNumber, lowerBound, upperBound);
+        Distribution nonsense;
         stack<Distribution> valueStack;
         stack<QChar> operatorStack;
 
@@ -173,15 +191,13 @@ class Parser
         i = 0;
         while (i<n) {
             if (isNumber(s[i])) {
-                return nonsense; // stand-alone number is wrong.
+                return nonsense; // we don't allow stand-alone number yet
             }
 
-            // is an operand
+            // a distribution is an operand
             if (isDist(s[i])) {
                 Distribution dist = parseDist(s, i, i);
-                if (!dist.valid()) {
-                    return nonsense;
-                }
+                if (!dist.valid()) return nonsense;
                 valueStack.push(dist);
             }
             else
@@ -200,7 +216,7 @@ class Parser
                 if (operatorStack.top()!='(') {
                     return nonsense;
                 }
-                operatorStack.pop(); // pop the '(' out
+                operatorStack.pop(); // finally, pop the '(' out
             }
             else
             if (isOperator(s[i])) {
@@ -217,19 +233,24 @@ class Parser
             }
 
             i++;
+            signalUpdateProgress(i*80/n);
         }
 
+        int steps = operatorStack.size();
         while (!operatorStack.empty()) {
             QChar op = operatorStack.top();
             operatorStack.pop();
 
             if (!stackApplyOp(op, valueStack)) return nonsense;
+            signalUpdateProgress(80 + (steps-operatorStack.size())*10/steps);
         }
 
         if (operatorStack.size() > 0) return nonsense;
         if (valueStack.size() != 1) return nonsense;
-        valueStack.top().normalize();
-        return valueStack.top();
+        Distribution res = valueStack.top();
+        signalUpdateProgress(99);
+        res.normalize();                
+        return res;
     }
 
 
@@ -249,7 +270,7 @@ public:
 
         binNumber = newBinNumber;
         lowerBound = newLowerBound;
-        upperBound = newUpperBound;              
+        upperBound = newUpperBound;
     }
 
     bool valid() {
@@ -267,19 +288,37 @@ public:
     }
 
 
-    //--------------------------------------------------
-    static void parserTest() {
-        Parser parser(10,0,10);
-        QString str = "U(3,7) + N(1,2) + E(3)";
-        Distribution dist = parser.parseExpression(str);
-        qDebug() << dist.valid() << "\n";
-
-        str = "U(5,4)";
-        qDebug() << parser.parseExpression(str).valid() << "\n";
-
-        str = "U(5,4) * N(1,2)";
-        qDebug() << parser.parseExpression(str).valid() << "\n";
+    //----------------------------------------------------
+public slots:
+    void slotParseDistribution(QString distStr) {
+        try {
+            Distribution distribution = string2dist(distStr);
+            emit signalParseFinish(distribution);
+        }
+        catch (SamplingException samplingException) {
+            emit signalAlert("Distribution requires too high accuracy. Please try another.");
+            emit signalParseFinish(Distribution());
+        }
+        catch (std::underflow_error) {            
+            emit signalAlert("Distribution requires too high accuracy. Please try another number.");
+            emit signalParseFinish(Distribution());
+        }
+        catch (std::overflow_error) {
+            emit signalAlert("Distribution requires too high accuracy. Please try another.");
+            emit signalParseFinish(Distribution());
+        }
+        catch (std::bad_alloc) {
+            emit signalAlert("Distrubtion require too much memory, not enough RAM. Please buy more RAM.");
+            emit signalParseFinish(Distribution());
+        }
     }
+
+signals:
+    void signalParseFinish(const Distribution &distribution);
+
+    void signalAlert(QString alert);
+
+    void signalUpdateProgress(int value);
 };
 
-#endif // PARSER_H
+#endif // DISTRIBUTIONGENERATOR_H

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>737</width>
-    <height>1079</height>
+    <width>790</width>
+    <height>1230</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,7 +30,7 @@
           <number>5</number>
          </property>
          <item row="0" column="0">
-          <layout class="QVBoxLayout" name="vLayoutInputComponents" stretch="0,1,0,0,0,0,0,0,0,0">
+          <layout class="QVBoxLayout" name="vLayoutInputComponents" stretch="0,1,0,0,0,0,0,0,0,0,0">
            <property name="spacing">
             <number>5</number>
            </property>
@@ -47,177 +47,6 @@
             <number>5</number>
            </property>
            <item>
-            <layout class="QGridLayout" name="gLayoutInput_1" columnstretch="0,0,0,0">
-             <property name="leftMargin">
-              <number>10</number>
-             </property>
-             <property name="topMargin">
-              <number>5</number>
-             </property>
-             <property name="rightMargin">
-              <number>10</number>
-             </property>
-             <property name="bottomMargin">
-              <number>5</number>
-             </property>
-             <property name="horizontalSpacing">
-              <number>25</number>
-             </property>
-             <property name="verticalSpacing">
-              <number>5</number>
-             </property>
-             <item row="3" column="0" colspan="2">
-              <widget class="QLineEdit" name="lEditMatSize">
-               <property name="minimumSize">
-                <size>
-                 <width>50</width>
-                 <height>23</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>250</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0" colspan="2">
-              <widget class="QComboBox" name="cBoxDataType">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>23</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>250</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <item>
-                <property name="text">
-                 <string>Array</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Matrix</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-             <item row="2" column="0" colspan="2">
-              <widget class="QLabel" name="lblMatSize">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>14</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>14</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <weight>75</weight>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Set matrix size</string>
-               </property>
-               <property name="indent">
-                <number>10</number>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0" colspan="2">
-              <widget class="QLabel" name="lblDataType">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>14</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>14</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <weight>75</weight>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Data Type</string>
-               </property>
-               <property name="indent">
-                <number>10</number>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="2" colspan="2">
-              <widget class="QLabel" name="lblNumData">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>14</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>14</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <weight>75</weight>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Number of data</string>
-               </property>
-               <property name="indent">
-                <number>10</number>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2" colspan="2">
-              <widget class="QLineEdit" name="lEditNumData">
-               <property name="minimumSize">
-                <size>
-                 <width>50</width>
-                 <height>23</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>250</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="Line" name="sepHLine_1">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
             <layout class="QVBoxLayout" name="vLayoutInput_2">
              <property name="leftMargin">
               <number>10</number>
@@ -231,6 +60,40 @@
              <property name="bottomMargin">
               <number>5</number>
              </property>
+             <item>
+              <widget class="QPushButton" name="pButtonLogConsole">
+               <property name="minimumSize">
+                <size>
+                 <width>250</width>
+                 <height>23</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>250</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <italic>false</italic>
+                </font>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::RightToLeft</enum>
+               </property>
+               <property name="text">
+                <string>Turn ON/OFF Log Console</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="sepHLine_13">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
              <item>
               <widget class="QLabel" name="lblDistribution">
                <property name="font">
@@ -276,7 +139,7 @@
                 </attribute>
                 <layout class="QHBoxLayout" name="horizontalLayout_7">
                  <item>
-                  <layout class="QHBoxLayout" name="hLayoutInput_2_Page_1" stretch="8,1,8,1,8,1,8">
+                  <layout class="QHBoxLayout" name="hLayoutInput_2_Page_1" stretch="8,1,8,1,8,1,0">
                    <property name="spacing">
                     <number>12</number>
                    </property>
@@ -738,6 +601,9 @@
                      </property>
                      <item row="0" column="0">
                       <widget class="QLabel" name="lblGamma_1">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="maximumSize">
                         <size>
                          <width>65</width>
@@ -763,6 +629,9 @@
                      </item>
                      <item row="1" column="1">
                       <widget class="QLineEdit" name="lEditParaG_alpha">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="minimumSize">
                         <size>
                          <width>75</width>
@@ -779,6 +648,9 @@
                      </item>
                      <item row="0" column="1">
                       <widget class="QLabel" name="lblGamma_2">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="font">
                         <font>
                          <italic>true</italic>
@@ -794,6 +666,9 @@
                      </item>
                      <item row="2" column="1">
                       <widget class="QLineEdit" name="lEditParaG_lambda">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="minimumSize">
                         <size>
                          <width>75</width>
@@ -810,6 +685,9 @@
                      </item>
                      <item row="1" column="0">
                       <widget class="QLabel" name="lblParaG_alpha">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="maximumSize">
                         <size>
                          <width>65</width>
@@ -832,6 +710,9 @@
                      </item>
                      <item row="2" column="0">
                       <widget class="QLabel" name="lblParaG_lambda">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="maximumSize">
                         <size>
                          <width>65</width>
@@ -1192,6 +1073,177 @@
             </layout>
            </item>
            <item>
+            <widget class="Line" name="sepHLine_1">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QGridLayout" name="gLayoutInput_1" columnstretch="0,0,0,0">
+             <property name="leftMargin">
+              <number>10</number>
+             </property>
+             <property name="topMargin">
+              <number>5</number>
+             </property>
+             <property name="rightMargin">
+              <number>10</number>
+             </property>
+             <property name="bottomMargin">
+              <number>5</number>
+             </property>
+             <property name="horizontalSpacing">
+              <number>25</number>
+             </property>
+             <property name="verticalSpacing">
+              <number>5</number>
+             </property>
+             <item row="3" column="0" colspan="2">
+              <widget class="QLineEdit" name="lEditMatSize">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>23</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>250</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="QComboBox" name="cBoxDataType">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>23</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>250</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Array</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Matrix</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="2" column="0" colspan="2">
+              <widget class="QLabel" name="lblMatSize">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>14</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>14</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Set matrix size</string>
+               </property>
+               <property name="indent">
+                <number>10</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="2">
+              <widget class="QLabel" name="lblDataType">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>14</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>14</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Data Type</string>
+               </property>
+               <property name="indent">
+                <number>10</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2" colspan="2">
+              <widget class="QLabel" name="lblNumData">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>14</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>14</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Number of data</string>
+               </property>
+               <property name="indent">
+                <number>10</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2" colspan="2">
+              <widget class="QLineEdit" name="lEditNumData">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>23</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>250</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
             <widget class="Line" name="sepHLine_2">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -1230,10 +1282,16 @@
              </item>
              <item>
               <widget class="QTabWidget" name="tabCalcDataset">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>225</height>
+                 <height>113</height>
                 </size>
                </property>
                <property name="accessibleName">
@@ -1251,7 +1309,7 @@
                 </attribute>
                 <layout class="QHBoxLayout" name="horizontalLayout_9">
                  <item>
-                  <layout class="QHBoxLayout" name="hLayoutInput_3_Page_1" stretch="1,2,6,0">
+                  <layout class="QHBoxLayout" name="hLayoutInput_3_Page_1" stretch="1,6,0">
                    <property name="spacing">
                     <number>20</number>
                    </property>
@@ -1287,26 +1345,13 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QProgressBar" name="progBar">
-                     <property name="minimumSize">
-                      <size>
-                       <width>0</width>
-                       <height>23</height>
-                      </size>
-                     </property>
+                    <widget class="QGroupBox" name="gBoxSaveDataset">
                      <property name="maximumSize">
                       <size>
-                       <width>250</width>
-                       <height>16777215</height>
+                       <width>16777215</width>
+                       <height>50</height>
                       </size>
                      </property>
-                     <property name="value">
-                      <number>0</number>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QGroupBox" name="gBoxSaveDataset">
                      <property name="font">
                       <font>
                        <weight>75</weight>
@@ -1335,6 +1380,9 @@
                       </item>
                       <item row="0" column="1">
                        <widget class="QLineEdit" name="lEditSaveDir">
+                        <property name="enabled">
+                         <bool>false</bool>
+                        </property>
                         <property name="minimumSize">
                          <size>
                           <width>50</width>
@@ -1389,7 +1437,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pButtonSave">
+                    <widget class="QPushButton" name="pButtonSaveDataset">
                      <property name="minimumSize">
                       <size>
                        <width>75</width>
@@ -1426,6 +1474,19 @@
                 <layout class="QHBoxLayout" name="horizontalLayout_11">
                  <item>
                   <layout class="QGridLayout" name="gLayoutOpenFile_2">
+                   <item row="0" column="0">
+                    <widget class="QPushButton" name="pButtonOpenFile_2">
+                     <property name="maximumSize">
+                      <size>
+                       <width>75</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>Open File...</string>
+                     </property>
+                    </widget>
+                   </item>
                    <item row="0" column="1">
                     <layout class="QGridLayout" name="gLayoutMessage_2">
                      <item row="1" column="0">
@@ -1460,38 +1521,6 @@
                       </widget>
                      </item>
                     </layout>
-                   </item>
-                   <item row="0" column="0">
-                    <widget class="QPushButton" name="pButtonOpenFile_2">
-                     <property name="maximumSize">
-                      <size>
-                       <width>75</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>Open File...</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="2">
-                    <widget class="QPushButton" name="pButtonOK_2">
-                     <property name="minimumSize">
-                      <size>
-                       <width>75</width>
-                       <height>23</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>75</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>OK</string>
-                     </property>
-                    </widget>
                    </item>
                   </layout>
                  </item>
@@ -1539,7 +1568,7 @@
               </widget>
              </item>
              <item>
-              <layout class="QGridLayout" name="gLayoutInput_3" columnstretch="0,0,0,0">
+              <layout class="QGridLayout" name="gLayoutInput_3" columnstretch="0,0,0,0,0">
                <property name="leftMargin">
                 <number>10</number>
                </property>
@@ -1558,32 +1587,46 @@
                <property name="verticalSpacing">
                 <number>5</number>
                </property>
-               <item row="0" column="0" colspan="2">
-                <widget class="QLabel" name="lblOperation">
+               <item row="1" column="2" colspan="2">
+                <widget class="QLineEdit" name="lEditNumTest">
                  <property name="minimumSize">
                   <size>
-                   <width>0</width>
-                   <height>14</height>
+                   <width>50</width>
+                   <height>23</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>16777215</width>
-                   <height>14</height>
+                   <width>250</width>
+                   <height>16777215</height>
                   </size>
                  </property>
-                 <property name="font">
-                  <font>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
+                </widget>
+               </item>
+               <item row="1" column="0" colspan="2">
+                <widget class="QComboBox" name="cBoxOperation">
+                 <property name="minimumSize">
+                  <size>
+                   <width>50</width>
+                   <height>23</height>
+                  </size>
                  </property>
-                 <property name="text">
-                  <string>Operation</string>
+                 <property name="maximumSize">
+                  <size>
+                   <width>250</width>
+                   <height>16777215</height>
+                  </size>
                  </property>
-                 <property name="indent">
-                  <number>10</number>
-                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Sum</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Multiplication</string>
+                  </property>
+                 </item>
                 </widget>
                </item>
                <item row="0" column="2" colspan="2">
@@ -1614,45 +1657,72 @@
                  </property>
                 </widget>
                </item>
-               <item row="1" column="0" colspan="2">
-                <widget class="QComboBox" name="cBoxOperation">
+               <item row="0" column="0" colspan="2">
+                <widget class="QLabel" name="lblOperation">
                  <property name="minimumSize">
                   <size>
-                   <width>50</width>
-                   <height>23</height>
+                   <width>0</width>
+                   <height>14</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>250</width>
-                   <height>16777215</height>
+                   <width>16777215</width>
+                   <height>14</height>
                   </size>
                  </property>
-                 <item>
-                  <property name="text">
-                   <string>Sum</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Multiplication</string>
-                  </property>
-                 </item>
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Operation</string>
+                 </property>
+                 <property name="indent">
+                  <number>10</number>
+                 </property>
                 </widget>
                </item>
-               <item row="1" column="2" colspan="2">
-                <widget class="QLineEdit" name="lEditNumTest">
+               <item row="1" column="4">
+                <widget class="QCheckBox" name="chkBoxGenNewData">
+                 <property name="font">
+                  <font>
+                   <weight>50</weight>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Generate new</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="4">
+                <widget class="QLabel" name="lblNumTest_2">
                  <property name="minimumSize">
                   <size>
-                   <width>50</width>
-                   <height>23</height>
+                   <width>0</width>
+                   <height>14</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>250</width>
-                   <height>16777215</height>
+                   <width>16777215</width>
+                   <height>14</height>
                   </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Shuffle/Generate</string>
+                 </property>
+                 <property name="indent">
+                  <number>10</number>
                  </property>
                 </widget>
                </item>
@@ -1668,7 +1738,7 @@
             </widget>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="hLayoutControl" stretch="4,0,1">
+            <layout class="QHBoxLayout" name="hLayoutControl" stretch="4,1">
              <property name="spacing">
               <number>10</number>
              </property>
@@ -1748,23 +1818,11 @@
                   </property>
                  </widget>
                 </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QGroupBox" name="gBoxGenSetting">
-               <property name="font">
-                <font>
-                 <weight>75</weight>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="title">
-                <string>Generate setting</string>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_2">
                 <item>
-                 <widget class="QCheckBox" name="chkBoxGenNewData">
+                 <widget class="QCheckBox" name="chkBoxSortAppend_2">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
                   <property name="font">
                    <font>
                     <weight>50</weight>
@@ -1772,7 +1830,7 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>New dataset </string>
+                   <string>Knuth</string>
                   </property>
                  </widget>
                 </item>
@@ -1801,31 +1859,120 @@
             </layout>
            </item>
            <item>
-            <widget class="QPushButton" name="pButtonConfirmDataset_3">
-             <property name="minimumSize">
-              <size>
-               <width>125</width>
-               <height>23</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>125</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <italic>false</italic>
-              </font>
-             </property>
-             <property name="layoutDirection">
-              <enum>Qt::LeftToRight</enum>
-             </property>
-             <property name="text">
-              <string>Save Experiment result</string>
+            <widget class="Line" name="sepHLine_7">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="hLayoutInput_3_Page_2" stretch="6">
+             <property name="spacing">
+              <number>20</number>
+             </property>
+             <property name="leftMargin">
+              <number>10</number>
+             </property>
+             <property name="topMargin">
+              <number>5</number>
+             </property>
+             <property name="rightMargin">
+              <number>10</number>
+             </property>
+             <property name="bottomMargin">
+              <number>5</number>
+             </property>
+             <item>
+              <widget class="QGroupBox" name="gBoxSaveDataset_2">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>60</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="title">
+                <string>Save file result</string>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_5">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item row="0" column="1">
+                 <widget class="QLineEdit" name="lEditSaveResult">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>23</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>250</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <italic>true</italic>
+                    <bold>false</bold>
+                   </font>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QPushButton" name="pButtonSaveResult">
+                  <property name="minimumSize">
+                   <size>
+                    <width>150</width>
+                    <height>23</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>150</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <italic>false</italic>
+                   </font>
+                  </property>
+                  <property name="layoutDirection">
+                   <enum>Qt::LeftToRight</enum>
+                  </property>
+                  <property name="text">
+                   <string>Save Experiment result</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QPushButton" name="pButtonBrowseSaveResult">
+                  <property name="maximumSize">
+                   <size>
+                    <width>75</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>Browse</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </item>
@@ -1842,8 +1989,8 @@
          <string>Output</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="1" column="0">
-          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
+         <item row="2" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0">
            <property name="spacing">
             <number>5</number>
            </property>
@@ -1860,10 +2007,17 @@
             <number>5</number>
            </property>
            <item>
-            <widget class="QTextBrowser" name="outputText"/>
-           </item>
-           <item>
-            <widget class="QGraphicsView" name="gViewDisplay"/>
+            <widget class="QTextBrowser" name="outputText">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>140</height>
+              </size>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -1879,8 +2033,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>737</width>
-     <height>22</height>
+     <width>790</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>

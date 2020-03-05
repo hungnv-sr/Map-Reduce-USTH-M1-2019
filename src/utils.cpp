@@ -1,8 +1,19 @@
 #include "utils.h"
+using boost::math::isinf;
+using boost::math::isnan;
 
 utils::utils()
 {
 
+}
+
+// we don't allow inputs that are too large
+double utils::str2double(QString numberStr, bool &valid) {
+    if (numberStr.length() > 15) {
+        valid = 0;
+        return 0;
+    }
+    return numberStr.toDouble(&valid);
 }
 
 bool utils::floatEqual(double a, double b, double error) {
@@ -13,8 +24,16 @@ double utils::sqr(double x) {
     return x*x;
 }
 
+iFloat utils::isqr(iFloat x) {
+    return x*x;
+}
+
 iFloat utils::isqrt(const iFloat &x) {
     return iFloat(boost::multiprecision::sqrt(x.getValue()));
+}
+
+iFloat utils::iexp(const iFloat &x) {
+    return iFloat(boost::multiprecision::exp(x.getValue()));
 }
 
 
@@ -25,13 +44,24 @@ double utils::powerf(double x, int n) {
     else return midpow*midpow*x;
 }
 
-double utils::gaussPdf(double mean, double variance, double x) {
-    double stddev = sqrt(variance);
-    return 1/(stddev * sqrt(2*pi)) * exp(-0.5*sqr((x-mean)/stddev));
+iFloat utils::gaussPdf(iFloat mean, iFloat variance, iFloat x) {
+    static iFloat sqrt2pi = isqrt(2*pi);
+    iFloat stddev = isqrt(variance);
+    return 1/(stddev * sqrt2pi) * iexp(-0.5*isqr((x-mean)/stddev));
 }
 
-double utils::expoPdf(double lambda, double x) {
-    return lambda * exp(-lambda*x);
+
+iFloat utils::expoPdf(iFloat lambda, iFloat x) {
+    if (x < 0) return 0;
+    return lambda * iexp(-lambda*x);
+}
+
+bool utils::isnan(iFloat x) {
+    return boost::math::isnan(x.getValue());
+}
+
+bool utils::isinf(iFloat x) {
+    return boost::math::isinf(x.getValue());
 }
 
 double utils::rand01() {
@@ -42,21 +72,129 @@ double utils::rand01() {
 }
 
 bool utils::saveArray(QString filename, const vector<double> &data, unsigned precision) {
+    if (data.size()==0) return 0;
     std::ofstream fo;
     try {
         std::setprecision(precision);
 
         fo = std::ofstream(filename.toStdString().c_str());
+        fo << std::setprecision(precision);
+
         qDebug() << "filename = " << filename << "\n";
-        qDebug() << "data size = " << data.size() << "\n";
+
         fo << data.size() << "\n";
         for (unsigned i=0; i<data.size(); i++) fo << std::fixed << data[i] << " ";
         fo << "\n";
         fo.close();
-    } catch (std::exception ex) {        
+    } catch (std::exception ex) {
+        qDebug() << "File crash " << ex.what() << "\n";
         fo.close();
         return 0;
     }
 
     return 1;
+}
+
+bool utils::saveMatrix(QString filename, const vector<Matrix<double> > &data, unsigned int precision) {
+    if (data.size()==0) return 0;
+    std::ofstream fo;
+    try {
+        std::setprecision(precision);
+
+        fo = std::ofstream(filename.toStdString().c_str());
+        fo << std::setprecision(precision);
+
+        qDebug() << "filename = " << filename << "\n";
+
+        fo << data.size() << " " << data[0].getHeight() << " " << data[0].getWidth() << "\n";
+        for (unsigned i=0; i<data.size(); i++) {
+            for (unsigned t=0; t<data[i].getLength(); t++) fo << std::fixed << data[i][t] << " ";
+            fo << "\n";
+        }
+        fo.close();
+    } catch (std::exception ex) {
+        fo.close();
+        return 0;
+    }
+
+    return 1;
+}
+
+
+//---
+QString utils::algo2String(Algo algo) {
+    if (algo==LINEAR) return "LINEAR";
+    else if (algo==SPLIT_MERGE) return "SPLIT_MERGE";
+    else if (algo==SORT) return "SORT_LINEAR";
+    else if (algo==SORT_APPEND) return "SORT_APPEND";
+    return "";
+}
+
+void utils::outputFile(QString filename, vector<Result> results) {
+    int n;
+    vector<QString> algoNames;
+    vector<Algo> algoTypes;
+    std::map<Algo, bool> mp;
+
+    mp.clear();
+    algoTypes.clear();
+    algoNames.clear();
+
+    qDebug() << "Reached before results.size() \n";
+
+    n = results.size();
+    for (int i=0; i<n;i++) {
+        if (!mp[results[i].algoUsed] && results[i].algoUsed!=GROUND_TRUTH) {
+            mp[results[i].algoUsed] = 1;
+
+            algoTypes.push_back(results[i].algoUsed);
+            if (results[i].algoUsed==LINEAR) algoNames.push_back("LINEAR");
+            else if (results[i].algoUsed==SPLIT_MERGE) algoNames.push_back("SPLIT_MERGE");
+            else if (results[i].algoUsed==SORT) algoNames.push_back("SORT_LINEAR");
+            else if (results[i].algoUsed==SORT_APPEND) algoNames.push_back("SORT_APPEND");
+        }
+    }
+
+    std::ofstream fo(filename.toStdString().c_str());
+    qDebug() << "Reached after openining file \n";
+    fo << std::setprecision(std::numeric_limits<float50>::digits10);
+    qDebug() << "Reached after setprecision \n";
+
+
+    fo << "Number of Algorithm Type" << ", " << algoTypes.size() << "\n";
+    qDebug() << "Reached after algotypes.size() \n";
+    if (results[0].value == 1){
+        fo << "Using shuffle dataset" << "\n";
+        fo << "Ground Truth" << ", "<< results[1].value << "\n";
+    } else fo << "Using original dataset" << "\n";
+
+    qDebug() << "Reached after results[0] and 1 \n";
+
+    // qDebug() << "algoTypes.size() = " << algoTypes.size() << " - " << "algoNames.size() = " << algoNames.size() << "\n";
+    qDebug() << "Reached after algosNames print\n";
+    fo << "\n";
+    qDebug() << "output file before loop\n";
+    for (unsigned t=0; t<algoTypes.size(); t++) {
+        iFloat mean = 0;
+        int nSample = 0;
+        fo << algoNames[t].toStdString() << "\n ";
+        for (int i=0;i<n;i++) if (results[i].algoUsed==algoTypes[t]) {
+            mean = mean + results[i].value;
+            nSample++;
+        }
+        mean = mean/nSample;
+
+        iFloat variance = 0;
+        for (int i=0;i<n;i++) if (results[i].algoUsed==algoTypes[t]) {
+            iFloat dX = (results[i].value - mean);
+            variance = variance + dX * dX;
+        }
+        variance = variance / nSample;
+        fo << "Mean" << ", " << "Variance" << ", " << "Standard Deviation"<< "\n"; 
+        fo << mean << ", " << variance << ", " << utils::isqrt(variance) << "\n";
+        fo << "Result of " << (n-2)/algoTypes.size() << " experiments" << "\n";
+        for (int i=0; i<n; i++) if (results[i].algoUsed==algoTypes[t]) fo << results[i].value << ", ";
+        fo << "\n" << "\n";
+    }
+    fo.close();
 }
