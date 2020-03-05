@@ -11,7 +11,6 @@
 #include "randomgenerator.h"
 #include "matrix.h"
 #include "matrixexperiment.h"
-#include <Eigen/Dense>
 using std::cout;
 
 #include <iostream>

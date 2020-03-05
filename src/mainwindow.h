@@ -4,8 +4,9 @@
 #include <QMainWindow>
 #include <parser.h>
 #include <arraygenerator.h>
-#include <arrayexperiment.h>
-#include <matrixexperiment.h>
+#include <matrixgenerator.h>
+#include <arrayexperimentcontroller.h>
+#include <matrixexperimentcontroller.h>
 #include <vector>
 #include <QThread>
 #include <parser.h>
@@ -46,12 +47,12 @@ private:
     unsigned dataSize, numData, matSize;
     DataType dataType;
     Distribution distribution;
-    //Parser parser;
     long long binNumber;
     double lowerBound, upperBound;
     vector<double> arrData;    
     vector<Matrix<double> > matData;
 
+    Precision precision;
     Op operation;
     vector<Algo> testAlgos;
     unsigned numTest;
