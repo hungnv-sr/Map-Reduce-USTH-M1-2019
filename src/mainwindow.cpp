@@ -9,9 +9,11 @@
 #include <QVector>
 #include <QString>
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)    
     , resource(1)
+    , precision(PDOUBLE)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -44,13 +46,20 @@ void MainWindow::slotGenerateArrayFinish(const vector<double> &arr) {
 }
 
 void MainWindow::slotArrayExperimentFinish(const vector<Result> &res) {
+   // qDebug() << "mainwindow received experiment finish";
+   // qDebug() << "res size = " << res.size() << "\n";
     results = res;
     experimentThread.quit();
     experimentThread.wait();
     QMessageBox::information(this, "Success", "Array experiment successful");
     console->getUI()->txtBrowserLog->append("Array experiment successful");
 
+    qDebug() << "mainwindow assigned results";
+
+
     try {
+        qDebug() << "mainwindow trying output file";
+
             utils::outputFile("arrayResultAutosave.txt",results);
         }
         catch (std::exception ex) {
@@ -59,6 +68,7 @@ void MainWindow::slotArrayExperimentFinish(const vector<Result> &res) {
             console->getUI()->txtBrowserLog->append("Auto-save array results to file failed");
             return;
         }
+
     QMessageBox::information(this, "Success", "Auto-save array results to file successful");
     console->getUI()->txtBrowserLog->append("Auto-save array results to file successful");
     slotUpdateProgress(100);
@@ -161,12 +171,13 @@ bool MainWindow::threadRunArrayExperiment() {
 
     if (!resource.tryAcquire()) return false;
 
-    ArrayExperiment *arrExper = new ArrayExperiment(arrData, distribution);
+    qDebug() << "thread run array: " << arrData.size() << "\n";
+    ArrayExperimentController *arrExper = new ArrayExperimentController(arrData, distribution, precision);
     arrExper -> moveToThread(&experimentThread);
     connect(&experimentThread, &QThread::finished, arrExper, &QObject::deleteLater);
-    connect(this, &MainWindow::signalArrayExperiment, arrExper, &ArrayExperiment::slotRunArrayExperiment);
-    connect(arrExper, &ArrayExperiment::signalExperimentFinish, this, &MainWindow::slotArrayExperimentFinish);
-    connect(arrExper, &ArrayExperiment::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
+    connect(this, &MainWindow::signalArrayExperiment, arrExper, &ArrayExperimentController::slotRunArrayExperiment);
+    connect(arrExper, &ArrayExperimentController::signalExperimentFinish, this, &MainWindow::slotArrayExperimentFinish);
+    connect(arrExper, &ArrayExperimentController::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
 
     experimentThread.start();
 
@@ -213,13 +224,21 @@ bool MainWindow::threadRunMatrixExperiment() {
 
     if (!resource.tryAcquire()) return false;
 
+    MatrixExperimentController *matExper = new MatrixExperimentController(matData, distribution, precision);
+    matExper -> moveToThread(&experimentThread);
+    connect(&experimentThread, &QThread::finished, matExper, &QObject::deleteLater);
+    connect(this, &MainWindow::signalMatrixExperiment, matExper, &MatrixExperimentController::slotRunMatrixExperiment);
+    connect(matExper, &MatrixExperimentController::signalExperimentFinish, this, &MainWindow::slotMatrixExperimentFinish);
+    connect(matExper, &MatrixExperimentController::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
+
+/*
     MatrixExperiment *matExper = new MatrixExperiment(matData, distribution);
     matExper -> moveToThread(&experimentThread);
     connect(&experimentThread, &QThread::finished, matExper, &QObject::deleteLater);
     connect(this, &MainWindow::signalMatrixExperiment, matExper, &MatrixExperiment::slotRunMatrixExperiment);
     connect(matExper, &MatrixExperiment::signalExperimentFinish, this, &MainWindow::slotMatrixExperimentFinish);
     connect(matExper, &MatrixExperiment::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
-
+*/
     experimentThread.start();
 
     emit signalMatrixExperiment(operation, numTest, testAlgos, shuffle);

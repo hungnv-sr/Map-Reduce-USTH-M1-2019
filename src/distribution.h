@@ -37,8 +37,9 @@ public:
 
 // We use inverse transform sampling:
 // https://stephens999.github.io/fiveMinuteStats/inverse_transform_sampling.html
-class Distribution
+class Distribution : public QObject
 {
+    Q_OBJECT
 protected:
     // Note: we use pointer for cdf/pdf because they are very large array.
     long long binNumber;            // number of rectangles to perform numerical integration

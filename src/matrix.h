@@ -268,7 +268,7 @@ Matrix<dtype> operator * (const dtype2& v, const Matrix<dtype>& source) {
 
 //-------------------------------   GENERIC MATRIX CALCULATION FUNCTION
 
-template <class dtype>
+template <typename dtype>
 inline Matrix<dtype> matOperate(const Matrix<dtype> &mat1, const Matrix<dtype> &mat2, Op op) {
     if (op==ADD) return mat1 + mat2;
     if (op==SUB) return mat1 - mat2;
