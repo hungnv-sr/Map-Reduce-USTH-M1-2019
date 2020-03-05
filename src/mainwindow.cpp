@@ -16,6 +16,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->txtEditStackedWidgetPage->append("\n1. Distribution\n");
+    ui->txtEditStackedWidgetPage->append("2. Calculation Dataset\n");
+    ui->txtEditStackedWidgetPage->append("3. Algorithm and Experiment setting\n");
+    ui->txtEditStackedWidgetPage->append("4. Run and Save result\n");
+
+    ui->sWidget->setCurrentIndex(0);
+
     ui->lblMatSize->setVisible(false);
     ui->lEditMatSize->setVisible(false);
 
@@ -318,9 +325,6 @@ QString MainWindow::getDistributionString() {
 
         if (ui->lEditParaExp_lambda->text().size() != 0)
             Exp_str.append("E(" + ui->lEditParaExp_lambda->text() + ")");
-
-        if (ui->lEditParaG_alpha->text().size() != 0 && ui->lEditParaG_lambda->text().size() != 0)
-            G_str.append("G(" + ui->lEditParaG_alpha->text() + "," + ui->lEditParaG_lambda->text() + ")");
 
         QStringList dist_list = (QStringList() << U_str << N_str << Exp_str << G_str);
         dist_list.removeAll("");
@@ -643,11 +647,6 @@ void MainWindow::on_pButtonBrowseSaveResult_clicked()
     ui->lEditSaveResult->setText(folderDir);
 }
 
-void MainWindow::on_gBoxAlgorithm_clicked()
-{
-
-}
-
 void MainWindow::on_pButtonRun_clicked()
 {
     if (!resource.available()) {
@@ -656,7 +655,7 @@ void MainWindow::on_pButtonRun_clicked()
         return;
     }
 
-    ui->outputText->clear();
+    ui->txtBrowserOutput->clear();
 
     if (numData <= 0) {
         QMessageBox::information(this, "Error", "Number of data element <= 0");
@@ -683,10 +682,10 @@ void MainWindow::on_pButtonRun_clicked()
     if (ui->chkBoxGenNewData->isChecked()) shuffle = false; else shuffle = true;
 
     testAlgos.clear();
-    if (ui->chkBoxLinear->isChecked()) testAlgos.push_back(LINEAR);
-    if (ui->chkBoxSplitMerge->isChecked()) testAlgos.push_back(SPLIT_MERGE);
-    if (ui->chkBoxSortLinear->isChecked()) testAlgos.push_back(SORT);
-    if (ui->chkBoxSortAppend->isChecked()) testAlgos.push_back(SORT_APPEND);
+    if (ui->cBoxAlgorithmSelected->findText("Linear") != -1) testAlgos.push_back(LINEAR);
+    if (ui->cBoxAlgorithmSelected->findText("Split/Merge") != -1) testAlgos.push_back(SPLIT_MERGE);
+    if (ui->cBoxAlgorithmSelected->findText("Sort [Linear]") != -1) testAlgos.push_back(SORT);
+    if (ui->cBoxAlgorithmSelected->findText("Sort [Append]") != -1) testAlgos.push_back(SORT_APPEND);
 
     if (testAlgos.empty()) {
         QMessageBox::information(this, "Error", "Please select some algorithms");
@@ -797,14 +796,41 @@ void MainWindow::outputResult()
         outputStr += "\n";
     }
 
-    ui->outputText->setText(outputStr);
+    ui->txtBrowserOutput->setText(outputStr);
 }
-
-
 
 void MainWindow::on_pButtonLogConsole_clicked()
 {
     console->setModal(false);
     console->show();
     console->activateWindow();
+}
+
+void MainWindow::on_pButtonPrev_clicked()
+{
+    int currentIndex = ui->sWidget->currentIndex();
+    int first = 0;
+    if (currentIndex > first)
+        ui->sWidget->setCurrentIndex(currentIndex - 1);
+}
+
+void MainWindow::on_pButtonNext_clicked()
+{
+    int currentIndex = ui->sWidget->currentIndex();
+    int last = ui->sWidget->count();
+    if (currentIndex < last)
+        ui->sWidget->setCurrentIndex(currentIndex + 1);
+}
+
+void MainWindow::on_pButtonAddAlgo_clicked()
+{
+    if (ui->cBoxAlgorithmSelected->findText(ui->cBoxAlgorithmList->currentText()) == -1)
+        ui->cBoxAlgorithmSelected->addItem(ui->cBoxAlgorithmList->currentText());
+    ui->cBoxAlgorithmSelected->update();
+}
+
+void MainWindow::on_pButtonRemoveAlgo_clicked()
+{
+    ui->cBoxAlgorithmSelected->removeItem(ui->cBoxAlgorithmSelected->currentIndex());
+    ui->cBoxAlgorithmSelected->update();
 }

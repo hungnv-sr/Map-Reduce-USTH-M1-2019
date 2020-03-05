@@ -77,8 +77,6 @@ private slots:
 
     void on_pButtonBrowseSaveResult_clicked();
 
-    void on_gBoxAlgorithm_clicked();
-
     void on_pButtonRun_clicked();
 
     void on_pButtonSaveDataset_clicked();
@@ -88,6 +86,14 @@ private slots:
     void on_pButtonSaveResult_clicked();
 
     void on_pButtonLogConsole_clicked();
+
+    void on_pButtonPrev_clicked();
+
+    void on_pButtonNext_clicked();
+
+    void on_pButtonAddAlgo_clicked();
+
+    void on_pButtonRemoveAlgo_clicked();
 
     //-----------------------   SIGNAL AND SLOTS FOR THREADS
 private slots:
@@ -104,6 +110,7 @@ private slots:
     void slotReceiveAlert(QString alert);
 
     void slotUpdateProgress(int value);
+
 signals:
     void signalGenerateArray(int nData);
 
