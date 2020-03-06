@@ -20,9 +20,9 @@ enum DataType{ARRAY, MATRIX};
 const vector<DataType> DataTypeList = {ARRAY, MATRIX};
 
 //
-enum AlgoName {GROUND_TRUTH, LINEAR, SPLIT_MERGE, SORT, SORT_APPEND, KNUTH, TESTING};
+enum AlgoName {GROUND_TRUTH, LINEAR, SPLIT_MERGE, SORT, SORT_APPEND, FAST2SUM, KNUTH2SUM};
 
-const vector<AlgoName> AlgoNameList = {GROUND_TRUTH, LINEAR, SPLIT_MERGE, SORT, SORT_APPEND, KNUTH, TESTING};
+const vector<AlgoName> AlgoNameList = {GROUND_TRUTH, LINEAR, SPLIT_MERGE, SORT, SORT_APPEND, FAST2SUM, KNUTH2SUM};
 
 //
 struct Result {
@@ -39,9 +39,10 @@ inline QString algo2String(AlgoName algoName) {
     if (algoName==SPLIT_MERGE) return "SPLIT_MERGE";
     if (algoName==SORT) return "SORT";
     if (algoName==SORT_APPEND) return "SORT_APPEND";
-    if (algoName==KNUTH) return "KNUTH";
-    if (algoName==TESTING) return "TESTING";
-    return "unknown";
+    if (algoName==FAST2SUM) return "FAST2SUM";
+    if (algoName==KNUTH2SUM) return "KNUTH2SUM";
+
+    throw("unknown algo2string");
 }
 
 inline AlgoName string2Algo(QString algoName) {
@@ -50,8 +51,10 @@ inline AlgoName string2Algo(QString algoName) {
     if (algoName=="SPLIT_MERGE") return SPLIT_MERGE;
     if (algoName=="SORT") return SORT;
     if (algoName=="SORT_APPEND") return SORT_APPEND;
-    if (algoName=="KNUTH") return KNUTH;
-    if (algoName=="TESTING") return KNUTH;
+    if (algoName=="FAST2SUM") return FAST2SUM;
+    if (algoName=="KNUTH2SUM") return KNUTH2SUM;
+
+    throw("unknown string2algo");
 }
 
 inline QString prec2String(Precision precision) {
