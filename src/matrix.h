@@ -193,7 +193,7 @@ public:
         return res;
     }
 
-    // comparing matrices is useless, so just return true
+    // comparing matrices is useless, so just return true for < and false for >
     // it will never be used. But we need to add it to make class matrix compatible with "SORT" ReduceAlgorithm
     // if a programmer somehow accidentally use SORT on Matrix datatype, it will be the same as using the Linear algorithm. So no error
     bool operator < (const Matrix& mat) const {
@@ -201,7 +201,19 @@ public:
     }
 
     bool operator > (const Matrix& mat) const {
+        return false;
+    }
+
+    // comparing matrix to number doesn't make sense, so just return true.
+    // this is to make matrix compatible with other numeric classes
+    template <typename anyType>
+    bool operator < (const anyType &x) const {
         return true;
+    }
+
+    template <typename anyType>
+    bool operator > (const anyType &x) const {
+        return false;
     }
 
     //--------------------------    SCALAR CALCULATION OPERATOR
@@ -260,7 +272,25 @@ public:
             cout << "\n";
         }
     }
+
+    template <typename Any, typename MatType>
+    friend bool operator < (const Any &x, const Matrix &mat);
+
+    template <typename Any, typename MatType>
+    friend bool operator > (const Any &x, const Matrix &mat);
 };
+
+template <typename Any, typename MatType>
+bool operator < (const Any &x, const Matrix<MatType> &mat) {
+    return true;
+}
+
+template <typename Any, typename MatType>
+bool operator > (const Any &x, const Matrix<MatType> &mat) {
+    return false;
+}
+
+
 
 //-------------------------------   SCALAR OPERATOR a*b and b*a
 template <class dtype, class dtype2>
@@ -279,7 +309,7 @@ Matrix<dtype> operator * (const dtype2& v, const Matrix<dtype>& source) {
 }
 
 //-------------------------------   GENERIC MATRIX CALCULATION FUNCTION
-
+/*
 template <typename dtype>
 inline Matrix<dtype> matOperate(const Matrix<dtype> &mat1, const Matrix<dtype> &mat2, Op op) {
     if (op==ADD) return mat1 + mat2;
@@ -290,7 +320,7 @@ inline Matrix<dtype> matOperate(const Matrix<dtype> &mat1, const Matrix<dtype> &
 
     throw MatrixException("Operate: Unknown Op");
 }
-
+*/
 
 
 #endif // MATRIX_H

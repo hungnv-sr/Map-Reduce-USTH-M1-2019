@@ -12,7 +12,7 @@ using boost::multiprecision::cpp_dec_float_50;
 using boost::numeric_cast;
 using std::cout;
 
-typedef number<cpp_dec_float<50> > float50;
+typedef number<cpp_dec_float<40> > float40;
 
 struct iFloatException : public std::exception {
 private:
@@ -35,8 +35,8 @@ public:
 //----------------------------------------------------------------------------------------------------------------------------------
 
 
-// iFloat is the wrapper class for Boost C++ class cpp_dec_float_50 (float50), which is float that has 50 decimal places precision
-// We need a wrapper class because float50 can use a lot of memory. In a function, it will cause stack overflow very quickly.
+// iFloat is the wrapper class for Boost C++ class cpp_dec_float_40 (float40), which is float that has 40 decimal places precision
+// We need a wrapper class because float40 can use a lot of memory. In a function, it will cause stack overflow very quickly.
 // Using a wrapper class, the memory is on the heap instead, so there's no problem.
 
 // Usage:
@@ -45,7 +45,7 @@ public:
 class iFloat
 {
 private:
-    float50 *value;
+    float40 *value;
 
     void cleanup() {
         if (value==nullptr)
@@ -54,24 +54,24 @@ private:
     }
 
     void copy(const iFloat& v) {
-        value = new float50;
+        value = new float40;
         *value = *(v.value);
     }
 
 public:
     //--------------------  CANONICAL FORM FUNCTIONS
     iFloat() {
-        value = new float50;
+        value = new float40;
         *value = 0;
     };
 
-    iFloat(float50 x) {
-        value = new float50;
+    iFloat(float40 x) {
+        value = new float40;
         *value = x;
     }
 
     iFloat(double x) {
-        value = new float50;
+        value = new float40;
         *value = x;
     }
 
@@ -86,7 +86,7 @@ public:
 
     iFloat& operator = (const iFloat& v) {
         if (this!=&v) {
-            // usually we need to cleanup(), but Boost C++ class float30 does not cause memory leak
+            // usually we need to cleanup(), but Boost C++ class float40 use in-place memory, so there's no leak
             *value = *(v.value);
         }
         return *this;
@@ -154,7 +154,7 @@ public:
     }
 
     //-------------------------------- SCALAR CALCULATION OPERATORS
-    float50 getValue() const {
+    float40 getValue() const {
         return *value;
     }
 

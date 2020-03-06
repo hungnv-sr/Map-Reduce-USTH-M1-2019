@@ -20,9 +20,9 @@ enum DataType{ARRAY, MATRIX};
 const vector<DataType> DataTypeList = {ARRAY, MATRIX};
 
 //
-enum AlgoName {GROUND_TRUTH, LINEAR, SPLIT_MERGE, SORT, SORT_APPEND, KNUTH, TESTING};
+enum AlgoName {GROUND_TRUTH, LINEAR, SPLIT_MERGE, SORT, SORT_APPEND, FAST2SUM, KNUTH2SUM};
 
-const vector<AlgoName> AlgoNameList = {GROUND_TRUTH, LINEAR, SPLIT_MERGE, SORT, SORT_APPEND, KNUTH, TESTING};
+const vector<AlgoName> AlgoNameList = {GROUND_TRUTH, LINEAR, SPLIT_MERGE, SORT, SORT_APPEND, FAST2SUM, KNUTH2SUM};
 
 //
 struct Result {
@@ -33,27 +33,16 @@ struct Result {
     Result() {value = 0; algoUsed = GROUND_TRUTH;}
 };
 
-// function to calculate given an input Op operator.
-// It's easier to have one function than writing 4 if-statements each time
-template <class dtype>
-inline dtype numOperate(const dtype &a, const dtype &b, Op op) {
-    if (op==ADD) return a + b;
-    if (op==SUB) return a - b;
-    if (op==MUL) return a * b;
-    if (op==DIV) return a / b;
-
-    throw ("NumOperate: Unknown Op");
-}
-
 inline QString algo2String(AlgoName algoName) {
     if (algoName==GROUND_TRUTH) return "GROUND_TRUTH";
     if (algoName==LINEAR) return "LINEAR";
     if (algoName==SPLIT_MERGE) return "SPLIT_MERGE";
     if (algoName==SORT) return "SORT";
     if (algoName==SORT_APPEND) return "SORT_APPEND";
-    if (algoName==KNUTH) return "KNUTH";
-    if (algoName==TESTING) return "TESTING";
-    return "unknown";
+    if (algoName==FAST2SUM) return "FAST2SUM";
+    if (algoName==KNUTH2SUM) return "KNUTH2SUM";
+
+    throw("unknown algo2string");
 }
 
 inline AlgoName string2Algo(QString algoName) {
@@ -62,8 +51,10 @@ inline AlgoName string2Algo(QString algoName) {
     if (algoName=="SPLIT_MERGE") return SPLIT_MERGE;
     if (algoName=="SORT") return SORT;
     if (algoName=="SORT_APPEND") return SORT_APPEND;
-    if (algoName=="KNUTH") return KNUTH;
-    if (algoName=="TESTING") return KNUTH;
+    if (algoName=="FAST2SUM") return FAST2SUM;
+    if (algoName=="KNUTH2SUM") return KNUTH2SUM;
+
+    throw("unknown string2algo");
 }
 
 inline QString prec2String(Precision precision) {

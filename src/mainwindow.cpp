@@ -269,6 +269,51 @@ bool MainWindow::threadParseDistribution() {
 
 
 //--------------------  ON-CLICK LISTENER
+void MainWindow::on_pButtonPrev_clicked()
+{
+    ui->txtEditStackedWidgetPage->clear();
+
+    int currentIndex = ui->sWidget->currentIndex();
+    int first = 0;
+
+    for (int i=0; i < txtDisplay.size(); ++i)
+    {
+        if (currentIndex <= first+1) currentIndex = first+1;
+        if (i == currentIndex-1) ui->txtEditStackedWidgetPage->setTextColor(Qt::black); else ui->txtEditStackedWidgetPage->setTextColor(Qt::gray);
+        ui->txtEditStackedWidgetPage->append(txtDisplay[i]);
+    }
+
+    if (currentIndex > first)
+        ui->sWidget->setCurrentIndex(currentIndex - 1);
+    if (currentIndex <= first+1)
+    {
+        currentIndex = first+1;
+        console->getUI()->txtBrowserLog->append("  Reached the first page");
+    }
+}
+
+void MainWindow::on_pButtonNext_clicked()
+{
+    ui->txtEditStackedWidgetPage->clear();
+
+    int currentIndex = ui->sWidget->currentIndex();
+    int last = ui->sWidget->count()-1;
+
+    for (int i=0; i < txtDisplay.size(); ++i)
+    {
+        if (currentIndex >= last-1) currentIndex = last-1;
+        if (i == currentIndex+1) ui->txtEditStackedWidgetPage->setTextColor(Qt::black); else ui->txtEditStackedWidgetPage->setTextColor(Qt::gray);
+        ui->txtEditStackedWidgetPage->append(txtDisplay[i]);
+    }
+
+    if (currentIndex < last)
+        ui->sWidget->setCurrentIndex(currentIndex + 1);
+    if (currentIndex >= last-1)
+    {
+        currentIndex = last-1;
+        console->getUI()->txtBrowserLog->append("  Reached the last page");
+    }
+}
 
 void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
 {
@@ -626,6 +671,22 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
     ui->txtBrowser_2->setText("Data imported successfully!");
 }
 
+void MainWindow::on_pButtonAddAlgo_clicked()
+{
+    if (ui->cBoxAlgorithmSelected->findText(ui->cBoxAlgorithmList->currentText()) == -1) {
+        QString selectedAlgo = ui->cBoxAlgorithmList->currentText();
+        ui->cBoxAlgorithmSelected->addItem(selectedAlgo);
+    }
+    ui->cBoxAlgorithmSelected->update();
+}
+
+void MainWindow::on_pButtonRemoveAlgo_clicked()
+{
+    ui->cBoxAlgorithmSelected->removeItem(ui->cBoxAlgorithmSelected->currentIndex());
+    ui->cBoxAlgorithmSelected->update();
+}
+
+
 
 void MainWindow::on_pButtonBrowseDir_clicked()
 {
@@ -819,63 +880,6 @@ void MainWindow::on_pButtonLogConsole_clicked()
     console->activateWindow();
 }
 
-void MainWindow::on_pButtonPrev_clicked()
-{
-    ui->txtEditStackedWidgetPage->clear();
 
-    int currentIndex = ui->sWidget->currentIndex();
-    int first = 0;
 
-    for (int i=0; i < txtDisplay.size(); ++i)
-    {
-        if (currentIndex <= first+1) currentIndex = first+1;
-        if (i == currentIndex-1) ui->txtEditStackedWidgetPage->setTextColor(Qt::black); else ui->txtEditStackedWidgetPage->setTextColor(Qt::gray);
-        ui->txtEditStackedWidgetPage->append(txtDisplay[i]);
-    }
 
-    if (currentIndex > first)
-        ui->sWidget->setCurrentIndex(currentIndex - 1);
-    if (currentIndex <= first+1)
-    {
-        currentIndex = first+1;
-        console->getUI()->txtBrowserLog->append("  Reached the first page");
-    }
-}
-
-void MainWindow::on_pButtonNext_clicked()
-{
-    ui->txtEditStackedWidgetPage->clear();
-
-    int currentIndex = ui->sWidget->currentIndex();
-    int last = ui->sWidget->count()-1;
-
-    for (int i=0; i < txtDisplay.size(); ++i)
-    {
-        if (currentIndex >= last-1) currentIndex = last-1;
-        if (i == currentIndex+1) ui->txtEditStackedWidgetPage->setTextColor(Qt::black); else ui->txtEditStackedWidgetPage->setTextColor(Qt::gray);
-        ui->txtEditStackedWidgetPage->append(txtDisplay[i]);
-    }
-
-    if (currentIndex < last)
-        ui->sWidget->setCurrentIndex(currentIndex + 1);
-    if (currentIndex >= last-1)
-    {
-        currentIndex = last-1;
-        console->getUI()->txtBrowserLog->append("  Reached the last page");
-    }
-}
-
-void MainWindow::on_pButtonAddAlgo_clicked()
-{
-    if (ui->cBoxAlgorithmSelected->findText(ui->cBoxAlgorithmList->currentText()) == -1) {
-        QString selectedAlgo = ui->cBoxAlgorithmList->currentText();
-        ui->cBoxAlgorithmSelected->addItem(selectedAlgo);
-    }
-    ui->cBoxAlgorithmSelected->update();
-}
-
-void MainWindow::on_pButtonRemoveAlgo_clicked()
-{
-    ui->cBoxAlgorithmSelected->removeItem(ui->cBoxAlgorithmSelected->currentIndex());
-    ui->cBoxAlgorithmSelected->update();
-}
