@@ -3,6 +3,7 @@
 #define MATRIXEXPERIMENT_H
 
 #include <utilityenum.h>
+#include <ReduceAlgorithms.h>
 #include <vector>
 #include <matrix.h>
 #include <ifloat.h>
@@ -32,10 +33,10 @@ public:
     explicit QMatrixExperiment(QObject *parent = 0) :
         QObject(parent) {}
 
-    virtual vector<Result> experiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle) {}
+    virtual vector<Result> experiment(Op op, unsigned nTest, vector<AlgoName> testAlgos, bool shuffle) {}
 
 public slots:
-    void slotRunArrayExperiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle) {
+    void slotRunArrayExperiment(Op op, unsigned nTest, vector<AlgoName> testAlgos, bool shuffle) {
         vector<Result> res = experiment(op, nTest, testAlgos, shuffle);
         emit signalExperimentFinish(res);
     }
@@ -89,6 +90,7 @@ public:
         return matfv;
     }
 
+    /*
     //----------------------------------------------    LINEAR ALGORITHM
     iFloat linearTest(const vector<Matrix<dtype> > &inputMats, Op op) {
         Matrix<dtype> res = inputMats[0];
@@ -110,6 +112,7 @@ public:
         Matrix<dtype> res = splitMerge(inputMats, op, 0, inputMats.size() - 1);
         return res.template sum<iFloat>();
     }
+    */
 
     //---------------------------------------------     EXPERIMENTING
     // for an experiment, we random shuffle the input nTest times.
@@ -118,10 +121,10 @@ public:
         vector<Matrix<iFloat> > hfInput = dtype2iFloat(inputMats);
         Matrix<iFloat> res = hfInput[0];
         for (unsigned i=1; i<hfInput.size(); i++) res = matOperate(res, hfInput[i], op);
-        return res.sum<iFloat>();
+        return iFloat(res);
     }
 
-    vector<Result> experiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle) {
+    vector<Result> experiment(Op op, unsigned nTest, vector<Algorithm<Matrix<dtype> > > algorithms, bool shuffle) {
         MatrixGenerator matrixGen(distribution);
         vector<Result> res;
         res.clear();
@@ -130,15 +133,10 @@ public:
         res.push_back(Result(groundTruth(inputMats, op), GROUND_TRUTH));
         qDebug() << "After matrix ground truth\n";
 
-        bool linear = 0, splitMerge = 0;
-        for (unsigned i=0; i<testAlgos.size(); i++) {
-            if (testAlgos[i]==Algo::LINEAR) linear = true;
-            if (testAlgos[i]==Algo::SPLIT_MERGE) splitMerge = true;
-        }
 
         for (unsigned t=1; t<=nTest; t++) {
-            if (linear) res.push_back(Result(linearTest(inputMats, op), Algo::LINEAR));
-            if (splitMerge) res.push_back(Result(splitMergeTest(inputMats, op), Algo::SPLIT_MERGE));
+            for (int i=0; i<algorithms.size(); i++)
+                res.push_back(Result(algorithms[i].functor(inputMats, op), algorithms[i].algo));
 
             if (shuffle) std::random_shuffle(inputMats.begin(), inputMats.end());
             else {

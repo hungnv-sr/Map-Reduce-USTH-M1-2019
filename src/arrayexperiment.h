@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <queue>
 #include <arraygenerator.h>
+#include <ReduceAlgorithms.h>
 using std::vector;
 
 struct ArrayExperimentException : public std::exception {
@@ -32,10 +33,10 @@ public:
     explicit QArrayExperiment(QObject *parent = 0) :
         QObject(parent) {}
 
-    virtual vector<Result> experiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle) {}
+    virtual vector<Result> experiment(Op op, unsigned nTest, vector<AlgoName> testAlgos, bool shuffle) {}
 
 public slots:
-    void slotRunArrayExperiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle) {
+    void slotRunArrayExperiment(Op op, unsigned nTest, vector<AlgoName> testAlgos, bool shuffle) {
         vector<Result> res = experiment(op, nTest, testAlgos, shuffle);
         emit signalExperimentFinish(res);
     }
@@ -62,6 +63,7 @@ public:
         if (newInputs.empty())
             throw ArrayExperimentException("Constructor: input vector is empty");
     }
+<<<<<<< HEAD
 
     template <typename inputType>
     ArrayExperiment(const vector<inputType> &newInputs, const Distribution &newDistribution) : distribution(newDistribution) {
@@ -166,6 +168,46 @@ public:
             emit signalUpdateProgress(t*100/nTest);
         }
 
+=======
+
+    template <typename inputType>
+    ArrayExperiment(const vector<inputType> &newInputs, const Distribution &newDistribution) : distribution(newDistribution) {
+        if (newInputs.empty())
+            throw ArrayExperimentException("Constructor: input vector is empty");
+        for (long long i=0; i<newInputs.size(); i++) inputs.push_back(dtype(newInputs[i]));
+    }
+
+    //---------------------------------------------     EXPERIMENTING
+    // for an experiment, we random shuffle the input nTest times.
+    // For each shuffle, we calculate the result of each algorithm
+
+    iFloat groundTruth(const vector<dtype> &inputs, Op op) {
+        iFloat res = 0;
+        for (unsigned i=0; i<inputs.size(); i++) res = numOperate(res, iFloat(inputs[i]), op);
+        return res;
+    }
+
+    vector<Result> experiment(Op op, int nTest, vector<Algorithm<dtype> > algorithms, bool shuffle) {
+        ArrayGenerator arrGen(distribution);
+        vector<Result> res;
+        res.clear();
+
+        res.push_back(Result(shuffle, GROUND_TRUTH)); // if we use shuffle it means a ground truth exist, so output 1
+        res.push_back(Result(groundTruth(inputs, op), GROUND_TRUTH));
+
+        for (int t=1; t<=nTest; t++) {
+            for (int i=0; i<algorithms.size(); i++)
+                res.push_back(Result(algorithms[i].functor(inputs, op), algorithms[i].algo));
+
+            if (shuffle) std::random_shuffle(inputs.begin(), inputs.end());
+            else {                
+                // create new inputs
+                inputs = utils::convertArray<dtype>(arrGen.createArray(inputs.size()));
+            }
+            emit signalUpdateProgress(t*100/nTest);
+        }
+
+>>>>>>> b012a7c8112436341b6a595d8373ce1316d39341
         emit signalExperimentFinish(res);
         return res;
     }

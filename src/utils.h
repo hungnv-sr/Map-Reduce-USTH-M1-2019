@@ -152,19 +152,11 @@ public:
 
 
     //-----
-    static QString algo2String(Algo algo) {
-        if (algo==LINEAR) return "LINEAR";
-        else if (algo==SPLIT_MERGE) return "SPLIT_MERGE";
-        else if (algo==SORT) return "SORT_LINEAR";
-        else if (algo==SORT_APPEND) return "SORT_APPEND";
-        return "";
-    }
-
     static void outputFile(QString filename, vector<Result> results) {
         int n;
         vector<QString> algoNames;
-        vector<Algo> algoTypes;
-        std::map<Algo, bool> mp;
+        vector<AlgoName> algoTypes;
+        std::map<AlgoName, bool> mp;
 
         mp.clear();
         algoTypes.clear();

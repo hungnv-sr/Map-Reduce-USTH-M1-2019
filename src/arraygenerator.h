@@ -22,28 +22,6 @@ public:
 };
 
 //--------------- template class can't inherit QObject, so we do it indirectly
-class QArrayGenerator : public QObject
-{
-    Q_OBJECT
-
-public:
-    explicit QArrayGenerator(QObject *parent = 0) :
-        QObject(parent) {}
-
-    virtual vector<Result> experiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle) {}
-
-public slots:
-    virtual void slotRunArrayExperiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle) {
-        vector<Result> res = experiment(op, nTest, testAlgos, shuffle);
-        emit signalExperimentFinish(res);
-    }
-
-signals:
-    void signalExperimentFinish(vector<Result> res);
-    void signalUpdateProgress(int value);
-};
-
-
 
 class ArrayGenerator : public QObject
 {
