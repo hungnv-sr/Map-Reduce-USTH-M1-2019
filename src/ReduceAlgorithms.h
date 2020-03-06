@@ -10,6 +10,29 @@
 template <typename dtype>
 using AlgoFunction = iFloat(*)(const vector<dtype>&, Op);
 
+// function to calculate given an input Op operator.
+// It's easier to have one function than writing 4 if-statements each time
+template <class dtype>
+inline dtype numOperate(const dtype &a, const dtype &b, Op op) {
+    if (op==ADD) return a + b;
+    if (op==SUB) return a - b;
+    if (op==MUL) return a * b;
+    if (op==DIV) return a / b;
+
+    throw ("NumOperate: Unknown Op");
+}
+
+// specializing for matrix
+template<typename matType>
+inline Matrix<matType> numOperate(const Matrix<matType> &a, const Matrix<matType> &b, Op op) {
+    if (op==ADD) return a + b;
+    if (op==SUB) return a - b;
+    if (op==MUL) return a * b;
+    if (op==DIV) return a / b;
+    if (op==MATMUL) return a.matmul(b);
+
+    throw ("NumOperate: Unknown Op");
+}
 
 //--------------------------
 template <typename dtype>
