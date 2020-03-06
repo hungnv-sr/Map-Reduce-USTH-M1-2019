@@ -17,10 +17,16 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->txtEditStackedWidgetPage->append("\n1. Distribution\n");
-    ui->txtEditStackedWidgetPage->append("2. Calculation Dataset\n");
-    ui->txtEditStackedWidgetPage->append("3. Algorithm and Experiment setting\n");
-    ui->txtEditStackedWidgetPage->append("4. Run and Save result\n");
+    txtDisplay.push_back("\n1. Distribution\n");
+    txtDisplay.push_back("2. Calculation Dataset\n");
+    txtDisplay.push_back("3. Algorithm and Experiment setting\n");
+    txtDisplay.push_back("4. Run and Save result\n");
+
+    for (int i=0; i < txtDisplay.size(); ++i)
+    {
+        if (i == 0) ui->txtEditStackedWidgetPage->setTextColor(Qt::black); else ui->txtEditStackedWidgetPage->setTextColor(Qt::gray);
+        ui->txtEditStackedWidgetPage->append(txtDisplay[i]);
+    }
 
     ui->sWidget->setCurrentIndex(0);
 
@@ -29,6 +35,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     for (int i=1; i<AlgoNameList.size(); i++)
         ui->cBoxAlgorithmList->addItem(algo2String(AlgoNameList[i]));
+
+    for (int i=0; i<PrecisionList.size(); i++)
+        ui->cBoxPrecisionList->addItem(prec2String(PrecisionList[i]));
 
     console = new LogConsole();
     console->setModal(false);
@@ -812,18 +821,48 @@ void MainWindow::on_pButtonLogConsole_clicked()
 
 void MainWindow::on_pButtonPrev_clicked()
 {
+    ui->txtEditStackedWidgetPage->clear();
+
     int currentIndex = ui->sWidget->currentIndex();
     int first = 0;
+
+    for (int i=0; i < txtDisplay.size(); ++i)
+    {
+        if (currentIndex <= first+1) currentIndex = first+1;
+        if (i == currentIndex-1) ui->txtEditStackedWidgetPage->setTextColor(Qt::black); else ui->txtEditStackedWidgetPage->setTextColor(Qt::gray);
+        ui->txtEditStackedWidgetPage->append(txtDisplay[i]);
+    }
+
     if (currentIndex > first)
         ui->sWidget->setCurrentIndex(currentIndex - 1);
+    if (currentIndex <= first+1)
+    {
+        currentIndex = first+1;
+        console->getUI()->txtBrowserLog->append("  Reached the first page");
+    }
 }
 
 void MainWindow::on_pButtonNext_clicked()
 {
+    ui->txtEditStackedWidgetPage->clear();
+
     int currentIndex = ui->sWidget->currentIndex();
-    int last = ui->sWidget->count();
+    int last = ui->sWidget->count()-1;
+
+    for (int i=0; i < txtDisplay.size(); ++i)
+    {
+        if (currentIndex >= last-1) currentIndex = last-1;
+        if (i == currentIndex+1) ui->txtEditStackedWidgetPage->setTextColor(Qt::black); else ui->txtEditStackedWidgetPage->setTextColor(Qt::gray);
+        ui->txtEditStackedWidgetPage->append(txtDisplay[i]);
+    }
+
     if (currentIndex < last)
         ui->sWidget->setCurrentIndex(currentIndex + 1);
+    if (currentIndex >= last-1)
+    {
+        currentIndex = last-1;
+        console->getUI()->txtBrowserLog->append("  Reached the last page");
+    }
 }
 
 void MainWindow::on_pButtonAddAlgo_clicked()
