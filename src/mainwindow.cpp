@@ -9,17 +9,26 @@
 #include <QVector>
 #include <QString>
 
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)    
     , resource(1)
-    , precision(PDOUBLE)
+    , precision(PSINGLE)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
+    ui->txtEditStackedWidgetPage->append("\n1. Distribution\n");
+    ui->txtEditStackedWidgetPage->append("2. Calculation Dataset\n");
+    ui->txtEditStackedWidgetPage->append("3. Algorithm and Experiment setting\n");
+    ui->txtEditStackedWidgetPage->append("4. Run and Save result\n");
+
+    ui->sWidget->setCurrentIndex(0);
+
     ui->lblMatSize->setVisible(false);
     ui->lEditMatSize->setVisible(false);
+
+    for (int i=1; i<AlgoNameList.size(); i++)
+        ui->cBoxAlgorithmList->addItem(algo2String(AlgoNameList[i]));
 
     console = new LogConsole();
     console->setModal(false);
@@ -46,20 +55,13 @@ void MainWindow::slotGenerateArrayFinish(const vector<double> &arr) {
 }
 
 void MainWindow::slotArrayExperimentFinish(const vector<Result> &res) {
-   // qDebug() << "mainwindow received experiment finish";
-   // qDebug() << "res size = " << res.size() << "\n";
     results = res;
     experimentThread.quit();
     experimentThread.wait();
     QMessageBox::information(this, "Success", "Array experiment successful");
     console->getUI()->txtBrowserLog->append("Array experiment successful");
 
-    qDebug() << "mainwindow assigned results";
-
-
     try {
-        qDebug() << "mainwindow trying output file";
-
             utils::outputFile("arrayResultAutosave.txt",results);
         }
         catch (std::exception ex) {
@@ -68,7 +70,6 @@ void MainWindow::slotArrayExperimentFinish(const vector<Result> &res) {
             console->getUI()->txtBrowserLog->append("Auto-save array results to file failed");
             return;
         }
-
     QMessageBox::information(this, "Success", "Auto-save array results to file successful");
     console->getUI()->txtBrowserLog->append("Auto-save array results to file successful");
     slotUpdateProgress(100);
@@ -231,14 +232,6 @@ bool MainWindow::threadRunMatrixExperiment() {
     connect(matExper, &MatrixExperimentController::signalExperimentFinish, this, &MainWindow::slotMatrixExperimentFinish);
     connect(matExper, &MatrixExperimentController::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
 
-/*
-    MatrixExperiment *matExper = new MatrixExperiment(matData, distribution);
-    matExper -> moveToThread(&experimentThread);
-    connect(&experimentThread, &QThread::finished, matExper, &QObject::deleteLater);
-    connect(this, &MainWindow::signalMatrixExperiment, matExper, &MatrixExperiment::slotRunMatrixExperiment);
-    connect(matExper, &MatrixExperiment::signalExperimentFinish, this, &MainWindow::slotMatrixExperimentFinish);
-    connect(matExper, &MatrixExperiment::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
-*/
     experimentThread.start();
 
     emit signalMatrixExperiment(operation, numTest, testAlgos, shuffle);
@@ -337,9 +330,6 @@ QString MainWindow::getDistributionString() {
 
         if (ui->lEditParaExp_lambda->text().size() != 0)
             Exp_str.append("E(" + ui->lEditParaExp_lambda->text() + ")");
-
-        if (ui->lEditParaG_alpha->text().size() != 0 && ui->lEditParaG_lambda->text().size() != 0)
-            G_str.append("G(" + ui->lEditParaG_alpha->text() + "," + ui->lEditParaG_lambda->text() + ")");
 
         QStringList dist_list = (QStringList() << U_str << N_str << Exp_str << G_str);
         dist_list.removeAll("");
@@ -662,11 +652,6 @@ void MainWindow::on_pButtonBrowseSaveResult_clicked()
     ui->lEditSaveResult->setText(folderDir);
 }
 
-void MainWindow::on_gBoxAlgorithm_clicked()
-{
-
-}
-
 void MainWindow::on_pButtonRun_clicked()
 {
     if (!resource.available()) {
@@ -675,7 +660,7 @@ void MainWindow::on_pButtonRun_clicked()
         return;
     }
 
-    ui->outputText->clear();
+    ui->txtBrowserOutput->clear();
 
     if (numData <= 0) {
         QMessageBox::information(this, "Error", "Number of data element <= 0");
@@ -702,10 +687,8 @@ void MainWindow::on_pButtonRun_clicked()
     if (ui->chkBoxGenNewData->isChecked()) shuffle = false; else shuffle = true;
 
     testAlgos.clear();
-    if (ui->chkBoxLinear->isChecked()) testAlgos.push_back(LINEAR);
-    if (ui->chkBoxSplitMerge->isChecked()) testAlgos.push_back(SPLIT_MERGE);
-    if (ui->chkBoxSortLinear->isChecked()) testAlgos.push_back(SORT);
-    if (ui->chkBoxSortAppend->isChecked()) testAlgos.push_back(SORT_APPEND);
+    for (int i=0; i<ui->cBoxAlgorithmSelected->count(); i++)
+        testAlgos.push_back(string2Algo(ui->cBoxAlgorithmSelected->itemText(i)));
 
     if (testAlgos.empty()) {
         QMessageBox::information(this, "Error", "Please select some algorithms");
@@ -777,8 +760,8 @@ void MainWindow::outputResult()
     QString outputStr = "3 numbers are: mean, variance, standard deviation\n";
 
     vector<QString> algoNames;
-    vector<Algo> algoTypes;
-    std::map<Algo, bool> mp;
+    vector<AlgoName> algoTypes;
+    std::map<AlgoName, bool> mp;
 
     int n = results.size();
     for (int i=0; i<n;i++) {
@@ -786,7 +769,7 @@ void MainWindow::outputResult()
             mp[results[i].algoUsed] = 1;
 
             algoTypes.push_back(results[i].algoUsed);
-            algoNames.push_back(utils::algo2String(results[i].algoUsed));
+            algoNames.push_back(algo2String(results[i].algoUsed));
         }
     }
 
@@ -794,7 +777,7 @@ void MainWindow::outputResult()
         iFloat mean = 0;
         int nSample = 0;
 
-        outputStr = outputStr + utils::algo2String(algoTypes[t]) + " ";
+        outputStr = outputStr + algo2String(algoTypes[t]) + " ";
         for (unsigned i=0; i<results.size(); i++)
             if (results[i].algoUsed==algoTypes[t]) {
                 mean = mean + results[i].value;
@@ -816,14 +799,43 @@ void MainWindow::outputResult()
         outputStr += "\n";
     }
 
-    ui->outputText->setText(outputStr);
+    ui->txtBrowserOutput->setText(outputStr);
 }
-
-
 
 void MainWindow::on_pButtonLogConsole_clicked()
 {
     console->setModal(false);
     console->show();
     console->activateWindow();
+}
+
+void MainWindow::on_pButtonPrev_clicked()
+{
+    int currentIndex = ui->sWidget->currentIndex();
+    int first = 0;
+    if (currentIndex > first)
+        ui->sWidget->setCurrentIndex(currentIndex - 1);
+}
+
+void MainWindow::on_pButtonNext_clicked()
+{
+    int currentIndex = ui->sWidget->currentIndex();
+    int last = ui->sWidget->count();
+    if (currentIndex < last)
+        ui->sWidget->setCurrentIndex(currentIndex + 1);
+}
+
+void MainWindow::on_pButtonAddAlgo_clicked()
+{
+    if (ui->cBoxAlgorithmSelected->findText(ui->cBoxAlgorithmList->currentText()) == -1) {
+        QString selectedAlgo = ui->cBoxAlgorithmList->currentText();
+        ui->cBoxAlgorithmSelected->addItem(selectedAlgo);
+    }
+    ui->cBoxAlgorithmSelected->update();
+}
+
+void MainWindow::on_pButtonRemoveAlgo_clicked()
+{
+    ui->cBoxAlgorithmSelected->removeItem(ui->cBoxAlgorithmSelected->currentIndex());
+    ui->cBoxAlgorithmSelected->update();
 }

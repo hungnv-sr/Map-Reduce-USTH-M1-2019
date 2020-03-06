@@ -16,7 +16,7 @@ public:
         precision = prec;
 
         if (precision==PSINGLE) {
-            qDebug() << "Controller in single " << inputs.size();
+            qDebug() << "Array Controller in single " << inputs.size();
 
             floatExperiment = new ArrayExperiment<float>(inputs, distribution);
             connect(floatExperiment, &ArrayExperiment<float>::signalExperimentFinish,
@@ -26,7 +26,7 @@ public:
         }
 
         if (precision==PDOUBLE) {
-            qDebug() << "Controller in double\n";
+            qDebug() << "Array Controller in double\n";
             doubleExperiment = new ArrayExperiment<double>(inputs, distribution);
             connect(doubleExperiment, &ArrayExperiment<double>::signalExperimentFinish,
                     this, &ArrayExperimentController::slotExperimentFinish);
@@ -41,11 +41,35 @@ public:
     }
 
 public slots:
-    void slotRunArrayExperiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle) {
-        if (precision==PSINGLE)
-            floatExperiment->experiment(op, nTest, testAlgos, shuffle);
-        if (precision==PDOUBLE)
-            doubleExperiment->experiment(op, nTest, testAlgos, shuffle);
+    void slotRunArrayExperiment(Op op, unsigned nTest, vector<AlgoName> requiredAlgos, bool shuffle) {
+        // we need to make sure each algorithm only appears once
+        std::map<AlgoName, bool> algoNames;
+        std::map<AlgoName, bool>::iterator it;
+        algoNames.clear();
+
+        for (unsigned i=0; i<requiredAlgos.size(); i++) algoNames[requiredAlgos[i]] = 1;
+
+        if (precision==PSINGLE) {
+            vector<Algorithm<float> > algos;
+
+            for (it = algoNames.begin(); it!=algoNames.end(); it++) {
+                AlgoName thisAlgoName = it->first;
+                algos.push_back(Algorithm<float>(thisAlgoName, algo2functor<float>(thisAlgoName)));
+            }
+
+            floatExperiment->experiment(op, nTest, algos, shuffle);
+        }
+
+        if (precision==PDOUBLE) {
+            vector<Algorithm<double> > algos;
+
+            for (it = algoNames.begin(); it!=algoNames.end(); it++) {
+                AlgoName thisAlgoName = it->first;
+                algos.push_back(Algorithm<double>(thisAlgoName, algo2functor<double>(thisAlgoName)));
+            }
+
+            doubleExperiment->experiment(op, nTest, algos, shuffle);
+        }
     }
 
     void slotExperimentFinish(vector<Result> res) {

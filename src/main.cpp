@@ -8,6 +8,7 @@
 #include "uniformdistribution.h"
 
 #include "ifloat.h"
+#include <ReduceAlgorithms.h>
 #include "randomgenerator.h"
 #include "matrix.h"
 #include "matrixexperiment.h"
@@ -32,11 +33,12 @@ int main(int argc, char *argv[])
     qRegisterMetaType<Op>("Op");
     qRegisterMetaType<Result>("Result");
     qRegisterMetaType<vector<Result> >("vector<Result>");
-    qRegisterMetaType<Algo>("Algo");
-    qRegisterMetaType<vector<Algo> >("vector<Algo>");
+    qRegisterMetaType<AlgoName>("Algo");
+    qRegisterMetaType<vector<AlgoName> >("vector<Algo>");
     qRegisterMetaType<Matrix<double> >("Matrix<double>");
     qRegisterMetaType<vector<Matrix<double> > >("vector<Matrix<double> >");
     qRegisterMetaType<Distribution>("Distribution");
+    qRegisterMetaType<vector<AlgoName> >("vector<AlgoName>");
 
 
     /*
