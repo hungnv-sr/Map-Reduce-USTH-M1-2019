@@ -1717,6 +1717,7 @@
                            <height>16777215</height>
                           </size>
                          </property>
+<<<<<<< HEAD
                          <item>
                           <property name="text">
                            <string>Linear</string>
@@ -1742,6 +1743,8 @@
                            <string>Knuth</string>
                           </property>
                          </item>
+=======
+>>>>>>> develop
                         </widget>
                        </item>
                        <item row="1" column="2">
@@ -2061,7 +2064,11 @@
      <x>0</x>
      <y>0</y>
      <width>986</width>
+<<<<<<< HEAD
      <height>22</height>
+=======
+     <height>30</height>
+>>>>>>> develop
     </rect>
    </property>
   </widget>

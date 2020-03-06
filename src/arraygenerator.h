@@ -21,6 +21,7 @@ public:
     }
 };
 
+//--------------- template class can't inherit QObject, so we do it indirectly
 
 class ArrayGenerator : public QObject
 {
@@ -28,12 +29,34 @@ class ArrayGenerator : public QObject
 
     RandomGenerator rander;
 public:
-    ArrayGenerator(Distribution distribution);
+    ArrayGenerator(Distribution distribution) : rander(distribution) {
 
-    void generateArray(int nData, vector<double> &arr);
+    }
+
+    vector<double> createArray(int nData) {
+        vector<double> res;
+        for (int i=0; i<nData; i++) res.push_back(rander.rand());
+        return res;
+    }
+
+    void generateArray(int nData, vector<double> &arr) {
+        arr.clear();
+
+        for (int i=0; i<nData; i++) arr.push_back(rander.rand());
+    }
 
 public slots:
-    void slotGenerateArray(int nData);
+    void slotGenerateArray(int nData) {
+        vector<double> arr;
+        arr.clear();
+
+        for (int i=0; i<nData; i++) {
+            arr.push_back(rander.rand());
+            emit signalUpdateProgress(i*100/nData);
+        }
+
+        emit signalGenerateFinish(arr);
+    }
 
 signals:
     void signalGenerateFinish(const vector<double>& arr);

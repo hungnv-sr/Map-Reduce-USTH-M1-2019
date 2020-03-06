@@ -109,6 +109,21 @@ public:
         return res;
     }
 
+    // Experiment result is represented by 1 number.
+    // So we need a function that convert a matrix into 1 number -> use Sum
+    // Also, the data result type must be common -> use iFloat
+    template <class CalculationType>
+    iFloat sum() const {
+        CalculationType res = 0;
+        for (unsigned i=0; i<height*width;i++) res = res + CalculationType(values[i]);
+        return res;
+    }
+
+    explicit operator iFloat() const {
+        return (*this).template sum<iFloat>();
+    }
+
+
     //--------------------- UTILITY ACCESS OPERATOR
     dtype& operator [] (unsigned index) {
         if (index < 0 || index >= height*width)
@@ -178,6 +193,17 @@ public:
         return res;
     }
 
+    // comparing matrices is useless, so just return true
+    // it will never be used. But we need to add it to make class matrix compatible with "SORT" ReduceAlgorithm
+    // if a programmer somehow accidentally use SORT on Matrix datatype, it will be the same as using the Linear algorithm. So no error
+    bool operator < (const Matrix& mat) const {
+        return true;
+    }
+
+    bool operator > (const Matrix& mat) const {
+        return true;
+    }
+
     //--------------------------    SCALAR CALCULATION OPERATOR
     template<class dtype2>
     Matrix operator + (const dtype2& v) const {
@@ -211,20 +237,6 @@ public:
         Matrix res(height, width, 0);
         for (unsigned i=0;i<height*width;i++) res[i] = -values[i];
         return res;
-    }
-
-    //---------------------------   MORE MAT FUNCTION
-    template <class CalculationType>
-    iFloat sum() const {
-        CalculationType res = 0;
-        for (unsigned i=0; i<height*width;i++) res = res + CalculationType(values[i]);
-        return res;
-    }
-
-    template <class CalculationType>
-    iFloat dot(const Matrix& mat) const {
-        CalculationType res = 0;
-        return ((*this) * mat).template sum<CalculationType>();
     }
 
     //-----------------------   GETTER/SETTER, PRINT SCREEN
@@ -268,7 +280,7 @@ Matrix<dtype> operator * (const dtype2& v, const Matrix<dtype>& source) {
 
 //-------------------------------   GENERIC MATRIX CALCULATION FUNCTION
 
-template <class dtype>
+template <typename dtype>
 inline Matrix<dtype> matOperate(const Matrix<dtype> &mat1, const Matrix<dtype> &mat2, Op op) {
     if (op==ADD) return mat1 + mat2;
     if (op==SUB) return mat1 - mat2;

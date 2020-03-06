@@ -2,12 +2,11 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++17
 CONFIG   += console
+CONFIG += static
 
 INCLUDEPATH += D:\QtProjects\Map-Reduce-USTH-M1-2019\boost_1_66_0
-INCLUDEPATH += D:\QtProjects\Map-Reduce-USTH-M1-2019\eigen-3.3.7
-
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -21,18 +20,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    arrayexperiment.cpp \
-    arraygenerator.cpp \
     logconsole.cpp \
     main.cpp \
     mainwindow.cpp \
-    matrixexperiment.cpp \
-    matrixgenerator.cpp \
-    randomgenerator.cpp \
-    utils.cpp
+    randomgenerator.cpp
 
 HEADERS += \
+    ReduceAlgorithms.h \
     arrayexperiment.h \
+    arrayexperimentcontroller.h \
     arraygenerator.h \
     NormalDistribution.h \
     distribution.h \
@@ -42,8 +38,8 @@ HEADERS += \
     mainwindow.h \
     matrix.h \
     matrixexperiment.h \
+    matrixexperimentcontroller.h \
     matrixgenerator.h \
-    numerical.h \
     parser.h \
     randomgenerator.h \
     uniformdistribution.h \

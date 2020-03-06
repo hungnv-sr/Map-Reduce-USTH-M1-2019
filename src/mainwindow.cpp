@@ -10,8 +10,9 @@
 #include <QString>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)    
+    : QMainWindow(parent)
     , resource(1)
+    , precision(PSINGLE)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -25,6 +26,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->lblMatSize->setVisible(false);
     ui->lEditMatSize->setVisible(false);
+
+    for (int i=1; i<AlgoNameList.size(); i++)
+        ui->cBoxAlgorithmList->addItem(algo2String(AlgoNameList[i]));
 
     console = new LogConsole();
     console->setModal(false);
@@ -47,7 +51,7 @@ void MainWindow::slotGenerateArrayFinish(const vector<double> &arr) {
     QMessageBox::information(this, "Success", "Generate array data successful");
     console->getUI()->txtBrowserLog->append("Generate array data successful");
     slotUpdateProgress(100);
-    resource.release(1);    
+    resource.release(1);
 }
 
 void MainWindow::slotArrayExperimentFinish(const vector<Result> &res) {
@@ -77,7 +81,7 @@ void MainWindow::slotGenerateMatrixFinish(const vector<Matrix<double> > &mats) {
     numData = mats.size();
     matData = mats;
     createDataThread.quit();
-    createDataThread.wait();    
+    createDataThread.wait();
     QMessageBox::information(this, "Success", "Generate matrix data successful");
     console->getUI()->txtBrowserLog->append("Generate matrix data successful");
     slotUpdateProgress(100);
@@ -168,12 +172,13 @@ bool MainWindow::threadRunArrayExperiment() {
 
     if (!resource.tryAcquire()) return false;
 
-    ArrayExperiment *arrExper = new ArrayExperiment(arrData, distribution);
+    qDebug() << "thread run array: " << arrData.size() << "\n";
+    ArrayExperimentController *arrExper = new ArrayExperimentController(arrData, distribution, precision);
     arrExper -> moveToThread(&experimentThread);
     connect(&experimentThread, &QThread::finished, arrExper, &QObject::deleteLater);
-    connect(this, &MainWindow::signalArrayExperiment, arrExper, &ArrayExperiment::slotRunArrayExperiment);
-    connect(arrExper, &ArrayExperiment::signalExperimentFinish, this, &MainWindow::slotArrayExperimentFinish);
-    connect(arrExper, &ArrayExperiment::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
+    connect(this, &MainWindow::signalArrayExperiment, arrExper, &ArrayExperimentController::slotRunArrayExperiment);
+    connect(arrExper, &ArrayExperimentController::signalExperimentFinish, this, &MainWindow::slotArrayExperimentFinish);
+    connect(arrExper, &ArrayExperimentController::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
 
     experimentThread.start();
 
@@ -220,12 +225,12 @@ bool MainWindow::threadRunMatrixExperiment() {
 
     if (!resource.tryAcquire()) return false;
 
-    MatrixExperiment *matExper = new MatrixExperiment(matData, distribution);
+    MatrixExperimentController *matExper = new MatrixExperimentController(matData, distribution, precision);
     matExper -> moveToThread(&experimentThread);
     connect(&experimentThread, &QThread::finished, matExper, &QObject::deleteLater);
-    connect(this, &MainWindow::signalMatrixExperiment, matExper, &MatrixExperiment::slotRunMatrixExperiment);
-    connect(matExper, &MatrixExperiment::signalExperimentFinish, this, &MainWindow::slotMatrixExperimentFinish);
-    connect(matExper, &MatrixExperiment::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
+    connect(this, &MainWindow::signalMatrixExperiment, matExper, &MatrixExperimentController::slotRunMatrixExperiment);
+    connect(matExper, &MatrixExperimentController::signalExperimentFinish, this, &MainWindow::slotMatrixExperimentFinish);
+    connect(matExper, &MatrixExperimentController::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
 
     experimentThread.start();
 
@@ -487,7 +492,7 @@ void MainWindow::on_pButtonSaveDataset_clicked()
         return;
     }
     else
-    {        
+    {
         // Save to Dir
         QDateTime now = QDateTime::currentDateTime();
         QString format = now.toString("dd.MMM.yyyy-hhmmss");
@@ -511,7 +516,7 @@ void MainWindow::on_pButtonSaveDataset_clicked()
                 console->getUI()->txtBrowserLog->append("File save array successful");
             }
         }
-        else {            
+        else {
             if (matData.size()==0) {
                 QMessageBox::information(this, "Error", "No matrix dataset to save!");
                 return;
@@ -682,10 +687,9 @@ void MainWindow::on_pButtonRun_clicked()
     if (ui->chkBoxGenNewData->isChecked()) shuffle = false; else shuffle = true;
 
     testAlgos.clear();
-    if (ui->cBoxAlgorithmSelected->findText("Linear") != -1) testAlgos.push_back(LINEAR);
-    if (ui->cBoxAlgorithmSelected->findText("Split/Merge") != -1) testAlgos.push_back(SPLIT_MERGE);
-    if (ui->cBoxAlgorithmSelected->findText("Sort [Linear]") != -1) testAlgos.push_back(SORT);
-    if (ui->cBoxAlgorithmSelected->findText("Sort [Append]") != -1) testAlgos.push_back(SORT_APPEND);
+
+    for (int i=0; i<ui->cBoxAlgorithmSelected->count(); i++)
+        testAlgos.push_back(string2Algo(ui->cBoxAlgorithmSelected->itemText(i)));
 
     if (testAlgos.empty()) {
         QMessageBox::information(this, "Error", "Please select some algorithms");
@@ -757,8 +761,8 @@ void MainWindow::outputResult()
     QString outputStr = "3 numbers are: mean, variance, standard deviation\n";
 
     vector<QString> algoNames;
-    vector<Algo> algoTypes;
-    std::map<Algo, bool> mp;
+    vector<AlgoName> algoTypes;
+    std::map<AlgoName, bool> mp;
 
     int n = results.size();
     for (int i=0; i<n;i++) {
@@ -766,7 +770,7 @@ void MainWindow::outputResult()
             mp[results[i].algoUsed] = 1;
 
             algoTypes.push_back(results[i].algoUsed);
-            algoNames.push_back(utils::algo2String(results[i].algoUsed));
+            algoNames.push_back(algo2String(results[i].algoUsed));
         }
     }
 
@@ -774,7 +778,7 @@ void MainWindow::outputResult()
         iFloat mean = 0;
         int nSample = 0;
 
-        outputStr = outputStr + utils::algo2String(algoTypes[t]) + " ";
+        outputStr = outputStr + algo2String(algoTypes[t]) + " ";
         for (unsigned i=0; i<results.size(); i++)
             if (results[i].algoUsed==algoTypes[t]) {
                 mean = mean + results[i].value;
@@ -824,8 +828,10 @@ void MainWindow::on_pButtonNext_clicked()
 
 void MainWindow::on_pButtonAddAlgo_clicked()
 {
-    if (ui->cBoxAlgorithmSelected->findText(ui->cBoxAlgorithmList->currentText()) == -1)
-        ui->cBoxAlgorithmSelected->addItem(ui->cBoxAlgorithmList->currentText());
+    if (ui->cBoxAlgorithmSelected->findText(ui->cBoxAlgorithmList->currentText()) == -1) {
+        QString selectedAlgo = ui->cBoxAlgorithmList->currentText();
+        ui->cBoxAlgorithmSelected->addItem(selectedAlgo);
+    }
     ui->cBoxAlgorithmSelected->update();
 }
 

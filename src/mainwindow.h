@@ -6,11 +6,15 @@
 #include <arraygenerator.h>
 #include <arrayexperiment.h>
 #include <matrixexperiment.h>
+#include <matrixexperimentcontroller.h>
+#include <arrayexperimentcontroller.h>
 #include <vector>
 #include <QThread>
 #include <parser.h>
 #include <QSemaphore>
 #include <logconsole.h>
+#include <utilityenum.h>
+#include <ReduceAlgorithms.h>
 
 using std::vector;
 
@@ -42,7 +46,7 @@ private:
     QThread createDataThread;
     QThread experimentThread;    
 
-
+    Precision precision;
     unsigned dataSize, numData, matSize;
     DataType dataType;
     Distribution distribution;
@@ -53,7 +57,7 @@ private:
     vector<Matrix<double> > matData;
 
     Op operation;
-    vector<Algo> testAlgos;
+    vector<AlgoName> testAlgos;
     unsigned numTest;
     bool shuffle;
     vector<Result> results;
@@ -114,11 +118,11 @@ private slots:
 signals:
     void signalGenerateArray(int nData);
 
-    void signalArrayExperiment(Op op, unsigned numTest, vector<Algo> testAlgos, bool shuffle);
+    void signalArrayExperiment(Op op, unsigned numTest, vector<AlgoName> testAlgos, bool shuffle);
 
     void signalGenerateMatrix(int nData, int matSize);
 
-    void signalMatrixExperiment(Op op, unsigned numTest, vector<Algo> testAlgos, bool shuffle);
+    void signalMatrixExperiment(Op op, unsigned numTest, vector<AlgoName> testAlgos, bool shuffle);
 
     void signalParseDistribution(QString distStr);
 
