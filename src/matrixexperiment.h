@@ -90,37 +90,13 @@ public:
         return matfv;
     }
 
-    /*
-    //----------------------------------------------    LINEAR ALGORITHM
-    iFloat linearTest(const vector<Matrix<dtype> > &inputMats, Op op) {
-        Matrix<dtype> res = inputMats[0];
-        for (unsigned i=1; i<inputMats.size(); i++) res = matOperate(res, inputMats[i], op);
-
-        return res.template sum<iFloat>();
-    }
-
-    //----------------------------------------------    SPLIT/MERGE ALGORITHM
-    Matrix<dtype> splitMerge(const vector<Matrix<dtype> > &inputMats,Op op, long long l, long long r) {
-        if (l>r)
-            throw MatrixExperimentException("SplitMerge error: l can't be > r for valid inputs");
-        if (l==r) return inputMats[l];
-        long long mid = (l+r)/2;
-        return matOperate(splitMerge(inputMats, op, l, mid), splitMerge(inputMats, op, mid+1, r), op);
-    }
-
-    iFloat splitMergeTest(const vector<Matrix<dtype> > &inputMats, Op op) {
-        Matrix<dtype> res = splitMerge(inputMats, op, 0, inputMats.size() - 1);
-        return res.template sum<iFloat>();
-    }
-    */
-
     //---------------------------------------------     EXPERIMENTING
     // for an experiment, we random shuffle the input nTest times.
     // For each shuffle, we calculate the result of each algorithm
     iFloat groundTruth(const vector<Matrix<dtype> > &inputMats, Op op) {
         vector<Matrix<iFloat> > hfInput = dtype2iFloat(inputMats);
         Matrix<iFloat> res = hfInput[0];
-        for (unsigned i=1; i<hfInput.size(); i++) res = matOperate(res, hfInput[i], op);
+        for (unsigned i=1; i<hfInput.size(); i++) res = numOperate(res, hfInput[i], op);
         return iFloat(res);
     }
 

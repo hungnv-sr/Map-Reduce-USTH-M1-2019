@@ -33,18 +33,6 @@ struct Result {
     Result() {value = 0; algoUsed = GROUND_TRUTH;}
 };
 
-// function to calculate given an input Op operator.
-// It's easier to have one function than writing 4 if-statements each time
-template <class dtype>
-inline dtype numOperate(const dtype &a, const dtype &b, Op op) {
-    if (op==ADD) return a + b;
-    if (op==SUB) return a - b;
-    if (op==MUL) return a * b;
-    if (op==DIV) return a / b;
-
-    throw ("NumOperate: Unknown Op");
-}
-
 inline QString algo2String(AlgoName algoName) {
     if (algoName==GROUND_TRUTH) return "GROUND_TRUTH";
     if (algoName==LINEAR) return "LINEAR";
