@@ -52,8 +52,7 @@ HEADERS += \
 
 FORMS += \
     logconsole.ui \
-    mainwindow.ui \
-    remastered.ui
+    mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
