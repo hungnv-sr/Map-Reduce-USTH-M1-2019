@@ -170,30 +170,28 @@ public:
                 mp[results[i].algoUsed] = 1;
 
                 algoTypes.push_back(results[i].algoUsed);
-                if (results[i].algoUsed==LINEAR) algoNames.push_back("LINEAR");
-                else if (results[i].algoUsed==SPLIT_MERGE) algoNames.push_back("SPLIT_MERGE");
-                else if (results[i].algoUsed==SORT) algoNames.push_back("SORT_LINEAR");
-                else if (results[i].algoUsed==SORT_APPEND) algoNames.push_back("SORT_APPEND");
+                algoNames.push_back(algo2String(results[i].algoUsed));
             }
         }
 
         std::ofstream fo(filename.toStdString().c_str());
         qDebug() << "Reached after openining file \n";
-        fo << std::setprecision(std::numeric_limits<float50>::digits10);
+        fo << std::setprecision(std::numeric_limits<float40>::digits10);
         qDebug() << "Reached after setprecision \n";
 
 
         fo << "Number of Algorithm Type" << ", " << algoTypes.size() << "\n";
         qDebug() << "Reached after algotypes.size() \n";
         if (results[0].value == 1){
-            fo << "Using shuffle dataset" << "\n";
-            fo << "Ground Truth" << ", "<< results[1].value << "\n";
-        } else fo << "Using original dataset" << "\n";
+            fo << "Using shuffle mode, has ground-truth" << "\n";
+            fo << "1" << ", " << results[1].value << "\n";
+        } else {
+            fo << "Using generate new mode, no ground-truth" << "\n";
+            fo << "0" << "," << "0\n";
+        }
 
         qDebug() << "Reached after results[0] and 1 \n";
 
-        // qDebug() << "algoTypes.size() = " << algoTypes.size() << " - " << "algoNames.size() = " << algoNames.size() << "\n";
-        qDebug() << "Reached after algosNames print\n";
         fo << "\n";
         qDebug() << "output file before loop\n";
         for (unsigned t=0; t<algoTypes.size(); t++) {
@@ -212,9 +210,10 @@ public:
                 variance = variance + dX * dX;
             }
             variance = variance / nSample;
+
             fo << "Mean" << ", " << "Variance" << ", " << "Standard Deviation"<< "\n";
             fo << mean << ", " << variance << ", " << isqrt(variance) << "\n";
-            fo << "Result of " << (n-2)/algoTypes.size() << " experiments" << "\n";
+
             for (int i=0; i<n; i++) if (results[i].algoUsed==algoTypes[t]) fo << results[i].value << ", ";
             fo << "\n" << "\n";
         }
