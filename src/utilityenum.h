@@ -10,9 +10,9 @@ enum Op{ADD, SUB, MUL, DIV, MATMUL};
 const Op OpList[5] = {ADD, SUB, MUL, DIV, MATMUL};
 
 //
-enum Precision {PHALF, PSINGLE, PDOUBLE};
+enum Precision {PDOUBLE, PSINGLE};
 
-const vector<Precision> PrecisionList = {PHALF, PSINGLE, PDOUBLE};
+const vector<Precision> PrecisionList = {PDOUBLE, PSINGLE};
 
 //
 enum DataType{ARRAY, MATRIX};
@@ -54,5 +54,10 @@ inline AlgoName string2Algo(QString algoName) {
     if (algoName=="TESTING") return KNUTH;
 }
 
+inline QString prec2String(Precision precision) {
+    if (precision==PDOUBLE) return "PDOUBLE";
+    if (precision==PSINGLE) return "PSINGLE";
+    return "unknown";
+}
 
 #endif // UTILITYENUM_H

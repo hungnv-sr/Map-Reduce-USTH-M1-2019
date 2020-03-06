@@ -50,7 +50,7 @@ private:
     unsigned dataSize, numData, matSize;
     DataType dataType;
     Distribution distribution;
-    //Parser parser;
+
     long long binNumber;
     double lowerBound, upperBound;
     vector<double> arrData;    
@@ -114,6 +114,7 @@ private slots:
     void slotReceiveAlert(QString alert);
 
     void slotUpdateProgress(int value);
+
 signals:
     void signalGenerateArray(int nData);
 
@@ -141,6 +142,8 @@ private:
 private:
     Ui::MainWindow *ui;
     LogConsole *console;
+
+    vector<QString> txtDisplay;
 
     QString getDistributionString();
 

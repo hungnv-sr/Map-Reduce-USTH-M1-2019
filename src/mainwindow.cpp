@@ -10,17 +10,23 @@
 #include <QString>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)    
+    : QMainWindow(parent)
     , resource(1)
     , precision(PSINGLE)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    ui->txtEditStackedWidgetPage->append("\n1. Distribution\n");
-    ui->txtEditStackedWidgetPage->append("2. Calculation Dataset\n");
-    ui->txtEditStackedWidgetPage->append("3. Algorithm and Experiment setting\n");
-    ui->txtEditStackedWidgetPage->append("4. Run and Save result\n");
+    txtDisplay.push_back("\n1. Distribution\n");
+    txtDisplay.push_back("2. Calculation Dataset\n");
+    txtDisplay.push_back("3. Algorithm and Experiment setting\n");
+    txtDisplay.push_back("4. Run and Save result\n");
+
+    for (int i=0; i < txtDisplay.size(); ++i)
+    {
+        if (i == 0) ui->txtEditStackedWidgetPage->setTextColor(Qt::black); else ui->txtEditStackedWidgetPage->setTextColor(Qt::gray);
+        ui->txtEditStackedWidgetPage->append(txtDisplay[i]);
+    }
 
     ui->sWidget->setCurrentIndex(0);
 
@@ -29,6 +35,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     for (int i=1; i<AlgoNameList.size(); i++)
         ui->cBoxAlgorithmList->addItem(algo2String(AlgoNameList[i]));
+
+    for (int i=0; i<PrecisionList.size(); i++)
+        ui->cBoxPrecisionList->addItem(prec2String(PrecisionList[i]));
 
     console = new LogConsole();
     console->setModal(false);
@@ -51,7 +60,7 @@ void MainWindow::slotGenerateArrayFinish(const vector<double> &arr) {
     QMessageBox::information(this, "Success", "Generate array data successful");
     console->getUI()->txtBrowserLog->append("Generate array data successful");
     slotUpdateProgress(100);
-    resource.release(1);    
+    resource.release(1);
 }
 
 void MainWindow::slotArrayExperimentFinish(const vector<Result> &res) {
@@ -81,7 +90,7 @@ void MainWindow::slotGenerateMatrixFinish(const vector<Matrix<double> > &mats) {
     numData = mats.size();
     matData = mats;
     createDataThread.quit();
-    createDataThread.wait();    
+    createDataThread.wait();
     QMessageBox::information(this, "Success", "Generate matrix data successful");
     console->getUI()->txtBrowserLog->append("Generate matrix data successful");
     slotUpdateProgress(100);
@@ -492,7 +501,7 @@ void MainWindow::on_pButtonSaveDataset_clicked()
         return;
     }
     else
-    {        
+    {
         // Save to Dir
         QDateTime now = QDateTime::currentDateTime();
         QString format = now.toString("dd.MMM.yyyy-hhmmss");
@@ -516,7 +525,7 @@ void MainWindow::on_pButtonSaveDataset_clicked()
                 console->getUI()->txtBrowserLog->append("File save array successful");
             }
         }
-        else {            
+        else {
             if (matData.size()==0) {
                 QMessageBox::information(this, "Error", "No matrix dataset to save!");
                 return;
@@ -687,6 +696,7 @@ void MainWindow::on_pButtonRun_clicked()
     if (ui->chkBoxGenNewData->isChecked()) shuffle = false; else shuffle = true;
 
     testAlgos.clear();
+
     for (int i=0; i<ui->cBoxAlgorithmSelected->count(); i++)
         testAlgos.push_back(string2Algo(ui->cBoxAlgorithmSelected->itemText(i)));
 
@@ -811,18 +821,48 @@ void MainWindow::on_pButtonLogConsole_clicked()
 
 void MainWindow::on_pButtonPrev_clicked()
 {
+    ui->txtEditStackedWidgetPage->clear();
+
     int currentIndex = ui->sWidget->currentIndex();
     int first = 0;
+
+    for (int i=0; i < txtDisplay.size(); ++i)
+    {
+        if (currentIndex <= first+1) currentIndex = first+1;
+        if (i == currentIndex-1) ui->txtEditStackedWidgetPage->setTextColor(Qt::black); else ui->txtEditStackedWidgetPage->setTextColor(Qt::gray);
+        ui->txtEditStackedWidgetPage->append(txtDisplay[i]);
+    }
+
     if (currentIndex > first)
         ui->sWidget->setCurrentIndex(currentIndex - 1);
+    if (currentIndex <= first+1)
+    {
+        currentIndex = first+1;
+        console->getUI()->txtBrowserLog->append("  Reached the first page");
+    }
 }
 
 void MainWindow::on_pButtonNext_clicked()
 {
+    ui->txtEditStackedWidgetPage->clear();
+
     int currentIndex = ui->sWidget->currentIndex();
-    int last = ui->sWidget->count();
+    int last = ui->sWidget->count()-1;
+
+    for (int i=0; i < txtDisplay.size(); ++i)
+    {
+        if (currentIndex >= last-1) currentIndex = last-1;
+        if (i == currentIndex+1) ui->txtEditStackedWidgetPage->setTextColor(Qt::black); else ui->txtEditStackedWidgetPage->setTextColor(Qt::gray);
+        ui->txtEditStackedWidgetPage->append(txtDisplay[i]);
+    }
+
     if (currentIndex < last)
         ui->sWidget->setCurrentIndex(currentIndex + 1);
+    if (currentIndex >= last-1)
+    {
+        currentIndex = last-1;
+        console->getUI()->txtBrowserLog->append("  Reached the last page");
+    }
 }
 
 void MainWindow::on_pButtonAddAlgo_clicked()
