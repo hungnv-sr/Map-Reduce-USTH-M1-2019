@@ -1,5 +1,5 @@
-#ifndef ALGORITHMS_H
-#define ALGORITHMS_H
+#ifndef REDUCEALGORITHMS_H
+#define REDUCEALGORITHMS_H
 
 #include <ifloat.h>
 #include <matrix.h>
@@ -98,4 +98,4 @@ public:
     }
 };
 
-#endif // ALGORITHMS_H
+#endif // REDUCEALGORITHMS_H

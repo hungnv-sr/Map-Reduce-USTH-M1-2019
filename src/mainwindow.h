@@ -4,15 +4,17 @@
 #include <QMainWindow>
 #include <parser.h>
 #include <arraygenerator.h>
-#include <matrixgenerator.h>
-#include <arrayexperimentcontroller.h>
+#include <arrayexperiment.h>
+#include <matrixexperiment.h>
 #include <matrixexperimentcontroller.h>
-#include <ReduceAlgorithms.h>
+#include <arrayexperimentcontroller.h>
 #include <vector>
 #include <QThread>
 #include <parser.h>
 #include <QSemaphore>
 #include <logconsole.h>
+#include <utilityenum.h>
+#include <ReduceAlgorithms.h>
 
 using std::vector;
 
@@ -44,16 +46,16 @@ private:
     QThread createDataThread;
     QThread experimentThread;    
 
-
+    Precision precision;
     unsigned dataSize, numData, matSize;
     DataType dataType;
     Distribution distribution;
+    //Parser parser;
     long long binNumber;
     double lowerBound, upperBound;
     vector<double> arrData;    
     vector<Matrix<double> > matData;
 
-    Precision precision;
     Op operation;
     vector<AlgoName> testAlgos;
     unsigned numTest;
@@ -79,8 +81,6 @@ private slots:
 
     void on_pButtonBrowseSaveResult_clicked();
 
-    void on_gBoxAlgorithm_clicked();
-
     void on_pButtonRun_clicked();
 
     void on_pButtonSaveDataset_clicked();
@@ -90,6 +90,14 @@ private slots:
     void on_pButtonSaveResult_clicked();
 
     void on_pButtonLogConsole_clicked();
+
+    void on_pButtonPrev_clicked();
+
+    void on_pButtonNext_clicked();
+
+    void on_pButtonAddAlgo_clicked();
+
+    void on_pButtonRemoveAlgo_clicked();
 
     //-----------------------   SIGNAL AND SLOTS FOR THREADS
 private slots:
