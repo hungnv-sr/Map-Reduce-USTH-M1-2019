@@ -1,5 +1,5 @@
-#ifndef BASEEXPERIMENT_H
-#define BASEEXPERIMENT_H
+#ifndef UTILITYENUM_H
+#define UTILITYENUM_H
 
 #include <ifloat.h>
 using std::vector;
@@ -20,15 +20,15 @@ enum DataType{ARRAY, MATRIX};
 const DataType DataTypeList[2] = {ARRAY, MATRIX};
 
 //
-enum Algo {GROUND_TRUTH, LINEAR, SPLIT_MERGE, SORT, SORT_APPEND};
+enum AlgoName {GROUND_TRUTH, LINEAR, SPLIT_MERGE, SORT, SORT_APPEND};
 
-const Algo AlgoList[5] = {GROUND_TRUTH, LINEAR, SPLIT_MERGE, SORT, SORT_APPEND};
+const AlgoName AlgoList[5] = {GROUND_TRUTH, LINEAR, SPLIT_MERGE, SORT, SORT_APPEND};
 
 //
 struct Result {
     iFloat value;
-    Algo algoUsed;
-    Result(iFloat v, Algo algo) {value = v; algoUsed = algo;}
+    AlgoName algoUsed;
+    Result(iFloat v, AlgoName algo) {value = v; algoUsed = algo;}
 
     Result() {value = 0; algoUsed = GROUND_TRUTH;}
 };
@@ -45,5 +45,22 @@ inline dtype numOperate(const dtype &a, const dtype &b, Op op) {
     throw ("NumOperate: Unknown Op");
 }
 
+inline QString algo2string(AlgoName algoName) {
+    if (algoName==GROUND_TRUTH) return "GROUND_TRUTH";
+    if (algoName==LINEAR) return "LINEAR";
+    if (algoName==SPLIT_MERGE) return "SPLIT_MERGE";
+    if (algoName==SORT) return "SORT";
+    if (algoName==SORT_APPEND) return "SORT_APPEND";
+    return "unknown";
+}
 
-#endif // BASEEXPERIMENT_H
+inline AlgoName string2algo(QString algoName) {
+    if (algoName=="GROUND_TRUTH") return GROUND_TRUTH;
+    if (algoName=="LINEAR") return LINEAR;
+    if (algoName=="SPLIT_MERGE") return SPLIT_MERGE;
+    if (algoName=="SORT") return SORT;
+    if (algoName=="SORT_APPEND") return SORT_APPEND;
+}
+
+
+#endif // UTILITYENUM_H

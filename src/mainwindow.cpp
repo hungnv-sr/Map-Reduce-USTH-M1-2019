@@ -777,8 +777,8 @@ void MainWindow::outputResult()
     QString outputStr = "3 numbers are: mean, variance, standard deviation\n";
 
     vector<QString> algoNames;
-    vector<Algo> algoTypes;
-    std::map<Algo, bool> mp;
+    vector<AlgoName> algoTypes;
+    std::map<AlgoName, bool> mp;
 
     int n = results.size();
     for (int i=0; i<n;i++) {
@@ -786,7 +786,7 @@ void MainWindow::outputResult()
             mp[results[i].algoUsed] = 1;
 
             algoTypes.push_back(results[i].algoUsed);
-            algoNames.push_back(utils::algo2String(results[i].algoUsed));
+            algoNames.push_back(algo2string(results[i].algoUsed));
         }
     }
 
@@ -794,7 +794,7 @@ void MainWindow::outputResult()
         iFloat mean = 0;
         int nSample = 0;
 
-        outputStr = outputStr + utils::algo2String(algoTypes[t]) + " ";
+        outputStr = outputStr + algo2string(algoTypes[t]) + " ";
         for (unsigned i=0; i<results.size(); i++)
             if (results[i].algoUsed==algoTypes[t]) {
                 mean = mean + results[i].value;

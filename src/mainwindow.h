@@ -7,6 +7,7 @@
 #include <matrixgenerator.h>
 #include <arrayexperimentcontroller.h>
 #include <matrixexperimentcontroller.h>
+#include <ReduceAlgorithms.h>
 #include <vector>
 #include <QThread>
 #include <parser.h>
@@ -54,7 +55,7 @@ private:
 
     Precision precision;
     Op operation;
-    vector<Algo> testAlgos;
+    vector<AlgoName> testAlgos;
     unsigned numTest;
     bool shuffle;
     vector<Result> results;
@@ -108,11 +109,11 @@ private slots:
 signals:
     void signalGenerateArray(int nData);
 
-    void signalArrayExperiment(Op op, unsigned numTest, vector<Algo> testAlgos, bool shuffle);
+    void signalArrayExperiment(Op op, unsigned numTest, vector<AlgoName> testAlgos, bool shuffle);
 
     void signalGenerateMatrix(int nData, int matSize);
 
-    void signalMatrixExperiment(Op op, unsigned numTest, vector<Algo> testAlgos, bool shuffle);
+    void signalMatrixExperiment(Op op, unsigned numTest, vector<AlgoName> testAlgos, bool shuffle);
 
     void signalParseDistribution(QString distStr);
 
