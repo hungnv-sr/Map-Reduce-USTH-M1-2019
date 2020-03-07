@@ -8,6 +8,8 @@
 #include <fstream>
 using std::vector;
 
+typedef long long ll;
+
 struct ArrayGeneratorException : public std::exception {
 private:
     QString msg;
@@ -50,9 +52,16 @@ public slots:
         vector<double> arr;
         arr.clear();
 
+        int checkPoint = nData / 100;
+        int cnt = 0;
         for (int i=0; i<nData; i++) {
             arr.push_back(rander.rand());
-            emit signalUpdateProgress(i*100/nData);
+            cnt++;
+            if (cnt==checkPoint) {
+                qDebug() << "i = " << i << "\n";
+                signalUpdateProgress(double(i+1)/nData*100);
+                cnt = 0;
+            }
         }
 
         emit signalGenerateFinish(arr);

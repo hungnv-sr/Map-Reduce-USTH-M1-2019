@@ -71,15 +71,15 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pButtonOpenFile_1_clicked();
+    void on_pButtonOpenDistributionFile_clicked();
 
     void on_pButtonGen_clicked();
 
-    void on_pButtonOpenFile_2_clicked();
+    void on_pButtonLoadDistribution_clicked();
 
     void on_cBoxDataType_currentIndexChanged(int index);
 
-    void on_pButtonBrowseDir_clicked();
+    void on_pButtonSaveDatasetBrowseDir_clicked();
 
     void on_pButtonBrowseSaveResult_clicked();
 

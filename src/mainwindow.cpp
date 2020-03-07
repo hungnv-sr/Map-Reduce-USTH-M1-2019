@@ -338,7 +338,7 @@ void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
     }
 }
 
-void MainWindow::on_pButtonOpenFile_1_clicked()
+void MainWindow::on_pButtonOpenDistributionFile_clicked()
 {
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
@@ -607,7 +607,7 @@ void MainWindow::on_pButtonSaveDataset_clicked()
 
 }
 
-void MainWindow::on_pButtonOpenFile_2_clicked()
+void MainWindow::on_pButtonLoadDistribution_clicked()
 {
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait");
@@ -719,7 +719,7 @@ void MainWindow::on_pButtonRemoveAlgo_clicked()
 
 
 
-void MainWindow::on_pButtonBrowseDir_clicked()
+void MainWindow::on_pButtonSaveDatasetBrowseDir_clicked()
 {
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
@@ -899,7 +899,7 @@ void MainWindow::outputResult()
 
         iFloat std = utils::isqrt(variance);
 
-        outputStr = outputStr + mean.toString() + " " + variance.toString() + " " + std.toString();
+        outputStr = outputStr + mean.toString() + " ; " + variance.toString() + " ; " + std.toString();
         outputStr += "\n";
     }
 
