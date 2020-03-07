@@ -104,7 +104,7 @@ public:
             else {                
                 inputs = utils::convertArray<dtype>(arrGen.createArray(inputs.size()));
             }
-            emit signalUpdateProgress(t*100/nTest);
+            emit signalUpdateProgress(double(t)*100/nTest);
         }
 
         emit signalExperimentFinish(res);
