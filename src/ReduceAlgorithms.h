@@ -96,7 +96,6 @@ inline iFloat sortAppendAlgo(const vector<dtype>& inputs, Op op) {
 // for both algorithms, the idea is that we accumulate the error,
 // then at the end, result = sum + errorSum.
 
-
 // absolute value function that work with both matrix and number
 template <typename dtype>
 dtype anyAbs(const dtype& x) {

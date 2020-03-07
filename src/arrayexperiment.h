@@ -33,7 +33,12 @@ public:
     explicit QArrayExperiment(QObject *parent = 0) :
         QObject(parent) {}
 
-    virtual vector<Result> experiment(Op op, unsigned nTest, vector<AlgoName> testAlgos, bool shuffle) {}
+    virtual vector<Result> experiment(Op op, unsigned nTest, vector<AlgoName> testAlgos, bool shuffle) {
+        Q_UNUSED(op);
+        Q_UNUSED(nTest);
+        Q_UNUSED(testAlgos);
+        Q_UNUSED(shuffle);
+    }
 
 public slots:
     void slotRunArrayExperiment(Op op, unsigned nTest, vector<AlgoName> testAlgos, bool shuffle) {
@@ -81,12 +86,14 @@ public:
         return res;
     }
 
+    // shuffle = true means after each test, the dataset is shuffled
+    // shuffle = false means after each test, the dataset is created new using the distribution
     vector<Result> experiment(Op op, int nTest, vector<Algorithm<dtype> > algorithms, bool shuffle) {
         ArrayGenerator arrGen(distribution);
         vector<Result> res;
         res.clear();
 
-        res.push_back(Result(shuffle, GROUND_TRUTH)); // if we use shuffle it means a ground truth exist, so output 1
+        res.push_back(Result(shuffle, GROUND_TRUTH)); // if we use shuffle it means a ground truth exist, so output 1; else 0
         res.push_back(Result(groundTruth(inputs, op), GROUND_TRUTH));
 
         for (int t=1; t<=nTest; t++) {
@@ -95,10 +102,9 @@ public:
 
             if (shuffle) std::random_shuffle(inputs.begin(), inputs.end());
             else {                
-                // create new inputs
                 inputs = utils::convertArray<dtype>(arrGen.createArray(inputs.size()));
             }
-            emit signalUpdateProgress(t*100/nTest);
+            emit signalUpdateProgress(double(t)*100/nTest);
         }
 
         emit signalExperimentFinish(res);

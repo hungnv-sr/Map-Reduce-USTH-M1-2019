@@ -6,6 +6,8 @@
 using std::default_random_engine;
 using std::uniform_real_distribution;
 
+
+
 struct RandomGeneratorException : public std::exception {
 private:
     QString msg;
@@ -33,9 +35,20 @@ private:
     double binSize;
 
 public:
-    RandomGenerator(Distribution newDistribution);
+    RandomGenerator(Distribution newDistribution) : distribution(newDistribution), generator(randomDevice()), dist01(0,1) {
+        binSize = double(distribution.getBinSize());
+    }
 
-    double rand();
+    double rand() {
+        if (!distribution.valid())
+            throw RandomGeneratorException("rand(): invalid distribution");
+
+        // inverse sampling method: since Y = CDF(X) is in range (0,1),
+        // we generate y first then find x
+        iFloat U = dist01(generator);
+        long long bin = distribution.inverseSampling(U);
+        return binSize * bin + dist01(generator)*binSize;
+    }
 };
 
 #endif // RANDOMGENERATOR_H

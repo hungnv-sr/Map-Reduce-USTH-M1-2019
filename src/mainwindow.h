@@ -41,13 +41,15 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
+    const long long SIZE_LIMIT = 2100000000;
+
     QSemaphore resource;
     QThread createDistributionThread;
     QThread createDataThread;
     QThread experimentThread;    
 
     Precision precision;
-    unsigned dataSize, numData, matSize;
+    long long dataSize, numData, matSize;
     DataType dataType;
     Distribution distribution;
 
@@ -58,7 +60,7 @@ private:
 
     Op operation;
     vector<AlgoName> testAlgos;
-    unsigned numTest;
+    long long numTest;
     bool shuffle;
     vector<Result> results;
 
@@ -69,15 +71,15 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pButtonOpenFile_1_clicked();
+    void on_pButtonOpenDistributionFile_clicked();
 
     void on_pButtonGen_clicked();
 
-    void on_pButtonOpenFile_2_clicked();
+    void on_pButtonLoadDistribution_clicked();
 
     void on_cBoxDataType_currentIndexChanged(int index);
 
-    void on_pButtonBrowseDir_clicked();
+    void on_pButtonSaveDatasetBrowseDir_clicked();
 
     void on_pButtonBrowseSaveResult_clicked();
 
