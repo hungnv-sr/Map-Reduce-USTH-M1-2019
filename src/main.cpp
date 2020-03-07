@@ -2,6 +2,7 @@
 #include <QApplication>
 #include "mainwindow.h"
 #include "logconsole.h"
+#include "figurewindow.h"
 
 #include <iostream>
 #include "ifloat.h"

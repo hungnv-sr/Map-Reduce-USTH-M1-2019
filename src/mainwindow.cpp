@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "logconsole.h"
 #include "ui_logconsole.h"
+#include "figurewindow.h"
+#include "ui_figurewindow.h"
 #include <QtCore>
 #include <QtGui>
 #include <QMessageBox>
@@ -43,6 +45,8 @@ MainWindow::MainWindow(QWidget *parent)
     console->setModal(false);
     console->show();
     console->activateWindow();
+
+    figure = new FigureWindow();
 }
 
 MainWindow::~MainWindow()
@@ -880,6 +884,17 @@ void MainWindow::on_pButtonLogConsole_clicked()
     console->activateWindow();
 }
 
+void MainWindow::on_pButtonPlot_clicked()
+{
+    figure->setModal(false);
 
+    /* Toy data to test plot */
+    QVector<double> data(1000000);
+    for (int i = 0; i<data.size(); ++i) data[i] = i;
 
+    /* Real data goes here */
 
+    figure->FigurePlot(50,data);
+    figure->show();
+    figure->activateWindow();
+}

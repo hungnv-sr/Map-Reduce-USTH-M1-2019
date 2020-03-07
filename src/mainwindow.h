@@ -13,6 +13,7 @@
 #include <parser.h>
 #include <QSemaphore>
 #include <logconsole.h>
+#include <figurewindow.h>
 #include <utilityenum.h>
 #include <ReduceAlgorithms.h>
 
@@ -91,6 +92,8 @@ private slots:
 
     void on_pButtonLogConsole_clicked();
 
+    void on_pButtonPlot_clicked();
+
     void on_pButtonPrev_clicked();
 
     void on_pButtonNext_clicked();
@@ -142,6 +145,7 @@ private:
 private:
     Ui::MainWindow *ui;
     LogConsole *console;
+    FigureWindow *figure;
 
     vector<QString> txtDisplay;
 

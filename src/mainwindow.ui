@@ -35,34 +35,7 @@
          <property name="topMargin">
           <number>5</number>
          </property>
-         <item row="0" column="1">
-          <widget class="QPushButton" name="pButtonLogConsole">
-           <property name="minimumSize">
-            <size>
-             <width>250</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>250</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <italic>false</italic>
-            </font>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::RightToLeft</enum>
-           </property>
-           <property name="text">
-            <string>Turn ON/OFF Log Console</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" colspan="2">
+         <item row="1" column="0" colspan="3">
           <widget class="QFrame" name="fInput">
            <property name="layoutDirection">
             <enum>Qt::LeftToRight</enum>
@@ -102,7 +75,7 @@
                <number>0</number>
               </property>
               <property name="currentIndex">
-               <number>2</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="pageDistribution">
                <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -2090,7 +2063,7 @@
            </layout>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="2" column="2">
           <layout class="QFormLayout" name="formLayout">
            <property name="horizontalSpacing">
             <number>10</number>
@@ -2149,6 +2122,60 @@
             </widget>
            </item>
           </layout>
+         </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="pButtonLogConsole">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <italic>false</italic>
+            </font>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::RightToLeft</enum>
+           </property>
+           <property name="text">
+            <string>Show Log Console</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="pButtonPlot">
+           <property name="minimumSize">
+            <size>
+             <width>75</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>75</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <italic>false</italic>
+            </font>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::RightToLeft</enum>
+           </property>
+           <property name="text">
+            <string>Plot PDF</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
