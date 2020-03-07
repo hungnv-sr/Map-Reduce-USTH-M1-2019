@@ -412,9 +412,9 @@ vector<double> MainWindow::getDistributionParams() {
     QString upperBoundStr = ui->lEditUpperBound->text();
 
     bool valid1, valid2, valid3;
-    long long binNumber = utils::str2double(binNumberStr, valid1);// (binNumberStr.toDouble(&valid1));
-    double lowerBound = utils::str2double(lowerBoundStr, valid2); //lowerBoundStr.toDouble(&valid2);
-    double upperBound = utils::str2double(upperBoundStr, valid3);//upperBoundStr.toDouble(&valid3);
+    long long binNumber = utils::str2double(binNumberStr, valid1);
+    double lowerBound = utils::str2double(lowerBoundStr, valid2);
+    double upperBound = utils::str2double(upperBoundStr, valid3);
 
     if (!valid1 || !valid2 || !valid3) return res; // return empty vector
 
@@ -444,6 +444,12 @@ void MainWindow::on_pButtonCreateDistribution_clicked()
         QMessageBox::information(this, "Error", "Invalid distribution parameters values");
         console->getUI()->txtBrowserLog->append("Invalid distribution parameters values");
         return;
+    }
+
+    // number of bin is too large
+    if (distributionParams[0] > SIZE_LIMIT) {
+        QMessageBox::information(this, "Error", "Bin Number too large. Current limit is " + QString::number(SIZE_LIMIT));
+        console->getUI()->txtBrowserLog->append("Bin Number too large. Current limit is " + QString::number(SIZE_LIMIT));
     }
 
     binNumber = distributionParams[0];
@@ -479,6 +485,10 @@ void MainWindow::on_pButtonGen_clicked()
         console->getUI()->txtBrowserLog->append("Invalid number of data element");
         return;
     }
+    if (numData > SIZE_LIMIT) {
+        QMessageBox::information(this, "Error", "Number of data too large. Current limit is " + QString::number(SIZE_LIMIT));
+        console->getUI()->txtBrowserLog->append("Number of data too large. Current limit is " + QString::number(SIZE_LIMIT));
+    }
 
     if (!distribution.valid()) {
         QMessageBox::information(this, "Error", "Please create a distribution first");
@@ -490,11 +500,16 @@ void MainWindow::on_pButtonGen_clicked()
     if (dataTypeStr=="Matrix") {
         QString matSizeStr = ui->lEditMatSize->text();
         bool validMatSize;
-        matSize = utils::str2double(matSizeStr, validMatSize); //matSizeStr.toDouble(&validMatSize);
+        matSize = utils::str2double(matSizeStr, validMatSize);
         if (!validMatSize || matSize <= 0) {
             QMessageBox::information(this, "Error", "Invalid matrix size");
             console->getUI()->txtBrowserLog->append("Invalid matrix size");
             return;
+        }
+
+        if (matSize * matSize > SIZE_LIMIT) {
+            QMessageBox::information(this, "Error", "Matrix size too large. Current limit for (matSize*matSize) is " + QString::number(SIZE_LIMIT));
+            console->getUI()->txtBrowserLog->append("Matrix size too large. Current limit for (matSize*matSize) is " + QString::number(SIZE_LIMIT));
         }
     }
 
@@ -640,6 +655,11 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
         if (dataType==ARRAY) {
             console->getUI()->txtBrowserLog->append("Start loading array dataset.");
             fin >> numData;
+            if (numData > SIZE_LIMIT) {
+                QMessageBox::information(this, "Error", "Number of data in file too large. Current limit is " + QString::number(SIZE_LIMIT));
+                console->getUI()->txtBrowserLog->append("Number of data in file too large. Current limit is " + QString::number(SIZE_LIMIT));
+            }
+
             arrData.clear();
             for (unsigned i=0; i<numData; i++) {
                 double val;
@@ -651,6 +671,17 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
         else if (dataType==MATRIX) {
             console->getUI()->txtBrowserLog->append("Start loading matrix dataset.");
             fin >> numData >> matSize >> matSize;
+            if (numData > SIZE_LIMIT) {
+                QMessageBox::information(this, "Error", "Number of data in file too large. Current limit is " + QString::number(SIZE_LIMIT));
+                console->getUI()->txtBrowserLog->append("Number of data in file too large. Current limit is " + QString::number(SIZE_LIMIT));
+            }
+
+            if (matSize * matSize > SIZE_LIMIT) {
+                QMessageBox::information(this, "Error", "Matrix size in file too large. Current limit of (matSize*matSize) is " + QString::number(SIZE_LIMIT));
+                console->getUI()->txtBrowserLog->append("Matrix size in file too large. Current limit of (matSize*matSize) is " + QString::number(SIZE_LIMIT));
+            }
+
+
             matData.clear();
             Matrix<double> currentMat(matSize, matSize);
             for (unsigned i=0; i<numData; i++) {
@@ -754,10 +785,12 @@ void MainWindow::on_pButtonRun_clicked()
         return;
     }
 
+    QString precisionStr = ui->cBoxPrecisionList->currentText();
+    precision = string2prec(precisionStr);
+
     if (ui->chkBoxGenNewData->isChecked()) shuffle = false; else shuffle = true;
 
     testAlgos.clear();
-
     for (int i=0; i<ui->cBoxAlgorithmSelected->count(); i++)
         testAlgos.push_back(string2Algo(ui->cBoxAlgorithmSelected->itemText(i)));
 
@@ -879,7 +912,6 @@ void MainWindow::on_pButtonLogConsole_clicked()
     console->show();
     console->activateWindow();
 }
-
 
 
 

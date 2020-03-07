@@ -60,7 +60,15 @@ inline AlgoName string2Algo(QString algoName) {
 inline QString prec2String(Precision precision) {
     if (precision==PDOUBLE) return "PDOUBLE";
     if (precision==PSINGLE) return "PSINGLE";
-    return "unknown";
+    throw("unknown precision type");
+}
+
+inline Precision string2prec(QString precision) {
+    if (precision=="PDOUBLE") return PDOUBLE;
+    if (precision=="PSINGLE") return PSINGLE;
+
+
+    throw("unknown precision string");
 }
 
 #endif // UTILITYENUM_H

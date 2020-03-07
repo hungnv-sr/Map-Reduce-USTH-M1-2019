@@ -41,13 +41,15 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
+    const long long SIZE_LIMIT = 2100000000;
+
     QSemaphore resource;
     QThread createDistributionThread;
     QThread createDataThread;
     QThread experimentThread;    
 
     Precision precision;
-    unsigned dataSize, numData, matSize;
+    long long dataSize, numData, matSize;
     DataType dataType;
     Distribution distribution;
 
@@ -58,7 +60,7 @@ private:
 
     Op operation;
     vector<AlgoName> testAlgos;
-    unsigned numTest;
+    long long numTest;
     bool shuffle;
     vector<Result> results;
 
