@@ -118,7 +118,7 @@ public:
             else {
                 inputMats = utils::convertMatrices<dtype>(matrixGen.createMatrices(inputMats.size(), inputMats[0].getHeight()));
             }
-            emit signalUpdateProgress(t*100/nTest);
+            emit signalUpdateProgress(double(t)*100/nTest);
         }
 
         emit signalExperimentFinish(res);
