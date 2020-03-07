@@ -615,7 +615,7 @@ void MainWindow::on_pButtonSaveDataset_clicked()
 
 }
 
-void MainWindow::on_pButtonLoadDistribution_clicked()
+void MainWindow::on_pButtonLoadDataset_clicked()
 {
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait");

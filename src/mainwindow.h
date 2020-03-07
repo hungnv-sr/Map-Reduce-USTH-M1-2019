@@ -75,7 +75,7 @@ private slots:
 
     void on_pButtonGen_clicked();
 
-    void on_pButtonLoadDistribution_clicked();
+    void on_pButtonLoadDataset_clicked();
 
     void on_cBoxDataType_currentIndexChanged(int index);
 

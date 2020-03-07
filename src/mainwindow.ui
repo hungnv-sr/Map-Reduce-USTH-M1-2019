@@ -1358,7 +1358,7 @@
                       <item>
                        <layout class="QGridLayout" name="gLayoutOpenFile_2">
                         <item row="0" column="0">
-                         <widget class="QPushButton" name="pButtonLoadDistribution">
+                         <widget class="QPushButton" name="pButtonLoadDataset">
                           <property name="maximumSize">
                            <size>
                             <width>75</width>
