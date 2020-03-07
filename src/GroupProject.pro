@@ -22,8 +22,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     logconsole.cpp \
     main.cpp \
-    mainwindow.cpp \
-    randomgenerator.cpp
+    mainwindow.cpp
 
 HEADERS += \
     ReduceAlgorithms.h \

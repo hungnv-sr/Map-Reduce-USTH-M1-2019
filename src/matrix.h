@@ -197,10 +197,12 @@ public:
     // it will never be used. But we need to add it to make class matrix compatible with "SORT" ReduceAlgorithm
     // if a programmer somehow accidentally use SORT on Matrix datatype, it will be the same as using the Linear algorithm. So no error
     bool operator < (const Matrix& mat) const {
+        Q_UNUSED(mat);
         return true;
     }
 
     bool operator > (const Matrix& mat) const {
+        Q_UNUSED(mat);
         return false;
     }
 
@@ -208,11 +210,13 @@ public:
     // this is to make matrix compatible with other numeric classes
     template <typename anyType>
     bool operator < (const anyType &x) const {
+        Q_UNUSED(x);
         return true;
     }
 
     template <typename anyType>
     bool operator > (const anyType &x) const {
+        Q_UNUSED(x);
         return false;
     }
 
@@ -282,11 +286,15 @@ public:
 
 template <typename Any, typename MatType>
 bool operator < (const Any &x, const Matrix<MatType> &mat) {
+    Q_UNUSED(mat);
+    Q_UNUSED(x);
     return true;
 }
 
 template <typename Any, typename MatType>
 bool operator > (const Any &x, const Matrix<MatType> &mat) {
+    Q_UNUSED(mat);
+    Q_UNUSED(x);
     return false;
 }
 
