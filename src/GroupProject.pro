@@ -1,6 +1,6 @@
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 CONFIG += c++17
 CONFIG   += console
@@ -20,9 +20,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    figurewindow.cpp \
     logconsole.cpp \
     main.cpp \
     mainwindow.cpp \
+    qcustomplot.cpp \
     randomgenerator.cpp
 
 HEADERS += \
@@ -33,6 +35,7 @@ HEADERS += \
     NormalDistribution.h \
     distribution.h \
     exponentialdistribution.h \
+    figurewindow.h \
     ifloat.h \
     logconsole.h \
     mainwindow.h \
@@ -41,12 +44,14 @@ HEADERS += \
     matrixexperimentcontroller.h \
     matrixgenerator.h \
     parser.h \
+    qcustomplot.h \
     randomgenerator.h \
     uniformdistribution.h \
     utilityenum.h \
     utils.h \
 
 FORMS += \
+    figurewindow.ui \
     logconsole.ui \
     mainwindow.ui
 
