@@ -535,8 +535,8 @@ void MainWindow::on_pButtonGen_clicked()
             console->getUI()->txtBrowserLog->append("Generate failed. Please try again");
             return;
         }
-        QMessageBox::information(this, "Update", "Generate array is in progress");
-        console->getUI()->txtBrowserLog->append("Generate array is in progress");
+        QMessageBox::information(this, "Update", "Generate matrix is in progress");
+        console->getUI()->txtBrowserLog->append("Generate matrix is in progress");
     }
 }
 
