@@ -3,6 +3,7 @@
 #define MATRIXEXPERIMENT_H
 
 #include <utilityenum.h>
+#include <ReduceAlgorithms.h>
 #include <vector>
 #include <matrix.h>
 #include <ifloat.h>
@@ -24,37 +25,106 @@ public:
     }
 };
 
-class MatrixExperiment : public QObject
+class QMatrixExperiment : public QObject
 {
     Q_OBJECT
 
-    vector<Matrix<double> > inputMats;
-    Distribution distribution;
-
 public:
-    MatrixExperiment(vector<Matrix<double> > newInputMats, Distribution newDistribution);
+    explicit QMatrixExperiment(QObject *parent = 0) :
+        QObject(parent) {}
 
-
-    vector<Matrix<iFloat> > double2iFloat(vector<Matrix<double> > matdv);
-
-    iFloat linearTest(const vector<Matrix<double> > &inputMats, Op op);
-
-    Matrix<double> splitMerge(const vector<Matrix<double> > &inputMats,Op op, int l, int r);
-
-    iFloat splitMergeTest(const vector<Matrix<double> > &inputMats, Op op);
-
-
-    iFloat groundTruth(const vector<Matrix<double> > &inputMats, Op op);
-
-    vector<Result> experiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle);
+    virtual vector<Result> experiment(Op op, unsigned nTest, vector<AlgoName> testAlgos, bool shuffle) {}
 
 public slots:
-    void slotRunMatrixExperiment(Op op, unsigned nTest, vector<Algo> testAlgos, bool shuffle);
+    void slotRunArrayExperiment(Op op, unsigned nTest, vector<AlgoName> testAlgos, bool shuffle) {
+        vector<Result> res = experiment(op, nTest, testAlgos, shuffle);
+        emit signalExperimentFinish(res);
+    }
 
 signals:
     void signalExperimentFinish(vector<Result> res);
-
     void signalUpdateProgress(int value);
+};
+
+template <typename dtype>
+class MatrixExperiment : public QMatrixExperiment
+{
+   // Q_OBJECT
+
+    vector<Matrix<dtype> > inputMats;
+    Distribution distribution;
+
+public:
+    MatrixExperiment(const vector<Matrix<dtype> > &newInputMats, const Distribution &newDistribution)
+        : inputMats(newInputMats)
+        , distribution(newDistribution)
+    {
+        if (newInputMats.size() == 0)
+            qDebug() << "MATRIX EXPERIMENT CRITICAL ERROR: INPUT VECTOR SIZE 0";
+            //throw MatrixExperimentException("Constructor: input vector size 0");
+    }
+
+    template <typename inputType>
+    MatrixExperiment(const vector<Matrix<inputType> > &newInputMats, const Distribution &newDistribution)
+        : distribution(newDistribution)
+    {
+        if (newInputMats.size() == 0)
+            throw MatrixExperimentException("Constructor: input vector size 0");
+
+        for (int i=0; i<newInputMats.size(); i++) inputMats.push_back(Matrix<dtype>(newInputMats[i]));
+    }
+
+    // Convert a vector of Matrix<dtype> to vector of Matrix<iFloat>
+    vector<Matrix<iFloat> > dtype2iFloat(vector<Matrix<dtype> > matdv) {
+        vector<Matrix<iFloat> > matfv;
+
+        for (unsigned t=0; t<matdv.size(); t++) {
+            unsigned height = matdv[t].getHeight(), width = matdv[t].getWidth();
+            Matrix<iFloat> tmp(height, width, 0.0);
+
+            for (unsigned i=0; i<height*width; i++) tmp[i] = matdv[t][i];
+
+            matfv.push_back(tmp);
+        }
+
+        return matfv;
+    }
+
+    //---------------------------------------------     EXPERIMENTING
+    // for an experiment, we random shuffle the input nTest times.
+    // For each shuffle, we calculate the result of each algorithm
+    iFloat groundTruth(const vector<Matrix<dtype> > &inputMats, Op op) {
+        vector<Matrix<iFloat> > hfInput = dtype2iFloat(inputMats);
+        Matrix<iFloat> res = hfInput[0];
+        for (unsigned i=1; i<hfInput.size(); i++) res = numOperate(res, hfInput[i], op);
+        return iFloat(res);
+    }
+
+    vector<Result> experiment(Op op, unsigned nTest, vector<Algorithm<Matrix<dtype> > > algorithms, bool shuffle) {
+        MatrixGenerator matrixGen(distribution);
+        vector<Result> res;
+        res.clear();
+
+        res.push_back(Result(shuffle, GROUND_TRUTH)); // if we use shuffle it means a ground truth exist, so output 1
+        res.push_back(Result(groundTruth(inputMats, op), GROUND_TRUTH));
+        qDebug() << "After matrix ground truth\n";
+
+
+        for (unsigned t=1; t<=nTest; t++) {
+            for (int i=0; i<algorithms.size(); i++)
+                res.push_back(Result(algorithms[i].functor(inputMats, op), algorithms[i].algo));
+
+            if (shuffle) std::random_shuffle(inputMats.begin(), inputMats.end());
+            else {
+                inputMats = utils::convertMatrices<dtype>(matrixGen.createMatrices(inputMats.size(), inputMats[0].getHeight()));
+            }
+            emit signalUpdateProgress(double(t)*100/nTest);
+        }
+
+        emit signalExperimentFinish(res);
+        return res;
+    }
+
 };
 
 #endif //MATRIXEXPERIMENT_H

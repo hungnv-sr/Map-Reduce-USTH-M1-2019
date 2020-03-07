@@ -14,3 +14,5 @@ Reduce is a parallel design pattern that consists to compute a value from a set 
 
 * use of C++ and Qt
 * use of XML for the description of the experiments, and to save them.
+
+Link to documents: https://drive.google.com/drive/folders/1aY8Gj1w-9o_gyNhnKgv3C9HQmgVWqZuE

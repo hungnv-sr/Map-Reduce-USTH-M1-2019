@@ -29,14 +29,46 @@ class MatrixGenerator : public QObject
     RandomGenerator rander;
 
 public:   
-    MatrixGenerator(Distribution distribution);
+    MatrixGenerator(Distribution distribution) : rander(distribution) {
 
-    Matrix<double> randomMatrix(unsigned height, unsigned width);
+    }
 
-    void generateMatrix(int nData, int matSize, vector<Matrix<double> > &mats);
+    Matrix<double> randomMatrix(unsigned height, unsigned width) {
+        Matrix<double> res(height, width);
+        for (unsigned i=0; i<height*width; i++) res[i] = rander.rand();
+        return res;
+    }
+
+    vector<Matrix<double> > createMatrices(int nData, int matSize) {
+        vector<Matrix<double> > res;
+        for (int i=0; i<nData; i++) res.push_back(randomMatrix(matSize, matSize));
+        return res;
+    }
+
+
+    void generateMatrices(int nData, int matSize, vector<Matrix<double> > &mats) {
+        mats.clear();
+        for (int i=0; i<nData; i++) mats.push_back(randomMatrix(matSize, matSize));
+    }
 
 public slots:
-    void slotGenerateMatrix(int nData, int matSize);
+    void slotGenerateMatrix(int nData, int matSize) {
+        vector<Matrix<double> > mats;
+        mats.clear();
+
+        int checkPoint = nData / 100;
+        int cnt = 0;
+        for (int i=0; i<nData; i++) {
+            mats.push_back(randomMatrix(matSize, matSize));
+            cnt++;
+            if (cnt==checkPoint) {
+                emit signalUpdateProgress(double(i)*100/nData);
+                cnt = 0;
+            }
+        }
+
+        emit signalGenerateFinish(mats);
+    }
 
 signals:
     void signalGenerateFinish(const vector<Matrix<double> > &mats);

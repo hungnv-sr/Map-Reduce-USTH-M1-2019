@@ -10,14 +10,34 @@
 #include <QString>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)    
+    : QMainWindow(parent)
     , resource(1)
+    , precision(PSINGLE)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
+    txtDisplay.push_back("\n1. Distribution\n");
+    txtDisplay.push_back("2. Calculation Dataset\n");
+    txtDisplay.push_back("3. Algorithm and Experiment setting\n");
+    txtDisplay.push_back("4. Run and Save result\n");
+
+    for (int i=0; i < txtDisplay.size(); ++i)
+    {
+        if (i == 0) ui->txtEditStackedWidgetPage->setTextColor(Qt::black); else ui->txtEditStackedWidgetPage->setTextColor(Qt::gray);
+        ui->txtEditStackedWidgetPage->append(txtDisplay[i]);
+    }
+
+    ui->sWidget->setCurrentIndex(0);
+
     ui->lblMatSize->setVisible(false);
     ui->lEditMatSize->setVisible(false);
+
+    for (int i=1; i<AlgoNameList.size(); i++)
+        ui->cBoxAlgorithmList->addItem(algo2String(AlgoNameList[i]));
+
+    for (int i=0; i<PrecisionList.size(); i++)
+        ui->cBoxPrecisionList->addItem(prec2String(PrecisionList[i]));
 
     console = new LogConsole();
     console->setModal(false);
@@ -40,7 +60,7 @@ void MainWindow::slotGenerateArrayFinish(const vector<double> &arr) {
     QMessageBox::information(this, "Success", "Generate array data successful");
     console->getUI()->txtBrowserLog->append("Generate array data successful");
     slotUpdateProgress(100);
-    resource.release(1);    
+    resource.release(1);
 }
 
 void MainWindow::slotArrayExperimentFinish(const vector<Result> &res) {
@@ -70,7 +90,7 @@ void MainWindow::slotGenerateMatrixFinish(const vector<Matrix<double> > &mats) {
     numData = mats.size();
     matData = mats;
     createDataThread.quit();
-    createDataThread.wait();    
+    createDataThread.wait();
     QMessageBox::information(this, "Success", "Generate matrix data successful");
     console->getUI()->txtBrowserLog->append("Generate matrix data successful");
     slotUpdateProgress(100);
@@ -161,12 +181,13 @@ bool MainWindow::threadRunArrayExperiment() {
 
     if (!resource.tryAcquire()) return false;
 
-    ArrayExperiment *arrExper = new ArrayExperiment(arrData, distribution);
+    qDebug() << "thread run array: " << arrData.size() << "\n";
+    ArrayExperimentController *arrExper = new ArrayExperimentController(arrData, distribution, precision);
     arrExper -> moveToThread(&experimentThread);
     connect(&experimentThread, &QThread::finished, arrExper, &QObject::deleteLater);
-    connect(this, &MainWindow::signalArrayExperiment, arrExper, &ArrayExperiment::slotRunArrayExperiment);
-    connect(arrExper, &ArrayExperiment::signalExperimentFinish, this, &MainWindow::slotArrayExperimentFinish);
-    connect(arrExper, &ArrayExperiment::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
+    connect(this, &MainWindow::signalArrayExperiment, arrExper, &ArrayExperimentController::slotRunArrayExperiment);
+    connect(arrExper, &ArrayExperimentController::signalExperimentFinish, this, &MainWindow::slotArrayExperimentFinish);
+    connect(arrExper, &ArrayExperimentController::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
 
     experimentThread.start();
 
@@ -213,12 +234,12 @@ bool MainWindow::threadRunMatrixExperiment() {
 
     if (!resource.tryAcquire()) return false;
 
-    MatrixExperiment *matExper = new MatrixExperiment(matData, distribution);
+    MatrixExperimentController *matExper = new MatrixExperimentController(matData, distribution, precision);
     matExper -> moveToThread(&experimentThread);
     connect(&experimentThread, &QThread::finished, matExper, &QObject::deleteLater);
-    connect(this, &MainWindow::signalMatrixExperiment, matExper, &MatrixExperiment::slotRunMatrixExperiment);
-    connect(matExper, &MatrixExperiment::signalExperimentFinish, this, &MainWindow::slotMatrixExperimentFinish);
-    connect(matExper, &MatrixExperiment::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
+    connect(this, &MainWindow::signalMatrixExperiment, matExper, &MatrixExperimentController::slotRunMatrixExperiment);
+    connect(matExper, &MatrixExperimentController::signalExperimentFinish, this, &MainWindow::slotMatrixExperimentFinish);
+    connect(matExper, &MatrixExperimentController::signalUpdateProgress, this, &MainWindow::slotUpdateProgress);
 
     experimentThread.start();
 
@@ -248,6 +269,51 @@ bool MainWindow::threadParseDistribution() {
 
 
 //--------------------  ON-CLICK LISTENER
+void MainWindow::on_pButtonPrev_clicked()
+{
+    ui->txtEditStackedWidgetPage->clear();
+
+    int currentIndex = ui->sWidget->currentIndex();
+    int first = 0;
+
+    for (int i=0; i < txtDisplay.size(); ++i)
+    {
+        if (currentIndex <= first+1) currentIndex = first+1;
+        if (i == currentIndex-1) ui->txtEditStackedWidgetPage->setTextColor(Qt::black); else ui->txtEditStackedWidgetPage->setTextColor(Qt::gray);
+        ui->txtEditStackedWidgetPage->append(txtDisplay[i]);
+    }
+
+    if (currentIndex > first)
+        ui->sWidget->setCurrentIndex(currentIndex - 1);
+    if (currentIndex <= first+1)
+    {
+        currentIndex = first+1;
+        console->getUI()->txtBrowserLog->append("  Reached the first page");
+    }
+}
+
+void MainWindow::on_pButtonNext_clicked()
+{
+    ui->txtEditStackedWidgetPage->clear();
+
+    int currentIndex = ui->sWidget->currentIndex();
+    int last = ui->sWidget->count()-1;
+
+    for (int i=0; i < txtDisplay.size(); ++i)
+    {
+        if (currentIndex >= last-1) currentIndex = last-1;
+        if (i == currentIndex+1) ui->txtEditStackedWidgetPage->setTextColor(Qt::black); else ui->txtEditStackedWidgetPage->setTextColor(Qt::gray);
+        ui->txtEditStackedWidgetPage->append(txtDisplay[i]);
+    }
+
+    if (currentIndex < last)
+        ui->sWidget->setCurrentIndex(currentIndex + 1);
+    if (currentIndex >= last-1)
+    {
+        currentIndex = last-1;
+        console->getUI()->txtBrowserLog->append("  Reached the last page");
+    }
+}
 
 void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
 {
@@ -272,7 +338,7 @@ void MainWindow::on_cBoxDataType_currentIndexChanged(int index)
     }
 }
 
-void MainWindow::on_pButtonOpenFile_1_clicked()
+void MainWindow::on_pButtonOpenDistributionFile_clicked()
 {
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
@@ -296,7 +362,15 @@ void MainWindow::on_pButtonOpenFile_1_clicked()
 
     QTextStream in(&file);
 
-    ui->txtBrowser_1->setText(in.readAll());
+    QString distStr = in.readAll();
+    if (distStr.length() > 1000) {
+        QMessageBox::information(this, "Error", "Distribution is too long");
+        console->getUI()->txtBrowserLog->append("Distribution is too long");
+        file.close();
+        return;
+    }
+
+    ui->txtBrowser_1->setText(distStr);
 
     file.close();
 }
@@ -318,9 +392,6 @@ QString MainWindow::getDistributionString() {
 
         if (ui->lEditParaExp_lambda->text().size() != 0)
             Exp_str.append("E(" + ui->lEditParaExp_lambda->text() + ")");
-
-        if (ui->lEditParaG_alpha->text().size() != 0 && ui->lEditParaG_lambda->text().size() != 0)
-            G_str.append("G(" + ui->lEditParaG_alpha->text() + "," + ui->lEditParaG_lambda->text() + ")");
 
         QStringList dist_list = (QStringList() << U_str << N_str << Exp_str << G_str);
         dist_list.removeAll("");
@@ -349,9 +420,9 @@ vector<double> MainWindow::getDistributionParams() {
     QString upperBoundStr = ui->lEditUpperBound->text();
 
     bool valid1, valid2, valid3;
-    long long binNumber = utils::str2double(binNumberStr, valid1);// (binNumberStr.toDouble(&valid1));
-    double lowerBound = utils::str2double(lowerBoundStr, valid2); //lowerBoundStr.toDouble(&valid2);
-    double upperBound = utils::str2double(upperBoundStr, valid3);//upperBoundStr.toDouble(&valid3);
+    long long binNumber = utils::str2double(binNumberStr, valid1);
+    double lowerBound = utils::str2double(lowerBoundStr, valid2);
+    double upperBound = utils::str2double(upperBoundStr, valid3);
 
     if (!valid1 || !valid2 || !valid3) return res; // return empty vector
 
@@ -383,10 +454,16 @@ void MainWindow::on_pButtonCreateDistribution_clicked()
         return;
     }
 
+    // number of bin is too large
+    if (distributionParams[0] > SIZE_LIMIT) {
+        QMessageBox::information(this, "Error", "Bin Number too large. Current limit is " + QString::number(SIZE_LIMIT));
+        console->getUI()->txtBrowserLog->append("Bin Number too large. Current limit is " + QString::number(SIZE_LIMIT));
+    }
+
     binNumber = distributionParams[0];
     lowerBound = distributionParams[1];
     upperBound = distributionParams[2];
-qDebug() << " Reached here\n";
+
     if (!threadParseDistribution()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait and try again");
         console->getUI()->txtBrowserLog->append("Another task is in progress. Please wait and try again");
@@ -416,6 +493,10 @@ void MainWindow::on_pButtonGen_clicked()
         console->getUI()->txtBrowserLog->append("Invalid number of data element");
         return;
     }
+    if (numData > SIZE_LIMIT) {
+        QMessageBox::information(this, "Error", "Number of data too large. Current limit is " + QString::number(SIZE_LIMIT));
+        console->getUI()->txtBrowserLog->append("Number of data too large. Current limit is " + QString::number(SIZE_LIMIT));
+    }
 
     if (!distribution.valid()) {
         QMessageBox::information(this, "Error", "Please create a distribution first");
@@ -427,11 +508,16 @@ void MainWindow::on_pButtonGen_clicked()
     if (dataTypeStr=="Matrix") {
         QString matSizeStr = ui->lEditMatSize->text();
         bool validMatSize;
-        matSize = utils::str2double(matSizeStr, validMatSize); //matSizeStr.toDouble(&validMatSize);
+        matSize = utils::str2double(matSizeStr, validMatSize);
         if (!validMatSize || matSize <= 0) {
             QMessageBox::information(this, "Error", "Invalid matrix size");
             console->getUI()->txtBrowserLog->append("Invalid matrix size");
             return;
+        }
+
+        if (matSize * matSize > SIZE_LIMIT) {
+            QMessageBox::information(this, "Error", "Matrix size too large. Current limit for (matSize*matSize) is " + QString::number(SIZE_LIMIT));
+            console->getUI()->txtBrowserLog->append("Matrix size too large. Current limit for (matSize*matSize) is " + QString::number(SIZE_LIMIT));
         }
     }
 
@@ -457,8 +543,8 @@ void MainWindow::on_pButtonGen_clicked()
             console->getUI()->txtBrowserLog->append("Generate failed. Please try again");
             return;
         }
-        QMessageBox::information(this, "Update", "Generate array is in progress");
-        console->getUI()->txtBrowserLog->append("Generate array is in progress");
+        QMessageBox::information(this, "Update", "Generate matrix is in progress");
+        console->getUI()->txtBrowserLog->append("Generate matrix is in progress");
     }
 }
 
@@ -483,7 +569,7 @@ void MainWindow::on_pButtonSaveDataset_clicked()
         return;
     }
     else
-    {        
+    {
         // Save to Dir
         QDateTime now = QDateTime::currentDateTime();
         QString format = now.toString("dd.MMM.yyyy-hhmmss");
@@ -507,7 +593,7 @@ void MainWindow::on_pButtonSaveDataset_clicked()
                 console->getUI()->txtBrowserLog->append("File save array successful");
             }
         }
-        else {            
+        else {
             if (matData.size()==0) {
                 QMessageBox::information(this, "Error", "No matrix dataset to save!");
                 return;
@@ -529,7 +615,7 @@ void MainWindow::on_pButtonSaveDataset_clicked()
 
 }
 
-void MainWindow::on_pButtonOpenFile_2_clicked()
+void MainWindow::on_pButtonLoadDataset_clicked()
 {
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait");
@@ -577,6 +663,11 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
         if (dataType==ARRAY) {
             console->getUI()->txtBrowserLog->append("Start loading array dataset.");
             fin >> numData;
+            if (numData > SIZE_LIMIT) {
+                QMessageBox::information(this, "Error", "Number of data in file too large. Current limit is " + QString::number(SIZE_LIMIT));
+                console->getUI()->txtBrowserLog->append("Number of data in file too large. Current limit is " + QString::number(SIZE_LIMIT));
+            }
+
             arrData.clear();
             for (unsigned i=0; i<numData; i++) {
                 double val;
@@ -588,6 +679,17 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
         else if (dataType==MATRIX) {
             console->getUI()->txtBrowserLog->append("Start loading matrix dataset.");
             fin >> numData >> matSize >> matSize;
+            if (numData > SIZE_LIMIT) {
+                QMessageBox::information(this, "Error", "Number of data in file too large. Current limit is " + QString::number(SIZE_LIMIT));
+                console->getUI()->txtBrowserLog->append("Number of data in file too large. Current limit is " + QString::number(SIZE_LIMIT));
+            }
+
+            if (matSize * matSize > SIZE_LIMIT) {
+                QMessageBox::information(this, "Error", "Matrix size in file too large. Current limit of (matSize*matSize) is " + QString::number(SIZE_LIMIT));
+                console->getUI()->txtBrowserLog->append("Matrix size in file too large. Current limit of (matSize*matSize) is " + QString::number(SIZE_LIMIT));
+            }
+
+
             matData.clear();
             Matrix<double> currentMat(matSize, matSize);
             for (unsigned i=0; i<numData; i++) {
@@ -608,8 +710,24 @@ void MainWindow::on_pButtonOpenFile_2_clicked()
     ui->txtBrowser_2->setText("Data imported successfully!");
 }
 
+void MainWindow::on_pButtonAddAlgo_clicked()
+{
+    if (ui->cBoxAlgorithmSelected->findText(ui->cBoxAlgorithmList->currentText()) == -1) {
+        QString selectedAlgo = ui->cBoxAlgorithmList->currentText();
+        ui->cBoxAlgorithmSelected->addItem(selectedAlgo);
+    }
+    ui->cBoxAlgorithmSelected->update();
+}
 
-void MainWindow::on_pButtonBrowseDir_clicked()
+void MainWindow::on_pButtonRemoveAlgo_clicked()
+{
+    ui->cBoxAlgorithmSelected->removeItem(ui->cBoxAlgorithmSelected->currentIndex());
+    ui->cBoxAlgorithmSelected->update();
+}
+
+
+
+void MainWindow::on_pButtonSaveDatasetBrowseDir_clicked()
 {
     if (!resource.available()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait.");
@@ -643,11 +761,6 @@ void MainWindow::on_pButtonBrowseSaveResult_clicked()
     ui->lEditSaveResult->setText(folderDir);
 }
 
-void MainWindow::on_gBoxAlgorithm_clicked()
-{
-
-}
-
 void MainWindow::on_pButtonRun_clicked()
 {
     if (!resource.available()) {
@@ -656,7 +769,7 @@ void MainWindow::on_pButtonRun_clicked()
         return;
     }
 
-    ui->outputText->clear();
+    ui->txtBrowserOutput->clear();
 
     if (numData <= 0) {
         QMessageBox::information(this, "Error", "Number of data element <= 0");
@@ -680,13 +793,14 @@ void MainWindow::on_pButtonRun_clicked()
         return;
     }
 
+    QString precisionStr = ui->cBoxPrecisionList->currentText();
+    precision = string2prec(precisionStr);
+
     if (ui->chkBoxGenNewData->isChecked()) shuffle = false; else shuffle = true;
 
     testAlgos.clear();
-    if (ui->chkBoxLinear->isChecked()) testAlgos.push_back(LINEAR);
-    if (ui->chkBoxSplitMerge->isChecked()) testAlgos.push_back(SPLIT_MERGE);
-    if (ui->chkBoxSortLinear->isChecked()) testAlgos.push_back(SORT);
-    if (ui->chkBoxSortAppend->isChecked()) testAlgos.push_back(SORT_APPEND);
+    for (int i=0; i<ui->cBoxAlgorithmSelected->count(); i++)
+        testAlgos.push_back(string2Algo(ui->cBoxAlgorithmSelected->itemText(i)));
 
     if (testAlgos.empty()) {
         QMessageBox::information(this, "Error", "Please select some algorithms");
@@ -758,8 +872,8 @@ void MainWindow::outputResult()
     QString outputStr = "3 numbers are: mean, variance, standard deviation\n";
 
     vector<QString> algoNames;
-    vector<Algo> algoTypes;
-    std::map<Algo, bool> mp;
+    vector<AlgoName> algoTypes;
+    std::map<AlgoName, bool> mp;
 
     int n = results.size();
     for (int i=0; i<n;i++) {
@@ -767,15 +881,22 @@ void MainWindow::outputResult()
             mp[results[i].algoUsed] = 1;
 
             algoTypes.push_back(results[i].algoUsed);
-            algoNames.push_back(utils::algo2String(results[i].algoUsed));
+            algoNames.push_back(algo2String(results[i].algoUsed));
         }
     }
 
+    if (results[0].value==1) outputStr = outputStr + "Ground truth = " + results[1].value.toString() + "\n";
+    else outputStr += "No ground truth\n";
+
     for (unsigned t=0; t<algoTypes.size(); t++) {
+        int lastLength = outputStr.length();
+        outputStr = outputStr + algo2String(algoTypes[t]);
+        while (outputStr.length() < lastLength + 20) outputStr += " "; // do this to make algorithms line up in the output table
+        outputStr += "\t";
+
         iFloat mean = 0;
         int nSample = 0;
 
-        outputStr = outputStr + utils::algo2String(algoTypes[t]) + " ";
         for (unsigned i=0; i<results.size(); i++)
             if (results[i].algoUsed==algoTypes[t]) {
                 mean = mean + results[i].value;
@@ -793,14 +914,12 @@ void MainWindow::outputResult()
 
         iFloat std = utils::isqrt(variance);
 
-        outputStr = outputStr + mean.toString() + " " + variance.toString() + " " + std.toString();
+        outputStr = outputStr + mean.toString() + " ; " + variance.toString() + " ; " + std.toString();
         outputStr += "\n";
     }
 
-    ui->outputText->setText(outputStr);
+    ui->txtBrowserOutput->setText(outputStr);
 }
-
-
 
 void MainWindow::on_pButtonLogConsole_clicked()
 {
@@ -808,3 +927,6 @@ void MainWindow::on_pButtonLogConsole_clicked()
     console->show();
     console->activateWindow();
 }
+
+
+

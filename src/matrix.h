@@ -109,6 +109,21 @@ public:
         return res;
     }
 
+    // Experiment result is represented by 1 number.
+    // So we need a function that convert a matrix into 1 number -> use Sum
+    // Also, the data result type must be common -> use iFloat
+    template <class CalculationType>
+    iFloat sum() const {
+        CalculationType res = 0;
+        for (unsigned i=0; i<height*width;i++) res = res + CalculationType(values[i]);
+        return res;
+    }
+
+    explicit operator iFloat() const {
+        return (*this).template sum<iFloat>();
+    }
+
+
     //--------------------- UTILITY ACCESS OPERATOR
     dtype& operator [] (unsigned index) {
         if (index < 0 || index >= height*width)
@@ -178,6 +193,33 @@ public:
         return res;
     }
 
+    // comparing matrices is useless, so just return true for < and false for >
+    // it will never be used. But we need to add it to make class matrix compatible with "SORT" ReduceAlgorithm
+    // if a programmer somehow accidentally use SORT on Matrix datatype, it will be the same as using the Linear algorithm. So no error
+    bool operator < (const Matrix& mat) const {
+        Q_UNUSED(mat);
+        return true;
+    }
+
+    bool operator > (const Matrix& mat) const {
+        Q_UNUSED(mat);
+        return false;
+    }
+
+    // comparing matrix to number doesn't make sense, so just return true.
+    // this is to make matrix compatible with other numeric classes
+    template <typename anyType>
+    bool operator < (const anyType &x) const {
+        Q_UNUSED(x);
+        return true;
+    }
+
+    template <typename anyType>
+    bool operator > (const anyType &x) const {
+        Q_UNUSED(x);
+        return false;
+    }
+
     //--------------------------    SCALAR CALCULATION OPERATOR
     template<class dtype2>
     Matrix operator + (const dtype2& v) const {
@@ -213,20 +255,6 @@ public:
         return res;
     }
 
-    //---------------------------   MORE MAT FUNCTION
-    template <class CalculationType>
-    iFloat sum() const {
-        CalculationType res = 0;
-        for (unsigned i=0; i<height*width;i++) res = res + CalculationType(values[i]);
-        return res;
-    }
-
-    template <class CalculationType>
-    iFloat dot(const Matrix& mat) const {
-        CalculationType res = 0;
-        return ((*this) * mat).template sum<CalculationType>();
-    }
-
     //-----------------------   GETTER/SETTER, PRINT SCREEN
     unsigned getHeight() const {
         return height;
@@ -248,7 +276,29 @@ public:
             cout << "\n";
         }
     }
+
+    template <typename Any, typename MatType>
+    friend bool operator < (const Any &x, const Matrix &mat);
+
+    template <typename Any, typename MatType>
+    friend bool operator > (const Any &x, const Matrix &mat);
 };
+
+template <typename Any, typename MatType>
+bool operator < (const Any &x, const Matrix<MatType> &mat) {
+    Q_UNUSED(mat);
+    Q_UNUSED(x);
+    return true;
+}
+
+template <typename Any, typename MatType>
+bool operator > (const Any &x, const Matrix<MatType> &mat) {
+    Q_UNUSED(mat);
+    Q_UNUSED(x);
+    return false;
+}
+
+
 
 //-------------------------------   SCALAR OPERATOR a*b and b*a
 template <class dtype, class dtype2>
@@ -267,8 +317,8 @@ Matrix<dtype> operator * (const dtype2& v, const Matrix<dtype>& source) {
 }
 
 //-------------------------------   GENERIC MATRIX CALCULATION FUNCTION
-
-template <class dtype>
+/*
+template <typename dtype>
 inline Matrix<dtype> matOperate(const Matrix<dtype> &mat1, const Matrix<dtype> &mat2, Op op) {
     if (op==ADD) return mat1 + mat2;
     if (op==SUB) return mat1 - mat2;
@@ -278,7 +328,7 @@ inline Matrix<dtype> matOperate(const Matrix<dtype> &mat1, const Matrix<dtype> &
 
     throw MatrixException("Operate: Unknown Op");
 }
-
+*/
 
 
 #endif // MATRIX_H

@@ -1,44 +1,40 @@
+
+#include <QApplication>
 #include "mainwindow.h"
 #include "logconsole.h"
-#include <iostream>
-#include <QApplication>
-#include "distribution.h"
-#include "exponentialdistribution.h"
-#include "NormalDistribution.h"
-#include "uniformdistribution.h"
 
+#include <iostream>
 #include "ifloat.h"
-#include "randomgenerator.h"
-#include "matrix.h"
-#include "matrixexperiment.h"
-#include <Eigen/Dense>
-using std::cout;
-
 #include <iostream>
-#include <boost/multiprecision/cpp_dec_float.hpp>
-#include <boost/multiprecision/cpp_int.hpp>
-using boost::multiprecision::number;
-using boost::multiprecision::cpp_dec_float;
-using boost::multiprecision::cpp_dec_float_50;
-using boost::numeric_cast;
 using std::cout;
 using std::vector;
 
+
+float knuth2sum(float a, float b) {
+    float s = a + b;
+    float a2 = s - b;
+    float b2 = s - a;
+    float da = a - a2;
+    float db = b - b2;
+    float r = da + db;
+    return r;
+}
 
 int main(int argc, char *argv[])
 {
     srand(time(NULL));
     QApplication a(argc, argv);
+
     qRegisterMetaType<vector<double> >("vector<double>");
     qRegisterMetaType<Op>("Op");
     qRegisterMetaType<Result>("Result");
     qRegisterMetaType<vector<Result> >("vector<Result>");
-    qRegisterMetaType<Algo>("Algo");
-    qRegisterMetaType<vector<Algo> >("vector<Algo>");
+    qRegisterMetaType<AlgoName>("Algo");
+    qRegisterMetaType<vector<AlgoName> >("vector<Algo>");
     qRegisterMetaType<Matrix<double> >("Matrix<double>");
     qRegisterMetaType<vector<Matrix<double> > >("vector<Matrix<double> >");
     qRegisterMetaType<Distribution>("Distribution");
-
+    qRegisterMetaType<vector<AlgoName> >("vector<AlgoName>");
 
     /*
     std::cout << std::setprecision(std::numeric_limits<cpp_dec_float_50>::digits10);

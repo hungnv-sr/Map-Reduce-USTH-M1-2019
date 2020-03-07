@@ -8,6 +8,8 @@
 #include <fstream>
 using std::vector;
 
+typedef long long ll;
+
 struct ArrayGeneratorException : public std::exception {
 private:
     QString msg;
@@ -21,6 +23,7 @@ public:
     }
 };
 
+//--------------- template class can't inherit QObject, so we do it indirectly
 
 class ArrayGenerator : public QObject
 {
@@ -28,12 +31,41 @@ class ArrayGenerator : public QObject
 
     RandomGenerator rander;
 public:
-    ArrayGenerator(Distribution distribution);
+    ArrayGenerator(Distribution distribution) : rander(distribution) {
 
-    void generateArray(int nData, vector<double> &arr);
+    }
+
+    vector<double> createArray(int nData) {
+        vector<double> res;
+        for (int i=0; i<nData; i++) res.push_back(rander.rand());
+        return res;
+    }
+
+    void generateArray(int nData, vector<double> &arr) {
+        arr.clear();
+
+        for (int i=0; i<nData; i++) arr.push_back(rander.rand());
+    }
 
 public slots:
-    void slotGenerateArray(int nData);
+    void slotGenerateArray(int nData) {
+        vector<double> arr;
+        arr.clear();
+
+        int checkPoint = nData / 100;
+        int cnt = 0;
+        for (int i=0; i<nData; i++) {
+            arr.push_back(rander.rand());
+            cnt++;
+            if (cnt==checkPoint) {
+                qDebug() << "i = " << i << "\n";
+                signalUpdateProgress(double(i+1)/nData*100);
+                cnt = 0;
+            }
+        }
+
+        emit signalGenerateFinish(arr);
+    }
 
 signals:
     void signalGenerateFinish(const vector<double>& arr);

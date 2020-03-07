@@ -6,11 +6,15 @@
 #include <arraygenerator.h>
 #include <arrayexperiment.h>
 #include <matrixexperiment.h>
+#include <matrixexperimentcontroller.h>
+#include <arrayexperimentcontroller.h>
 #include <vector>
 #include <QThread>
 #include <parser.h>
 #include <QSemaphore>
 #include <logconsole.h>
+#include <utilityenum.h>
+#include <ReduceAlgorithms.h>
 
 using std::vector;
 
@@ -37,24 +41,26 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
+    const long long SIZE_LIMIT = 2100000000;
+
     QSemaphore resource;
     QThread createDistributionThread;
     QThread createDataThread;
     QThread experimentThread;    
 
-
-    unsigned dataSize, numData, matSize;
+    Precision precision;
+    long long dataSize, numData, matSize;
     DataType dataType;
     Distribution distribution;
-    //Parser parser;
+
     long long binNumber;
     double lowerBound, upperBound;
     vector<double> arrData;    
     vector<Matrix<double> > matData;
 
     Op operation;
-    vector<Algo> testAlgos;
-    unsigned numTest;
+    vector<AlgoName> testAlgos;
+    long long numTest;
     bool shuffle;
     vector<Result> results;
 
@@ -65,19 +71,17 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pButtonOpenFile_1_clicked();
+    void on_pButtonOpenDistributionFile_clicked();
 
     void on_pButtonGen_clicked();
 
-    void on_pButtonOpenFile_2_clicked();
+    void on_pButtonLoadDataset_clicked();
 
     void on_cBoxDataType_currentIndexChanged(int index);
 
-    void on_pButtonBrowseDir_clicked();
+    void on_pButtonSaveDatasetBrowseDir_clicked();
 
     void on_pButtonBrowseSaveResult_clicked();
-
-    void on_gBoxAlgorithm_clicked();
 
     void on_pButtonRun_clicked();
 
@@ -88,6 +92,14 @@ private slots:
     void on_pButtonSaveResult_clicked();
 
     void on_pButtonLogConsole_clicked();
+
+    void on_pButtonPrev_clicked();
+
+    void on_pButtonNext_clicked();
+
+    void on_pButtonAddAlgo_clicked();
+
+    void on_pButtonRemoveAlgo_clicked();
 
     //-----------------------   SIGNAL AND SLOTS FOR THREADS
 private slots:
@@ -104,14 +116,15 @@ private slots:
     void slotReceiveAlert(QString alert);
 
     void slotUpdateProgress(int value);
+
 signals:
     void signalGenerateArray(int nData);
 
-    void signalArrayExperiment(Op op, unsigned numTest, vector<Algo> testAlgos, bool shuffle);
+    void signalArrayExperiment(Op op, unsigned numTest, vector<AlgoName> testAlgos, bool shuffle);
 
     void signalGenerateMatrix(int nData, int matSize);
 
-    void signalMatrixExperiment(Op op, unsigned numTest, vector<Algo> testAlgos, bool shuffle);
+    void signalMatrixExperiment(Op op, unsigned numTest, vector<AlgoName> testAlgos, bool shuffle);
 
     void signalParseDistribution(QString distStr);
 
@@ -131,6 +144,8 @@ private:
 private:
     Ui::MainWindow *ui;
     LogConsole *console;
+
+    vector<QString> txtDisplay;
 
     QString getDistributionString();
 
