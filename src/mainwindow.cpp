@@ -362,7 +362,15 @@ void MainWindow::on_pButtonOpenDistributionFile_clicked()
 
     QTextStream in(&file);
 
-    ui->txtBrowser_1->setText(in.readAll());
+    QString distStr = in.readAll();
+    if (distStr.length() > 1000) {
+        QMessageBox::information(this, "Error", "Distribution is too long");
+        console->getUI()->txtBrowserLog->append("Distribution is too long");
+        file.close();
+        return;
+    }
+
+    ui->txtBrowser_1->setText(distStr);
 
     file.close();
 }

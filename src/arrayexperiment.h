@@ -81,8 +81,8 @@ public:
     // For each shuffle, we calculate the result of each algorithm
 
     iFloat groundTruth(const vector<dtype> &inputs, Op op) {
-        iFloat res = 0;
-        for (unsigned i=0; i<inputs.size(); i++) res = numOperate(res, iFloat(inputs[i]), op);
+        iFloat res = inputs[0];
+        for (unsigned i=1; i<inputs.size(); i++) res = numOperate(res, iFloat(inputs[i]), op);
         return res;
     }
 
