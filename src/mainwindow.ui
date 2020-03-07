@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>986</width>
-    <height>736</height>
+    <height>744</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -102,7 +102,7 @@
                <number>0</number>
               </property>
               <property name="currentIndex">
-               <number>2</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="pageDistribution">
                <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -163,7 +163,7 @@
                      <enum>QTabWidget::Rounded</enum>
                     </property>
                     <property name="currentIndex">
-                     <number>0</number>
+                     <number>2</number>
                     </property>
                     <widget class="QWidget" name="tabInput_2_Page_1">
                      <attribute name="title">
@@ -733,7 +733,7 @@
                          </layout>
                         </item>
                         <item row="0" column="0">
-                         <widget class="QPushButton" name="pButtonOpenFile_1">
+                         <widget class="QPushButton" name="pButtonOpenDistributionFile">
                           <property name="maximumSize">
                            <size>
                             <width>75</width>
@@ -1184,7 +1184,7 @@
                      <enum>QTabWidget::Rounded</enum>
                     </property>
                     <property name="currentIndex">
-                     <number>0</number>
+                     <number>1</number>
                     </property>
                     <widget class="QWidget" name="tabInput_3_Page_1">
                      <attribute name="title">
@@ -1249,7 +1249,7 @@
                             <number>0</number>
                            </property>
                            <item row="0" column="2">
-                            <widget class="QPushButton" name="pButtonBrowseDir">
+                            <widget class="QPushButton" name="pButtonSaveDatasetBrowseDir">
                              <property name="maximumSize">
                               <size>
                                <width>75</width>
@@ -1358,7 +1358,7 @@
                       <item>
                        <layout class="QGridLayout" name="gLayoutOpenFile_2">
                         <item row="0" column="0">
-                         <widget class="QPushButton" name="pButtonOpenFile_2">
+                         <widget class="QPushButton" name="pButtonLoadDistribution">
                           <property name="maximumSize">
                            <size>
                             <width>75</width>
@@ -2192,7 +2192,7 @@
      <x>0</x>
      <y>0</y>
      <width>986</width>
-     <height>22</height>
+     <height>30</height>
     </rect>
    </property>
   </widget>
