@@ -455,7 +455,7 @@ void MainWindow::on_pButtonCreateDistribution_clicked()
     binNumber = distributionParams[0];
     lowerBound = distributionParams[1];
     upperBound = distributionParams[2];
-qDebug() << " Reached here\n";
+
     if (!threadParseDistribution()) {
         QMessageBox::information(this, "Error", "Another task is in progress. Please wait and try again");
         console->getUI()->txtBrowserLog->append("Another task is in progress. Please wait and try again");
@@ -877,11 +877,18 @@ void MainWindow::outputResult()
         }
     }
 
+    if (results[0].value==1) outputStr = outputStr + "Ground truth = " + results[1].value.toString() + "\n";
+    else outputStr += "No ground truth\n";
+
     for (unsigned t=0; t<algoTypes.size(); t++) {
+        int lastLength = outputStr.length();
+        outputStr = outputStr + algo2String(algoTypes[t]);
+        while (outputStr.length() < lastLength + 20) outputStr += " "; // do this to make algorithms line up in the output table
+        outputStr += "\t";
+
         iFloat mean = 0;
         int nSample = 0;
 
-        outputStr = outputStr + algo2String(algoTypes[t]) + " ";
         for (unsigned i=0; i<results.size(); i++)
             if (results[i].algoUsed==algoTypes[t]) {
                 mean = mean + results[i].value;

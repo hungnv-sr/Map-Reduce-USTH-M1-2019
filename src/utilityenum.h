@@ -10,9 +10,9 @@ enum Op{ADD, SUB, MUL, DIV, MATMUL};
 const Op OpList[5] = {ADD, SUB, MUL, DIV, MATMUL};
 
 //
-enum Precision {PDOUBLE, PSINGLE};
+enum Precision {PSINGLE, PDOUBLE};
 
-const vector<Precision> PrecisionList = {PDOUBLE, PSINGLE};
+const vector<Precision> PrecisionList = {PSINGLE, PDOUBLE};
 
 //
 enum DataType{ARRAY, MATRIX};
