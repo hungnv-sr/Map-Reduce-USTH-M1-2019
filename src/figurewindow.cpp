@@ -18,13 +18,17 @@ void FigureWindow::FigurePlot(int numPoint, QVector<double> data)
 
     /* Sampling the original data */
     QVector<double> dataSampled(numPoint), indices(numPoint);
+    double max = 0;
 
     int j = 0;
     int distance = (int)(data.size()/(numPoint-1));
 
-    for (int i=0; i<data.size(); i+=(distance-1))
+    if (distance > 1) distance-=1;
+
+    for (int i=0; i<data.size(); i+=distance)
     {
         dataSampled[j] = data[i];
+        if (dataSampled[j] > max) max = dataSampled[j];
         indices[j] = i;
         ++j;
     }
@@ -34,7 +38,7 @@ void FigureWindow::FigurePlot(int numPoint, QVector<double> data)
     wGraphic->graph(0)->setData(indices,dataSampled);
     wGraphic->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle));
     wGraphic->xAxis->setRange(0,data.size());
-    wGraphic->yAxis->setRange(0,data.size());
+    wGraphic->yAxis->setRange(0,max);
 
     wGraphic->replot();
 }

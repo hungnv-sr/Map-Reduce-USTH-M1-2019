@@ -199,6 +199,10 @@ public:
         return cdf[i];
     }
 
+    iFloat getPdf(long long i) {
+        return pdf[i];
+    }
+
     // find the first value "res" such that
     // cdf[res] > cumulative using binary search
     long long inverseSampling(iFloat cumulative) {

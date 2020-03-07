@@ -889,12 +889,13 @@ void MainWindow::on_pButtonPlot_clicked()
     figure->setModal(false);
 
     /* Toy data to test plot */
-    QVector<double> data(1000000);
-    for (int i = 0; i<data.size(); ++i) data[i] = i;
+    QVector<double> data(binNumber);
+
+    for (int i = 0; i<binNumber; ++i) data[i] = distribution.getPdf(i).getValue().convert_to<double>()*binNumber*1000;
 
     /* Real data goes here */
 
-    figure->FigurePlot(50,data);
+    figure->FigurePlot(100,data);          // Maximum 1000 points
     figure->show();
     figure->activateWindow();
 }
