@@ -203,6 +203,10 @@ public:
         return pdf[i];
     }
 
+    long long getPdfSize() {
+        return binNumber;
+    }
+
     // find the first value "res" such that
     // cdf[res] > cumulative using binary search
     long long inverseSampling(iFloat cumulative) {

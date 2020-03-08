@@ -885,17 +885,31 @@ void MainWindow::on_pButtonLogConsole_clicked()
 }
 
 void MainWindow::on_pButtonPlot_clicked()
-{
+{    
+    long long psize = distribution.getPdfSize();
+
+    if (psize == 0)
+    {
+        QMessageBox::information(this, "Error", "No Distribution was ever created!");
+        console->getUI()->txtBrowserLog->append("No Distribution was ever created!");
+        return;
+    }
+
     figure->setModal(false);
 
     /* Toy data to test plot */
-    QVector<double> data(binNumber);
+    QVector<double> data(binNumber); //data(psize);
 
-    for (int i = 0; i<binNumber; ++i) data[i] = distribution.getPdf(i).getValue().convert_to<double>()*binNumber*1000;
+    for (long long i = 0; i<binNumber; ++i)
+    {
+        data[i] = distribution.getPdf(i).getValue().convert_to<double>()*1000;
+    }
+
+    //qDebug() << psize << " " << data.size();
 
     /* Real data goes here */
 
-    figure->FigurePlot(100,data);          // Maximum 1000 points
+    figure->FigurePlot(binNumber,data);          // Tested plot upto 100000 points
     figure->show();
     figure->activateWindow();
 }
